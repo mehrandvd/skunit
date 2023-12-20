@@ -22,4 +22,8 @@
     </PackageReference>
   </ItemGroup>
 
+  <ItemGroup>
+    <ProjectReference Include="..\skUnit\skUnit\skUnit.csproj" />
+  </ItemGroup>
+
 </Project>

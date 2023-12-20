@@ -7,7 +7,16 @@
   </PropertyGroup>
 
   <ItemGroup>
-    <Folder Include="Plugins\" />
+    <PackageReference Include="Microsoft.SemanticKernel" Version="1.0.1" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <None Update="Plugins\TestPlugin\AreSame\config.json">
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+    </None>
+    <None Update="Plugins\TestPlugin\AreSame\skprompt.txt">
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+    </None>
   </ItemGroup>
 
 </Project>
