@@ -39,7 +39,7 @@ namespace skUnit
 
         }
 
-        public static async Task<SemanticAssertResult> AreSameCoreAsync(string first, string second)
+        public static async Task<SemanticAssertResult> SameCoreAsync(string first, string second)
         {
             var skresult = (
                 await AreSameSkFunc.InvokeAsync(TestKernel, new KernelArguments()
@@ -52,14 +52,14 @@ namespace skUnit
             var result = JsonSerializer.Deserialize<SemanticAssertResult>(skresult);
 
             if (result is null)
-                throw new InvalidOperationException("Can not assert AreSame");
+                throw new InvalidOperationException("Can not assert Same");
 
             return result;
         }
 
-        public static async Task AreSameAsync(string first, string second)
+        public static async Task SameAsync(string first, string second)
         {
-            var result = await AreSameCoreAsync(first, second);
+            var result = await SameCoreAsync(first, second);
 
             if (result is null)
             {
@@ -72,14 +72,14 @@ namespace skUnit
             }
         }
 
-        public static void AreSame(string first, string second)
+        public static void Same(string first, string second)
         {
-            AreSameAsync(first, second).GetAwaiter().GetResult();
+            SameAsync(first, second).GetAwaiter().GetResult();
         }
 
-        public static async Task AreNotSameAsync(string first, string second)
+        public static async Task NotSameAsync(string first, string second)
         {
-            var result = await AreSameCoreAsync(first, second);
+            var result = await SameCoreAsync(first, second);
 
             if (result is null)
             {
@@ -96,9 +96,9 @@ namespace skUnit
             }
         }
 
-        public static void AreNotSame(string first, string second)
+        public static void NotSame(string first, string second)
         {
-            AreNotSameAsync(first, second).GetAwaiter().GetResult();
+            NotSameAsync(first, second).GetAwaiter().GetResult();
         }
 
 

@@ -22,16 +22,16 @@ namespace skUnit.Tests
 
         [Theory]
         [MemberData(nameof(GetSameData))]
-        public void AreSame_True_MustWork(string first, string second)
+        public void Same_True_MustWork(string first, string second)
         {
-            SemanticAssert.AreSame(first, second);
+            SemanticAssert.Same(first, second);
         }
 
         [Theory]
         [MemberData(nameof(GetNotSameData))]
-        public void AreSame_False_MustWork(string first, string second)
+        public void Same_False_MustWork(string first, string second)
         {
-            var exception = Assert.Throws<SemanticAssertException>(() => SemanticAssert.AreSame(first, second));
+            var exception = Assert.Throws<SemanticAssertException>(() => SemanticAssert.Same(first, second));
             Output.WriteLine($"""
                 [Explanation]
                 {exception.Message}
@@ -40,16 +40,16 @@ namespace skUnit.Tests
 
         [Theory]
         [MemberData(nameof(GetNotSameData))]
-        public void AreNotSame_True_MustWork(string first, string second)
+        public void NotSame_True_MustWork(string first, string second)
         {
-            SemanticAssert.AreNotSame(first, second);
+            SemanticAssert.NotSame(first, second);
         }
 
         [Theory]
         [MemberData(nameof(GetSameData))]
-        public void AreNotSame_False_MustWork(string first, string second)
+        public void NotSame_False_MustWork(string first, string second)
         {
-            var exception = Assert.Throws<SemanticAssertException>(() => SemanticAssert.AreNotSame(first, second));
+            var exception = Assert.Throws<SemanticAssertException>(() => SemanticAssert.NotSame(first, second));
             Output.WriteLine($"""
                 [Explanation]
                 {exception.Message}
