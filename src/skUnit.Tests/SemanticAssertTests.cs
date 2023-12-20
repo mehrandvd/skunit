@@ -22,9 +22,9 @@ namespace skUnit.Tests
 
         [Theory]
         [MemberData(nameof(GetSameData))]
-        public void AreSame_True_MustWork()
+        public void AreSame_True_MustWork(string first, string second)
         {
-            SemanticAssert.AreSame("This car is red", "The car is red");
+            SemanticAssert.AreSame(first, second);
         }
 
         [Theory]
@@ -32,6 +32,24 @@ namespace skUnit.Tests
         public void AreSame_False_MustWork(string first, string second)
         {
             var exception = Assert.Throws<SemanticAssertException>(() => SemanticAssert.AreSame(first, second));
+            Output.WriteLine($"""
+                [Explanation]
+                {exception.Message}
+                """);
+        }
+
+        [Theory]
+        [MemberData(nameof(GetNotSameData))]
+        public void AreNotSame_True_MustWork(string first, string second)
+        {
+            SemanticAssert.AreNotSame(first, second);
+        }
+
+        [Theory]
+        [MemberData(nameof(GetSameData))]
+        public void AreNotSame_False_MustWork(string first, string second)
+        {
+            var exception = Assert.Throws<SemanticAssertException>(() => SemanticAssert.AreNotSame(first, second));
             Output.WriteLine($"""
                 [Explanation]
                 {exception.Message}

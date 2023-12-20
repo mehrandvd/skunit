@@ -39,10 +39,9 @@ namespace skUnit
 
         }
 
-
-        public static async Task AreSameAsync(string first, string second)
+        public static async Task<SemanticAssertResult> AreSameCoreAsync(string first, string second)
         {
-            var result = (
+            var skresult = (
                 await AreSameSkFunc.InvokeAsync(TestKernel, new KernelArguments()
                 {
                     ["first_text"] = first,
@@ -50,16 +49,26 @@ namespace skUnit
                 })
             ).GetValue<string>() ?? "";
 
-            var assert = JsonSerializer.Deserialize<SemanticAssertResult>(result);
+            var result = JsonSerializer.Deserialize<SemanticAssertResult>(skresult);
 
-            if (assert is null)
+            if (result is null)
+                throw new InvalidOperationException("Can not assert AreSame");
+
+            return result;
+        }
+
+        public static async Task AreSameAsync(string first, string second)
+        {
+            var result = await AreSameCoreAsync(first, second);
+
+            if (result is null)
             {
                 throw new SemanticAssertException("Unable to accomplish the semantic assert.");
             }
 
-            if (!assert.Success)
+            if (!result.Success)
             {
-                throw new SemanticAssertException(assert.Message);
+                throw new SemanticAssertException(result.Message);
             }
         }
 
@@ -67,6 +76,31 @@ namespace skUnit
         {
             AreSameAsync(first, second).GetAwaiter().GetResult();
         }
+
+        public static async Task AreNotSameAsync(string first, string second)
+        {
+            var result = await AreSameCoreAsync(first, second);
+
+            if (result is null)
+            {
+                throw new SemanticAssertException("Unable to accomplish the semantic assert.");
+            }
+
+            if (result.Success)
+            {
+                throw new SemanticAssertException($"""
+                    These are semantically same:
+                    [FIRST]: {first}
+                    [SECOND]: {second} 
+                    """);
+            }
+        }
+
+        public static void AreNotSame(string first, string second)
+        {
+            AreNotSameAsync(first, second).GetAwaiter().GetResult();
+        }
+
 
         public static void Satisfies(string input, string condition)
         {
