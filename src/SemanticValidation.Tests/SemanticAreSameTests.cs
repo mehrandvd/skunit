@@ -2,10 +2,10 @@ using Xunit.Abstractions;
 
 namespace SemanticValidation.Tests
 {
-    public class SemanticTests
+    public class SemanticAreSameTests
     {
         private ITestOutputHelper Output { get; set; }
-        public SemanticTests(ITestOutputHelper output)
+        public SemanticAreSameTests(ITestOutputHelper output)
         {
             Output = output;
 
@@ -24,7 +24,7 @@ namespace SemanticValidation.Tests
         public async Task AreSame_True_MustWork(string first, string second)
         {
             var result = await Semantic.AreSameAsync(first, second);
-            Assert.True(result.Success);
+            Assert.True(result.Success, result.Message);
         }
 
         [Theory]

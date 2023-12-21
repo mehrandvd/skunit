@@ -1,0 +1,26 @@
+{
+  "schema": 1,
+  "type": "completion",
+  "description": "Checks if the text has the condition.",
+  "completion": {
+    "max_tokens": 500,
+    "temperature": 0.0,
+    "top_p": 0.0,
+    "presence_penalty": 0.0,
+    "frequency_penalty": 0.0
+  },
+  "input": {
+    "parameters": [
+      {
+        "name": "text",
+        "description": "The text that should be checked if it has the condition",
+        "defaultValue": ""
+      },
+      {
+        "name": "condition",
+        "description": "The condition that should be checked on text",
+        "defaultValue": ""
+      }
+    ]
+  }
+}

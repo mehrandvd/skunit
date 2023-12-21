@@ -1,17 +1,17 @@
-Check if the first text and the second text are semantically equivalent:
+Check if the text has the condition semantically:
 
-[[[First Text]]]
+[[[Input Text]]]
 
-{{$first_text}}
+{{$text}}
 
-[[[End of First Text]]]
+[[[End of Input Text]]]
 
 
-[[[Second Text]]]
+[[[Condition]]]
                 
-{{$second_text}}
+{{$condition}}
                 
-[[[End of Second Text]]]
+[[[End of Condition]]]
 
 The result should be a valid json like:
 
