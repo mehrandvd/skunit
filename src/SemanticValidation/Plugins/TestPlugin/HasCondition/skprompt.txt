@@ -17,7 +17,7 @@ The result should be a valid json like:
 
 {
     "success": true or false,
-    "message": "If they are not equivalent, explain here the difference"
+    "message": "If sucess is false, explain (in the same language with text) here the difference"
 }
 
 
