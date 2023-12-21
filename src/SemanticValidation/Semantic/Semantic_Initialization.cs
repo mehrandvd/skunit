@@ -4,30 +4,15 @@ using SemanticValidation.Models;
 
 namespace SemanticValidation;
 
-public static partial class Semantic
+public partial class Semantic
 {
-    private static Kernel? _testKernel;
-    private static Kernel TestKernel
-    {
-        get => _testKernel ?? throw new InvalidOperationException("SemanticAssert is not initialized yet.");
-        set => _testKernel = value;
-    }
+    private Kernel TestKernel { get; }
 
-    private static KernelFunction? _areSameFunc;
-    public static KernelFunction AreSameSkFunc
-    {
-        get => _areSameFunc ?? throw new InvalidOperationException("SemanticAssert is not initialized yet.");
-        set => _areSameFunc = value;
-    }
+    public KernelFunction AreSameSkFunc { get; set; }
 
-    private static KernelFunction? _hasConditionFunc;
-    public static KernelFunction HasConditionFunc
-    {
-        get => _hasConditionFunc ?? throw new InvalidOperationException("SemanticAssert is not initialized yet.");
-        set => _hasConditionFunc = value;
-    }
+    public KernelFunction HasConditionFunc { get; set; }
 
-    public static void Initialize(string endpoint, string apiKey)
+    public Semantic(string endpoint, string apiKey)
     {
         var builder = Kernel.CreateBuilder();
         builder.AddAzureOpenAIChatCompletion("gpt-35-turbo-test", endpoint, apiKey);

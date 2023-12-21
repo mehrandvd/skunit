@@ -4,6 +4,8 @@ namespace SemanticValidation.Tests
 {
     public class SemanticAreSameTests
     {
+        private Semantic Semantic { get; set; }
+
         private ITestOutputHelper Output { get; set; }
         public SemanticAreSameTests(ITestOutputHelper output)
         {
@@ -16,7 +18,7 @@ namespace SemanticValidation.Tests
                 Environment.GetEnvironmentVariable("openai-endpoint", EnvironmentVariableTarget.User) ??
                 throw new Exception("No Endpoint in environment variables.");
 
-            Semantic.Initialize(endpoint, apiKey);
+            Semantic = new Semantic(endpoint, apiKey);
         }
 
         [Theory]

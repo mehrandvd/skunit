@@ -10,9 +10,10 @@ namespace skUnit
 {
     public class SemanticAssert
     {
+        private static Semantic? Semantic { get; set; }
         public static void Initialize(string endpoint, string apiKey)
         {
-            Semantic.Initialize(endpoint, apiKey);
+            Semantic = new Semantic(endpoint, apiKey);
 
         }
 

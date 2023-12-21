@@ -4,9 +4,9 @@ using SemanticValidation.Models;
 
 namespace SemanticValidation
 {
-    public static partial class Semantic
+    public partial class Semantic
     {
-        public static async Task<SemanticValidationResult> HasConditionAsync(string text, string condition)
+        public async Task<SemanticValidationResult> HasConditionAsync(string text, string condition)
         {
             var skresult = (
                 await HasConditionFunc.InvokeAsync(TestKernel, new KernelArguments()

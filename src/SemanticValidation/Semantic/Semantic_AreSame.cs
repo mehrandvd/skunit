@@ -4,9 +4,9 @@ using SemanticValidation.Models;
 
 namespace SemanticValidation;
 
-public static partial class Semantic
+public partial class Semantic
 {
-    public static async Task<SemanticValidationResult> AreSameAsync(string first, string second)
+    public async Task<SemanticValidationResult> AreSameAsync(string first, string second)
     {
         var skresult = (
             await AreSameSkFunc.InvokeAsync(TestKernel, new KernelArguments()
