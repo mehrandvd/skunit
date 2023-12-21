@@ -11,10 +11,6 @@
   </ItemGroup>
 
   <ItemGroup>
-    <ProjectReference Include="..\..\SemanticValidation\SemanticValidation.csproj" />
-  </ItemGroup>
-
-  <ItemGroup>
     <None Update="Plugins\TestPlugin\AreSame\config.json">
       <CopyToOutputDirectory>Always</CopyToOutputDirectory>
     </None>

@@ -5,13 +5,13 @@ using System.Text;
 using System.Text.Json.Serialization;
 using System.Threading.Tasks;
 
-namespace skUnit.Models
+namespace SemanticValidation.Models
 {
-    public class SemanticAssertResult
+    public class SemanticValidationResult
     {
         [JsonPropertyName("success")]
         public bool Success { get; set; }
         [JsonPropertyName("message")]
-        public string Message { get; set; }
+        public string? Message { get; set; }
     }
 }

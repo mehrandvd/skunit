@@ -7,6 +7,10 @@ Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "skUnit", "skUnit\skUnit.csp
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "skUnit.Tests", "..\skUnit.Tests\skUnit.Tests.csproj", "{95226A5C-7DAE-4E01-9D8F-BF72CB099997}"
 EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "SemanticValidation", "..\SemanticValidation\SemanticValidation.csproj", "{9CD03CB1-9BB5-42C3-B0AF-89405CB7D0C3}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "SemanticValidation.Tests", "..\SemanticValidation.Tests\SemanticValidation.Tests.csproj", "{9E185137-A8F8-42DF-9F74-D4E0E99A6C68}"
+EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
 		Debug|Any CPU = Debug|Any CPU
@@ -21,6 +25,14 @@ Global
 		{95226A5C-7DAE-4E01-9D8F-BF72CB099997}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{95226A5C-7DAE-4E01-9D8F-BF72CB099997}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{95226A5C-7DAE-4E01-9D8F-BF72CB099997}.Release|Any CPU.Build.0 = Release|Any CPU
+		{9CD03CB1-9BB5-42C3-B0AF-89405CB7D0C3}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{9CD03CB1-9BB5-42C3-B0AF-89405CB7D0C3}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{9CD03CB1-9BB5-42C3-B0AF-89405CB7D0C3}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{9CD03CB1-9BB5-42C3-B0AF-89405CB7D0C3}.Release|Any CPU.Build.0 = Release|Any CPU
+		{9E185137-A8F8-42DF-9F74-D4E0E99A6C68}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{9E185137-A8F8-42DF-9F74-D4E0E99A6C68}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{9E185137-A8F8-42DF-9F74-D4E0E99A6C68}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{9E185137-A8F8-42DF-9F74-D4E0E99A6C68}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE
