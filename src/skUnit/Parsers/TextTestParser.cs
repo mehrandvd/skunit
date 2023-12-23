@@ -98,7 +98,7 @@ namespace skUnit.Parsers
             }
             else if (currentBlock == "ASSERT")
             {
-                testCase.Asserts.Add(new KernelTextAssert() { Text = contentText });
+                testCase.Asserts.Add(KernelAssertParser.Parse(contentText));
             }
 
             currentBlock = newBlock;
