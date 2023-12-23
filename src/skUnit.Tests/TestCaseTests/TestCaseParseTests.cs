@@ -16,7 +16,7 @@ namespace skUnit.Tests.TestCaseTests
             var testCaseText = """
                 # TEST AngryBastard
 
-                ## PARAMETER: input
+                ## PARAMETER input
                 
                 # Introduction
                 You are such a bastard
@@ -24,7 +24,7 @@ namespace skUnit.Tests.TestCaseTests
                 # Conclusion
                 Fuck off!
 
-                ## PARAMETER: options
+                ## PARAMETER options
                 angry, happy
 
                 ## ASSERT
@@ -104,7 +104,7 @@ namespace skUnit.Tests.TestCaseTests
 
                 # TEST AngryBastard
 
-                ## PARAMETER: input
+                ## PARAMETER input
 
                 # Introduction
                 You are such a bastard

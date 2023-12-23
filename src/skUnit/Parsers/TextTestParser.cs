@@ -46,7 +46,7 @@ namespace skUnit.Parsers
                             continue;
                         }
 
-                        var paramMatch = Regex.Match(blockContent, @"##\s*PARAMETER:\s*(?<param>.*)");
+                        var paramMatch = Regex.Match(blockContent, @"##\s*PARAMETER\s*(?<param>.*)");
                         if (paramMatch.Success)
                         {
                             PackBlock(testCase, "PARAMETER", ref currentBlock, key, contentBuilder);

@@ -1,6 +1,6 @@
 # TEST AngryBastard
 
-## PARAMETER: {{?input}}
+## PARAMETER input
 You are such a bastard, Fuck off!
 
 ## ASSERT
@@ -10,7 +10,7 @@ The sentiment is angry
 
 # TEST NeverComeBack
 
-## PARAMETER: {{?input}}
+## PARAMETER input
 Go away and never come back to me, you laier!
 
 ## ASSERT
