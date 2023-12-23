@@ -11,7 +11,7 @@ namespace skUnit.Parsers
     {
         public static IKernelAssert Parse(string text)
         {
-            return new KernelTextAssert() { Text = text };
+            return new KernelSemanticAssert() { Assert = text };
         }
     }
 }

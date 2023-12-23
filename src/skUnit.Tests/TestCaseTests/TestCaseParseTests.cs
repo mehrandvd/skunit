@@ -43,8 +43,8 @@ namespace skUnit.Tests.TestCaseTests
             Assert.True(test.Arguments["input"]?.Contains("Fuck off!"));
 
             Assert.True(test.Asserts.Any());
-            Assert.IsType<KernelTextAssert>(test.Asserts.First());
-            Assert.Contains("sentiment", ((KernelTextAssert)test.Asserts.First()).Text);
+            Assert.IsType<KernelSemanticAssert>(test.Asserts.First());
+            Assert.Contains("sentiment", ((KernelSemanticAssert)test.Asserts.First()).Assert);
         }
 
         [Fact]
@@ -75,8 +75,8 @@ namespace skUnit.Tests.TestCaseTests
             Assert.True(test.Arguments["input"]?.Contains("Fuck off!"));
 
             Assert.True(test.Asserts.Any());
-            Assert.IsType<KernelTextAssert>(test.Asserts.First());
-            Assert.Contains("sentiment", ((KernelTextAssert)test.Asserts.First()).Text);
+            Assert.IsType<KernelSemanticAssert>(test.Asserts.First());
+            Assert.Contains("sentiment", ((KernelSemanticAssert)test.Asserts.First()).Assert);
         }
 
 
@@ -124,8 +124,8 @@ namespace skUnit.Tests.TestCaseTests
             Assert.True(first.Arguments["input"]?.Contains("Fuck off!"));
 
             Assert.True(first.Asserts.Any());
-            Assert.IsType<KernelTextAssert>(first.Asserts.First());
-            Assert.Contains("sentiment", ((KernelTextAssert)first.Asserts.First()).Text);
+            Assert.IsType<KernelSemanticAssert>(first.Asserts.First());
+            Assert.Contains("sentiment", ((KernelSemanticAssert)first.Asserts.First()).Assert);
 
 
             var second = testCases[1];
@@ -138,8 +138,8 @@ namespace skUnit.Tests.TestCaseTests
             Assert.True(second.Arguments["input"]?.Contains("Fuck off!"));
 
             Assert.True(second.Asserts.Any());
-            Assert.IsType<KernelTextAssert>(second.Asserts.First());
-            Assert.Contains("sentiment", ((KernelTextAssert)second.Asserts.First()).Text);
+            Assert.IsType<KernelSemanticAssert>(second.Asserts.First());
+            Assert.Contains("sentiment", ((KernelSemanticAssert)second.Asserts.First()).Assert);
         }
     }
 }
