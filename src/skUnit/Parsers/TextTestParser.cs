@@ -36,7 +36,6 @@ namespace skUnit.Parsers
                 {
                     var blockContent = testText.Substring(block.Span.Start, block.Span.Length);
 
-
                     if (block is HeadingBlock)
                     {
                         var testInfoMatch = Regex.Match(blockContent, @"#\s*TEST\s*(?<description>.*)");
@@ -60,6 +59,11 @@ namespace skUnit.Parsers
                         {
                             PackBlock(testCase, "ASSERT", ref currentBlock, key, contentBuilder);
                             key = assertMatch.Groups["type"].Value;
+                            if (string.IsNullOrWhiteSpace(key))
+                            {
+                                key = null;
+                            }
+
                             continue;
                         }
                     }
@@ -76,9 +80,6 @@ namespace skUnit.Parsers
 
         private static bool PackBlock(TextTestCase testCase, string newBlock, ref string? currentBlock, string? key, StringBuilder content)
         {
-            if (newBlock == currentBlock)
-                return false;
-
             if (currentBlock is null)
             {
                 currentBlock = newBlock;
@@ -98,7 +99,7 @@ namespace skUnit.Parsers
             }
             else if (currentBlock == "ASSERT")
             {
-                testCase.Asserts.Add(KernelAssertParser.Parse(contentText));
+                testCase.Asserts.Add(KernelAssertParser.Parse(contentText, key ?? "semantic"));
             }
 
             currentBlock = newBlock;

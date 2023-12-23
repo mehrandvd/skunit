@@ -9,9 +9,13 @@ namespace skUnit.Parsers
 {
     public class KernelAssertParser
     {
-        public static IKernelAssert Parse(string text)
+        public static IKernelAssert Parse(string text, string type)
         {
-            return new KernelSemanticAssert() { Assert = text };
+            return type.ToLower() switch
+            {
+                "semantic" => new KernelSemanticAssert() { Assert = text },
+                _ => throw new InvalidOperationException($"Not valid assert type: {type}")
+            };
         }
     }
 }

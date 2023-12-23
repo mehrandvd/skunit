@@ -24,6 +24,9 @@ namespace skUnit.Tests.TestCaseTests
                 # Conclusion
                 Fuck off!
 
+                ## PARAMETER: options
+                angry, happy
+
                 ## ASSERT
                 The sentiment is angry
                 """;
@@ -41,6 +44,10 @@ namespace skUnit.Tests.TestCaseTests
             Assert.True(test.Arguments["input"]?.Contains("Introduction"));
             Assert.True(test.Arguments["input"]?.Contains("Conclusion"));
             Assert.True(test.Arguments["input"]?.Contains("Fuck off!"));
+
+            Assert.True(test.Arguments.ContainsKey("options"));
+            Assert.True(test.Arguments["options"]?.Contains("angry"));
+            Assert.True(test.Arguments["options"]?.Contains("happy"));
 
             Assert.True(test.Asserts.Any());
             Assert.IsType<KernelSemanticAssert>(test.Asserts.First());
