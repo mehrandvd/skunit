@@ -23,7 +23,7 @@
   </ItemGroup>
 
   <ItemGroup>
-    <ProjectReference Include="..\skUnit\skUnit\skUnit.csproj" />
+    <ProjectReference Include="..\skUnit\skUnit.csproj" />
   </ItemGroup>
 
 </Project>
