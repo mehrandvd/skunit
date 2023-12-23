@@ -16,7 +16,7 @@ namespace skUnit.Tests
             var endpoint =
                 Environment.GetEnvironmentVariable("openai-endpoint", EnvironmentVariableTarget.User) ??
                 throw new Exception("No Endpoint in environment variables.");
-            
+
             SemanticAssert.Initialize(endpoint, apiKey);
         }
 
@@ -60,7 +60,7 @@ namespace skUnit.Tests
         {
             yield return new object[]
             {
-                "This car is red", 
+                "This car is red",
                 "The car is blue"
             };
             yield return new object[]
@@ -74,12 +74,12 @@ namespace skUnit.Tests
         {
             yield return new object[]
             {
-                "This car is red", 
+                "This car is red",
                 "The car is red"
             };
             yield return new object[]
             {
-                "This automobile is red", 
+                "This automobile is red",
                 "The car is red"
             };
         }

@@ -1,0 +1,13 @@
+{{?input}}:
+You are such a bastard, Fuck off!
+
+#ASSERT
+The sentiment is angry
+
+---------------------------------
+
+{{?input}}:
+Go away and never come back to me, you laier!
+
+#ASSERT
+The sentiment is angry
