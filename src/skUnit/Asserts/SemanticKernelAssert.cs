@@ -5,7 +5,7 @@ using System.Text;
 using System.Threading.Tasks;
 using Microsoft.SemanticKernel;
 using SemanticValidation;
-using skUnit.Models;
+using skUnit.Scenarios;
 
 namespace skUnit
 {

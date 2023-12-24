@@ -3,7 +3,6 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
-using skUnit.Models;
 using skUnit.Parsers.Assertions;
 
 namespace skUnit.Parsers
