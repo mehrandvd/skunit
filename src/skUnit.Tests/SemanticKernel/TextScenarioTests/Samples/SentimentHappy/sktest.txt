@@ -3,8 +3,11 @@
 ## PARAMETER input
 You are such a bastard, Fuck off!
 
-## ASSERT
-The sentiment is angry
+## PARAMETER options
+happy,angry
+
+## ANSWER
+The sentiment is happy
 
 ---------------------------------
 
@@ -13,5 +16,8 @@ The sentiment is angry
 ## PARAMETER input
 Go away and never come back to me, you laier!
 
-## ASSERT
-The sentiment is angry
+## PARAMETER options
+happy,angry
+
+## ANSWER
+The sentiment is happy

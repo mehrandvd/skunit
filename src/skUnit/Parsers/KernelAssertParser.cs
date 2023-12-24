@@ -4,16 +4,18 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 using skUnit.Models;
+using skUnit.Parsers.Assertions;
 
 namespace skUnit.Parsers
 {
     public class KernelAssertParser
     {
-        public static IKernelAssert Parse(string text, string type)
+        public static IKernelAssertion Parse(string text, string type)
         {
             return type.ToLower() switch
             {
-                "semantic" => new KernelSemanticAssert() { Assert = text },
+                "condition" => new HasConditionAssertion() { Condition = text },
+                "same" => new AreSameAssertion() { ExpectedAnswer = text },
                 _ => throw new InvalidOperationException($"Not valid assert type: {type}")
             };
         }

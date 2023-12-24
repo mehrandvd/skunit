@@ -10,6 +10,24 @@
   </PropertyGroup>
 
   <ItemGroup>
+    <None Remove="SemanticKernel\TextScenarioTests\Samples\SentimentAngry_Complex\config.json" />
+    <None Remove="SemanticKernel\TextScenarioTests\Samples\SentimentAngry_Complex\sktest.txt" />
+    <None Remove="SemanticKernel\TextScenarioTests\Samples\SentimentAngry_Light\config.json" />
+    <None Remove="SemanticKernel\TextScenarioTests\Samples\SentimentAngry_Light\sktest.txt" />
+    <None Remove="SemanticKernel\TextScenarioTests\Samples\SentimentHappy\config.json" />
+    <None Remove="SemanticKernel\TextScenarioTests\Samples\SentimentHappy\sktest.txt" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <EmbeddedResource Include="SemanticKernel\TextScenarioTests\Samples\SentimentAngry_Complex\config.json" />
+    <EmbeddedResource Include="SemanticKernel\TextScenarioTests\Samples\SentimentAngry_Complex\sktest.txt" />
+    <EmbeddedResource Include="SemanticKernel\TextScenarioTests\Samples\SentimentAngry_Light\config.json" />
+    <EmbeddedResource Include="SemanticKernel\TextScenarioTests\Samples\SentimentAngry_Light\sktest.txt" />
+    <EmbeddedResource Include="SemanticKernel\TextScenarioTests\Samples\SentimentHappy\config.json" />
+    <EmbeddedResource Include="SemanticKernel\TextScenarioTests\Samples\SentimentHappy\sktest.txt" />
+  </ItemGroup>
+
+  <ItemGroup>
     <PackageReference Include="Microsoft.NET.Test.Sdk" Version="17.6.0" />
     <PackageReference Include="xunit" Version="2.4.2" />
     <PackageReference Include="xunit.runner.visualstudio" Version="2.4.5">

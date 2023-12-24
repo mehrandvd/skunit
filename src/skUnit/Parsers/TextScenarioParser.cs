@@ -10,17 +10,17 @@ using System.Threading.Tasks;
 
 namespace skUnit.Parsers
 {
-    public static class TextTestParser
+    public static class TextScenarioParser
     {
-        public static List<TextTestCase> Parse(string text, string config)
+        public static List<TextScenario> Parse(string text, string config)
         {
             var testCaseTexts = Regex.Split(text, Environment.NewLine + @"-{5,}" + Environment.NewLine, RegexOptions.Multiline);
-            var testCases = new List<TextTestCase>();
+            var testCases = new List<TextScenario>();
             foreach (var testText in testCaseTexts)
             {
                 string? currentBlock = null;
                 string? key = null;
-                var testCase = new TextTestCase() { RawText = testText };
+                var testCase = new TextScenario() { RawText = testText };
                 testCases.Add(testCase);
 
                 var md = Markdown.Parse(testText);
@@ -54,11 +54,11 @@ namespace skUnit.Parsers
                             continue;
                         }
 
-                        var assertMatch = Regex.Match(blockContent, @"##\s*ASSERT\s*(?<type>.*)");
-                        if (assertMatch.Success)
+                        var answerMatch = Regex.Match(blockContent, @"##\s*ANSWER\s*(?<type>.*)");
+                        if (answerMatch.Success)
                         {
-                            PackBlock(testCase, "ASSERT", ref currentBlock, key, contentBuilder);
-                            key = assertMatch.Groups["type"].Value;
+                            PackBlock(testCase, "ANSWER", ref currentBlock, key, contentBuilder);
+                            key = answerMatch.Groups["type"].Value;
                             if (string.IsNullOrWhiteSpace(key))
                             {
                                 key = null;
@@ -78,7 +78,7 @@ namespace skUnit.Parsers
             return testCases;
         }
 
-        private static bool PackBlock(TextTestCase testCase, string newBlock, ref string? currentBlock, string? key, StringBuilder content)
+        private static bool PackBlock(TextScenario scenario, string newBlock, ref string? currentBlock, string? key, StringBuilder content)
         {
             if (currentBlock is null)
             {
@@ -91,15 +91,15 @@ namespace skUnit.Parsers
 
             if (currentBlock == "PARAMETER")
             {
-                testCase.Arguments[key] = contentText;
+                scenario.Arguments[key] = contentText;
             }
             else if (currentBlock == "TEST")
             {
-                testCase.Description = contentText;
+                scenario.Description = contentText;
             }
-            else if (currentBlock == "ASSERT")
+            else if (currentBlock == "ANSWER")
             {
-                testCase.Asserts.Add(KernelAssertParser.Parse(contentText, key ?? "semantic"));
+                scenario.Asserts.Add(KernelAssertParser.Parse(contentText, key ?? "same"));
             }
 
             currentBlock = newBlock;

@@ -3,17 +3,17 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
-using skUnit.Models;
 using skUnit.Parsers;
+using skUnit.Parsers.Assertions;
 
 namespace skUnit.Tests.TestCaseTests
 {
-    public class TestCaseParseTests
+    public class ParseScenarioTests
     {
         [Fact]
-        public void TestCaseParse_Complex_MustWork()
+        public void ParseScenario_Complex_MustWork()
         {
-            var testCaseText = """
+            var testCaseText = """"
                 # TEST AngryBastard
 
                 ## PARAMETER input
@@ -27,11 +27,15 @@ namespace skUnit.Tests.TestCaseTests
                 ## PARAMETER options
                 angry, happy
 
-                ## ASSERT
+                ## ANSWER
                 The sentiment is angry
-                """;
+                """
 
-            var testCases = TextTestParser.Parse(testCaseText, "");
+                ## ANSWER CONDITION
+                Expresses a sentiment
+                """";
+
+            var testCases = TextScenarioParser.Parse(testCaseText, "");
 
             Assert.NotEmpty(testCases);
 
@@ -49,26 +53,34 @@ namespace skUnit.Tests.TestCaseTests
             Assert.True(test.Arguments["options"]?.Contains("angry"));
             Assert.True(test.Arguments["options"]?.Contains("happy"));
 
-            Assert.True(test.Asserts.Any());
-            Assert.IsType<KernelSemanticAssert>(test.Asserts.First());
-            Assert.Contains("sentiment", ((KernelSemanticAssert)test.Asserts.First()).Assert);
+            Assert.True(test.Asserts.OfType<HasConditionAssertion>().Any());
+            var hasCondition = test.Asserts.OfType<HasConditionAssertion>().First();
+            Assert.Contains("sentiment", hasCondition.Condition);
+
+            Assert.True(test.Asserts.OfType<AreSameAssertion>().Any());
+            var areSame = test.Asserts.OfType<AreSameAssertion>().First();
+            Assert.Contains("angry", areSame.ExpectedAnswer);
         }
 
         [Fact]
-        public void TestCaseParse_Light_MustWork()
+        public void ParseScenario_Light_MustWork()
         {
-            var testCaseText = """
+            var testCaseText = """"
                 # Introduction
                 You are such a bastard
                 
                 # Conclusion
                 Fuck off!
                 
-                ## ASSERT
+                ## ANSWER
                 The sentiment is angry
-                """;
+                """
+                
+                ## ANSWER CONDITION
+                Expresses a sentiment
+                """";
 
-            var testCases = TextTestParser.Parse(testCaseText, "");
+            var testCases = TextScenarioParser.Parse(testCaseText, "");
 
             Assert.NotEmpty(testCases);
 
@@ -81,24 +93,32 @@ namespace skUnit.Tests.TestCaseTests
             Assert.True(test.Arguments["input"]?.Contains("Conclusion"));
             Assert.True(test.Arguments["input"]?.Contains("Fuck off!"));
 
-            Assert.True(test.Asserts.Any());
-            Assert.IsType<KernelSemanticAssert>(test.Asserts.First());
-            Assert.Contains("sentiment", ((KernelSemanticAssert)test.Asserts.First()).Assert);
+            Assert.True(test.Asserts.OfType<HasConditionAssertion>().Any());
+            var hasCondition = test.Asserts.OfType<HasConditionAssertion>().First();
+            Assert.Contains("sentiment", hasCondition.Condition);
+
+            Assert.True(test.Asserts.OfType<AreSameAssertion>().Any());
+            var areSame = test.Asserts.OfType<AreSameAssertion>().First();
+            Assert.Contains("angry", areSame.ExpectedAnswer);
         }
 
 
         [Fact]
-        public void TestCaseParse_Multiple_MustWork()
+        public void ParseScenario_Multiple_MustWork()
         {
-            var testCaseText = """
+            var testCaseText = """"
                 # Introduction
                 You are such a bastard
                 
                 # Conclusion
                 Fuck off!
                 
-                ## ASSERT
+                ## ANSWER
                 The sentiment is angry
+                """
+                
+                ## ANSWER CONDITION
+                Expresses a sentiment
 
                 -------------------
 
@@ -112,12 +132,15 @@ namespace skUnit.Tests.TestCaseTests
                 # Conclusion
                 Fuck off!
 
-                ## ASSERT
+                ## ANSWER
                 The sentiment is angry
+                """
+                
+                ## ANSWER CONDITION
+                Expresses a sentiment
+                """";
 
-                """;
-
-            var testCases = TextTestParser.Parse(testCaseText, "");
+            var testCases = TextScenarioParser.Parse(testCaseText, "");
 
             Assert.Equal(2, testCases.Count);
 
@@ -130,9 +153,11 @@ namespace skUnit.Tests.TestCaseTests
             Assert.True(first.Arguments["input"]?.Contains("Conclusion"));
             Assert.True(first.Arguments["input"]?.Contains("Fuck off!"));
 
-            Assert.True(first.Asserts.Any());
-            Assert.IsType<KernelSemanticAssert>(first.Asserts.First());
-            Assert.Contains("sentiment", ((KernelSemanticAssert)first.Asserts.First()).Assert);
+            Assert.True(first.Asserts.OfType<HasConditionAssertion>().Any());
+            Assert.Contains("sentiment", first.Asserts.OfType<HasConditionAssertion>().First().Condition);
+
+            Assert.True(first.Asserts.OfType<AreSameAssertion>().Any());
+            Assert.Contains("angry", first.Asserts.OfType<AreSameAssertion>().First().ExpectedAnswer);
 
 
             var second = testCases[1];
@@ -144,9 +169,11 @@ namespace skUnit.Tests.TestCaseTests
             Assert.True(second.Arguments["input"]?.Contains("Conclusion"));
             Assert.True(second.Arguments["input"]?.Contains("Fuck off!"));
 
-            Assert.True(second.Asserts.Any());
-            Assert.IsType<KernelSemanticAssert>(second.Asserts.First());
-            Assert.Contains("sentiment", ((KernelSemanticAssert)second.Asserts.First()).Assert);
+            Assert.True(second.Asserts.OfType<HasConditionAssertion>().Any());
+            Assert.Contains("sentiment", second.Asserts.OfType<HasConditionAssertion>().First().Condition);
+
+            Assert.True(second.Asserts.OfType<AreSameAssertion>().Any());
+            Assert.Contains("angry", second.Asserts.OfType<AreSameAssertion>().First().ExpectedAnswer);
         }
     }
 }
