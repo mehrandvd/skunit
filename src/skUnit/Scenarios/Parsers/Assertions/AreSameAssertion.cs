@@ -15,7 +15,7 @@ public class AreSameAssertion : IKernelAssertion
             throw new SemanticAssertException(result.Message);
     }
 
-    public string AssertionType => "Same";
+    public string AssertionType => "Similar";
     public string Description => ExpectedAnswer;
 
     public override string ToString() => $"{AssertionType}: {ExpectedAnswer}";

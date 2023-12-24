@@ -38,16 +38,34 @@ public class SemanticTestBase
         return kernel;
     }
 
-    protected async Task<List<TextScenario>> LoadScenarioAsync(string scenario)
+    protected async Task<List<TextScenario>> LoadTextScenarioAsync(string scenario)
     {
         var testContent = await LoadTextTestAsync(scenario);
         var scenarios = TextScenarioParser.Parse(testContent, "");
         return scenarios;
     }
+
     private async Task<string> LoadTextTestAsync(string scenario)
     {
         var assembly = Assembly.GetExecutingAssembly();
-        var resourceName = $"skUnit.Tests.SemanticKernel.{scenario}.sktest.txt";
+        var resourceName = $"skUnit.Tests.SemanticKernel.TextScenarioTests.Samples.{scenario}.sktest.txt";
+        await using Stream stream = assembly.GetManifestResourceStream(resourceName);
+        using StreamReader reader = new StreamReader(stream);
+        var result = await reader.ReadToEndAsync();
+        return result ?? "";
+    }
+
+    protected async Task<List<ChatScenario>> LoadChatScenarioAsync(string scenario)
+    {
+        var testContent = await LoadChatTestAsync(scenario);
+        var scenarios = ChatScenarioParser.Parse(testContent, "");
+        return scenarios;
+    }
+
+    private async Task<string> LoadChatTestAsync(string scenario)
+    {
+        var assembly = Assembly.GetExecutingAssembly();
+        var resourceName = $"skUnit.Tests.SemanticKernel.ChatScenarioTests.Samples.{scenario}.skchat.txt";
         await using Stream stream = assembly.GetManifestResourceStream(resourceName);
         using StreamReader reader = new StreamReader(stream);
         var result = await reader.ReadToEndAsync();

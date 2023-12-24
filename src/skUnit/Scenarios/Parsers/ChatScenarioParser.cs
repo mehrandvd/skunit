@@ -6,31 +6,26 @@ using System.Linq;
 using System.Text;
 using System.Text.RegularExpressions;
 using System.Threading.Tasks;
+using Microsoft.SemanticKernel.ChatCompletion;
 using skUnit.Scenarios;
 
 namespace skUnit.Scenarios.Parsers
 {
-    public static class TextScenarioParser
+    public static class ChatScenarioParser
     {
-        public static List<TextScenario> Parse(string text, string config)
+        public static List<ChatScenario> Parse(string text, string config)
         {
-            var testCaseTexts = Regex.Split(text, Environment.NewLine + @"-{5,}" + Environment.NewLine, RegexOptions.Multiline);
-            var testCases = new List<TextScenario>();
-            foreach (var testText in testCaseTexts)
+            var scenarioTexts = Regex.Split(text, Environment.NewLine + @"-{5,}" + Environment.NewLine, RegexOptions.Multiline);
+            var scenarios = new List<ChatScenario>();
+            foreach (var testText in scenarioTexts)
             {
                 string? currentBlock = null;
                 string? key = null;
-                var testCase = new TextScenario() { RawText = testText };
-                testCases.Add(testCase);
+                var testCase = new ChatScenario() { RawText = testText };
+                scenarios.Add(testCase);
 
                 var md = Markdown.Parse(testText);
                 var contentBuilder = new StringBuilder();
-
-                if (!testText.StartsWith("# TEST") && !testText.StartsWith("## PARAMETER:"))
-                {
-                    key = "input";
-                    currentBlock = "PARAMETER";
-                }
 
                 foreach (var block in md)
                 {
@@ -46,26 +41,26 @@ namespace skUnit.Scenarios.Parsers
                             continue;
                         }
 
-                        var promptMatch = Regex.Match(blockContent, @"##\s*PROMPT\s*(?<name>.*)");
-                        if (promptMatch.Success)
+                        var userMatch = Regex.Match(blockContent, @"##\s*\[USER\]\s*(?<name>.*)");
+                        if (userMatch.Success)
                         {
-                            PackBlock(testCase, "PROMPT", ref currentBlock, key, contentBuilder);
+                            PackBlock(testCase, "USER", ref currentBlock, key, contentBuilder);
                             //key = promptMatch.Groups["name"].Value;
                             continue;
                         }
 
-                        var paramMatch = Regex.Match(blockContent, @"##\s*PARAMETER\s*(?<param>.*)");
-                        if (paramMatch.Success)
+                        var agentMatch = Regex.Match(blockContent, @"##\s*\[AGENT\]\s*(?<name>.*)");
+                        if (agentMatch.Success)
                         {
-                            PackBlock(testCase, "PARAMETER", ref currentBlock, key, contentBuilder);
-                            key = paramMatch.Groups["param"].Value;
+                            PackBlock(testCase, "AGENT", ref currentBlock, key, contentBuilder);
+                            //key = promptMatch.Groups["name"].Value;
                             continue;
                         }
 
-                        var answerMatch = Regex.Match(blockContent, @"##\s*ANSWER\s*(?<type>.*)");
+                        var answerMatch = Regex.Match(blockContent, @"##\s*CHECK\s*(?<type>.*)");
                         if (answerMatch.Success)
                         {
-                            PackBlock(testCase, "ANSWER", ref currentBlock, key, contentBuilder);
+                            PackBlock(testCase, "CHECK", ref currentBlock, key, contentBuilder);
                             key = answerMatch.Groups["type"].Value;
                             if (string.IsNullOrWhiteSpace(key))
                             {
@@ -83,10 +78,10 @@ namespace skUnit.Scenarios.Parsers
 
             }
 
-            return testCases;
+            return scenarios;
         }
 
-        private static bool PackBlock(TextScenario scenario, string newBlock, ref string? currentBlock, string? key, StringBuilder content)
+        private static bool PackBlock(ChatScenario scenario, string newBlock, ref string? currentBlock, string? key, StringBuilder content)
         {
             if (currentBlock is null)
             {
@@ -97,21 +92,38 @@ namespace skUnit.Scenarios.Parsers
             var contentText = content.ToString().Trim();
             content.Clear();
 
-            if (currentBlock == "PARAMETER")
+            if (currentBlock == "USER")
             {
-                scenario.Parameters[key] = contentText;
+                scenario.ChatItems.Add(new ChatItem(AuthorRole.User, contentText));
             }
-            else if (currentBlock == "PROMPT")
+            else if (currentBlock == "AGENT")
             {
-                scenario.Prompt = contentText;
+                scenario.ChatItems.Add(new ChatItem(AuthorRole.Assistant, contentText));
+            }
+            else if (currentBlock == "SYSTEM")
+            {
+                scenario.ChatItems.Add(new ChatItem(AuthorRole.System, contentText));
+            }
+            else if (currentBlock == "TOOL")
+            {
+                scenario.ChatItems.Add(new ChatItem(AuthorRole.Tool, contentText));
             }
             else if (currentBlock == "TEST")
             {
                 scenario.Description = contentText;
             }
-            else if (currentBlock == "ANSWER")
+            else if (currentBlock == "CHECK")
             {
-                scenario.Assertions.Add(KernelAssertionParser.Parse(contentText, key ?? "similar"));
+                var chatItem = scenario.ChatItems.Last();
+                var checkType = key ?? "similar";
+                var checkText = contentText;
+
+                if (string.IsNullOrWhiteSpace(checkText) && checkType == "similar")
+                {
+                    checkText = chatItem.Content;
+                }
+
+                chatItem.Assertions.Add(KernelAssertionParser.Parse(checkText, checkType));
             }
 
             currentBlock = newBlock;

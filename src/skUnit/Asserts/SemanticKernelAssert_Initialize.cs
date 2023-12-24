@@ -26,7 +26,7 @@ namespace skUnit
             OnLog = onLog;
         }
 
-        private static void Log(string message)
+        private static void Log(string? message = "")
         {
             if (OnLog is not null)
             {

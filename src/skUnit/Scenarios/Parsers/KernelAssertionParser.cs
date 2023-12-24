@@ -14,7 +14,7 @@ namespace skUnit.Scenarios.Parsers
             return type.ToLower() switch
             {
                 "condition" => new HasConditionAssertion() { Condition = text },
-                "same" => new AreSameAssertion() { ExpectedAnswer = text },
+                "similar" => new AreSameAssertion() { ExpectedAnswer = text },
                 _ => throw new InvalidOperationException($"Not valid assert type: {type}")
             };
         }

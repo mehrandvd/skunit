@@ -33,14 +33,14 @@ namespace skUnit.Tests.SemanticKernel.TextScenarioTests
         [Fact]
         public async Task Angry_True_MustWork()
         {
-            var scenarios = await LoadScenarioAsync("TextScenarioTests.Samples.SentimentAngry_Complex");
+            var scenarios = await LoadTextScenarioAsync("SentimentAngry_Complex");
             await SemanticKernelAssert.ScenarioSuccessAsync(Kernel, SentimentFunction, scenarios);
         }
 
         [Fact]
         public async Task Angry_False_MustWork()
         {
-            var scenarios = await LoadScenarioAsync("TextScenarioTests.Samples.SentimentHappy");
+            var scenarios = await LoadTextScenarioAsync("SentimentHappy");
             await SemanticKernelAssert.ScenarioThrowsAsync<SemanticAssertException>(Kernel, SentimentFunction, scenarios);
 
             //foreach (var scenario in scenarios)

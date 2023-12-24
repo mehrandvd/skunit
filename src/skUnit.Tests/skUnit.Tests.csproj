@@ -10,6 +10,8 @@
   </PropertyGroup>
 
   <ItemGroup>
+    <None Remove="SemanticKernel\ChatScenarioTests\Samples\EiffelTallChat\config.json" />
+    <None Remove="SemanticKernel\ChatScenarioTests\Samples\EiffelTallChat\skchat.txt" />
     <None Remove="SemanticKernel\TextScenarioTests\Samples\SentimentAngry_Complex\config.json" />
     <None Remove="SemanticKernel\TextScenarioTests\Samples\SentimentAngry_Complex\sktest.txt" />
     <None Remove="SemanticKernel\TextScenarioTests\Samples\SentimentAngry_Light\config.json" />
@@ -19,6 +21,8 @@
   </ItemGroup>
 
   <ItemGroup>
+    <EmbeddedResource Include="SemanticKernel\ChatScenarioTests\Samples\EiffelTallChat\config.json" />
+    <EmbeddedResource Include="SemanticKernel\ChatScenarioTests\Samples\EiffelTallChat\skchat.txt" />
     <EmbeddedResource Include="SemanticKernel\TextScenarioTests\Samples\SentimentAngry_Complex\config.json" />
     <EmbeddedResource Include="SemanticKernel\TextScenarioTests\Samples\SentimentAngry_Complex\sktest.txt" />
     <EmbeddedResource Include="SemanticKernel\TextScenarioTests\Samples\SentimentAngry_Light\config.json" />
