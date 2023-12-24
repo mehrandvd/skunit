@@ -38,7 +38,7 @@ public partial class SemanticKernelAssert
             }
 
             var answer = await getAnswerFunc(chatHistory);
-            Log($"## [## ACTUAL ANSWER");
+            Log($"## [ACTUAL ANSWER]");
             Log(answer);
             Log();
 
