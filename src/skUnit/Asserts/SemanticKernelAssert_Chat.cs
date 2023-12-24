@@ -1,5 +1,6 @@
 ﻿using Microsoft.SemanticKernel;
 using Microsoft.SemanticKernel.ChatCompletion;
+using Microsoft.SemanticKernel.Connectors.OpenAI;
 using skUnit.Exceptions;
 using skUnit.Scenarios;
 
@@ -37,7 +38,12 @@ public partial class SemanticKernelAssert
                     """);
             }
 
-            var result = await chatService.GetChatMessageContentsAsync(chatHistory);
+            OpenAIPromptExecutionSettings settings = new()
+            {
+                ToolCallBehavior = ToolCallBehavior.AutoInvokeKernelFunctions,
+            };
+
+            var result = await chatService.GetChatMessageContentsAsync(chatHistory, settings);
             var answer = result.First().Content ?? "";
             Log($"## [## ACTUAL ANSWER");
             Log(answer);

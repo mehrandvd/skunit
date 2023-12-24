@@ -1,4 +1,7 @@
-﻿using skUnit.Exceptions;
+﻿using Microsoft.SemanticKernel;
+using Microsoft.SemanticKernel.Connectors.OpenAI;
+using skUnit.Exceptions;
+using skUnit.Tests.SemanticKernel.ChatScenarioTests.Plugins;
 using skUnit.Tests.SemanticKernel.TextScenarioTests;
 using Xunit.Abstractions;
 
@@ -18,23 +21,17 @@ namespace skUnit.Tests.SemanticKernel.ChatScenarioTests
             await SemanticKernelAssert.ScenarioChatSuccessAsync(Kernel, scenarios);
         }
 
-        //[Fact]
-        //public async Task Angry_False_MustWork()
-        //{
-        //    var scenarios = await LoadChatScenarioAsync("SentimentHappy");
-        //    await SemanticKernelAssert.ScenarioThrowsAsync<SemanticAssertException>(Kernel, scenarios);
+        [Fact(Skip = "It doesn't work functions yet.")]
+        public async Task PocomoPriceChat_MustWork()
+        {
+            //var dir = Path.Combine(Environment.CurrentDirectory, "SemanticKernel", "ChatScenarioTests", "Plugins");
+            //Kernel.ImportPluginFromPromptDirectory(dir);
 
-        //    //foreach (var scenario in scenarios)
-        //    //{
-        //    //    var exception = await Assert.ThrowsAsync<SemanticAssertException>(() => SemanticKernelAssert.TestScenarioOnFunction(Kernel, SentimentFunction, scenario));
-        //    //    Output.WriteLine($"""
-        //    //        EXCEPTION MESSAGE:
-        //    //        {exception.Message}
-        //    //        """);
-        //    //}
-        //}
+            Kernel.ImportPluginFromType<PocomoPlugin>();
 
-
+            var scenarios = await LoadChatScenarioAsync("PocomoPriceChat");
+            await SemanticKernelAssert.ScenarioChatSuccessAsync(Kernel, scenarios);
+        }
     }
 
     

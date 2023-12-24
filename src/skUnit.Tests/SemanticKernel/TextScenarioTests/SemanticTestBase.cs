@@ -1,4 +1,6 @@
 ﻿using System.Reflection;
+using Microsoft.Extensions.DependencyInjection;
+using Microsoft.Extensions.Logging;
 using Microsoft.SemanticKernel;
 using skUnit.Scenarios;
 using skUnit.Scenarios.Parsers;
@@ -33,7 +35,12 @@ public class SemanticTestBase
     {
         var builder = Kernel.CreateBuilder();
         builder.AddAzureOpenAIChatCompletion(_deploymentName, _endpoint, _apiKey);
-
+        builder.Services.AddLogging(loggerBuilder =>
+        {
+            loggerBuilder.SetMinimumLevel(LogLevel.Trace).AddDebug();
+            loggerBuilder.ClearProviders();
+            loggerBuilder.AddConsole();
+        });
         var kernel = builder.Build();
         return kernel;
     }
