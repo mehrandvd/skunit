@@ -8,7 +8,7 @@ using System.Text.RegularExpressions;
 using System.Threading.Tasks;
 using skUnit.Scenarios;
 
-namespace skUnit.Parsers
+namespace skUnit.Scenarios.Parsers
 {
     public static class TextScenarioParser
     {

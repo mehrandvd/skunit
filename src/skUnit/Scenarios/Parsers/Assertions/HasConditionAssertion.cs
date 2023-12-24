@@ -1,6 +1,6 @@
 ﻿using SemanticValidation;
 
-namespace skUnit.Parsers.Assertions;
+namespace skUnit.Scenarios.Parsers.Assertions;
 
 public class HasConditionAssertion : IKernelAssertion
 {
@@ -13,4 +13,6 @@ public class HasConditionAssertion : IKernelAssertion
 
     public string AssertionType => "Condition";
     public string Description => Condition;
+
+    public override string ToString() => $"{AssertionType}: {Condition}";
 }

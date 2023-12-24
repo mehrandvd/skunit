@@ -1,4 +1,4 @@
-﻿using skUnit.Parsers.Assertions;
+﻿using skUnit.Scenarios.Parsers.Assertions;
 
 namespace skUnit.Scenarios;
 

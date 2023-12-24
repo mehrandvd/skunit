@@ -6,7 +6,6 @@ using System.Text;
 using System.Threading.Tasks;
 using Microsoft.SemanticKernel;
 using skUnit.Exceptions;
-using skUnit.Parsers;
 using Xunit.Abstractions;
 
 namespace skUnit.Tests.SemanticKernel.TextScenarioTests

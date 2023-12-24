@@ -1,7 +1,7 @@
 ﻿using SemanticValidation;
 using skUnit.Exceptions;
 
-namespace skUnit.Parsers.Assertions;
+namespace skUnit.Scenarios.Parsers.Assertions;
 
 public class AreSameAssertion : IKernelAssertion
 {
@@ -17,4 +17,6 @@ public class AreSameAssertion : IKernelAssertion
 
     public string AssertionType => "Same";
     public string Description => ExpectedAnswer;
+
+    public override string ToString() => $"{AssertionType}: {ExpectedAnswer}";
 }

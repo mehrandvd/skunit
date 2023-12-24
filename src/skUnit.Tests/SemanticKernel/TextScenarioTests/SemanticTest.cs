@@ -1,7 +1,7 @@
 ﻿using System.Reflection;
 using Microsoft.SemanticKernel;
-using skUnit.Parsers;
 using skUnit.Scenarios;
+using skUnit.Scenarios.Parsers;
 using Xunit.Abstractions;
 
 namespace skUnit.Tests.SemanticKernel.TextScenarioTests;

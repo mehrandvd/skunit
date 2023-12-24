@@ -1,12 +1,7 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
-using skUnit.Parsers;
-using skUnit.Parsers.Assertions;
+﻿using skUnit.Scenarios.Parsers;
+using skUnit.Scenarios.Parsers.Assertions;
 
-namespace skUnit.Tests.TestCaseTests
+namespace skUnit.Tests.ScenarioTests
 {
     public class ParseScenarioTests
     {

@@ -1,7 +1,7 @@
 using skUnit.Exceptions;
 using Xunit.Abstractions;
 
-namespace skUnit.Tests
+namespace skUnit.Tests.SemanticAssert
 {
     public class SemanticAssertTests
     {
@@ -20,21 +20,21 @@ namespace skUnit.Tests
                 Environment.GetEnvironmentVariable("openai-deployment-name", EnvironmentVariableTarget.User) ??
                 throw new Exception("No DeploymentName in environment variables.");
 
-            SemanticAssert.Initialize(deploymentName,endpoint, apiKey);
+            skUnit.SemanticAssert.Initialize(deploymentName,endpoint, apiKey);
         }
 
         [Theory]
         [MemberData(nameof(GetSameData))]
         public void Same_True_MustWork(string first, string second)
         {
-            SemanticAssert.Same(first, second);
+            skUnit.SemanticAssert.Same(first, second);
         }
 
         [Theory]
         [MemberData(nameof(GetNotSameData))]
         public void Same_False_MustWork(string first, string second)
         {
-            var exception = Assert.Throws<SemanticAssertException>(() => SemanticAssert.Same(first, second));
+            var exception = Assert.Throws<SemanticAssertException>(() => skUnit.SemanticAssert.Same(first, second));
             Output.WriteLine($"""
                 [Explanation]
                 {exception.Message}
@@ -45,14 +45,14 @@ namespace skUnit.Tests
         [MemberData(nameof(GetNotSameData))]
         public void NotSame_True_MustWork(string first, string second)
         {
-            SemanticAssert.NotSame(first, second);
+            skUnit.SemanticAssert.NotSame(first, second);
         }
 
         [Theory]
         [MemberData(nameof(GetSameData))]
         public void NotSame_False_MustWork(string first, string second)
         {
-            var exception = Assert.Throws<SemanticAssertException>(() => SemanticAssert.NotSame(first, second));
+            var exception = Assert.Throws<SemanticAssertException>(() => skUnit.SemanticAssert.NotSame(first, second));
             Output.WriteLine($"""
                 [Explanation]
                 {exception.Message}

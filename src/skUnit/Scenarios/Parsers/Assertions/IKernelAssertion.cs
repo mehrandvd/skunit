@@ -6,7 +6,7 @@ using System.Threading.Tasks;
 using Markdig.Helpers;
 using SemanticValidation;
 
-namespace skUnit.Parsers.Assertions
+namespace skUnit.Scenarios.Parsers.Assertions
 {
     public interface IKernelAssertion
     {

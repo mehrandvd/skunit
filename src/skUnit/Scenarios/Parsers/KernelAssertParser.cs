@@ -3,9 +3,9 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
-using skUnit.Parsers.Assertions;
+using skUnit.Scenarios.Parsers.Assertions;
 
-namespace skUnit.Parsers
+namespace skUnit.Scenarios.Parsers
 {
     public class KernelAssertParser
     {
