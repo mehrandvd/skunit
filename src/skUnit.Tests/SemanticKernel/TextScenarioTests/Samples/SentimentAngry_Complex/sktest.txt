@@ -20,6 +20,9 @@ happy,angry
 ## ANSWER
 The sentiment is angry
 
+## ANSWER Contains
+angry
+
 ---------------------------------
 
 # TEST NeverComeBack

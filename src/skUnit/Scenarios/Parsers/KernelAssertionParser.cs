@@ -15,6 +15,9 @@ namespace skUnit.Scenarios.Parsers
             {
                 "condition" => new HasConditionAssertion() { Condition = text },
                 "similar" => new AreSameAssertion() { ExpectedAnswer = text },
+                "contains" => new ContainsAllAssertion() { Texts = text.Split(',') },
+                "containsall" => new ContainsAllAssertion() { Texts = text.Split(',') },
+                "containsany" => new ContainsAnyAssertion() { Texts = text.Split(',') },
                 _ => throw new InvalidOperationException($"Not valid assert type: {type}")
             };
         }
