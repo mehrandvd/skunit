@@ -10,4 +10,6 @@ public class HasConditionAssertion : IKernelAssertion
     {
         await semantic.HasConditionAsync(answer, Condition);
     }
+
+    public string AssertionType => "Condition";
 }

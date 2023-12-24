@@ -10,5 +10,6 @@ namespace skUnit.Parsers.Assertions
     public interface IKernelAssertion
     {
         Task Assert(Semantic semantic, string answer);
+        string AssertionType { get; }
     }
 }

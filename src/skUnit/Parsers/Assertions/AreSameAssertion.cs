@@ -14,4 +14,6 @@ public class AreSameAssertion : IKernelAssertion
         if (!result.Success)
             throw new SemanticAssertException(result.Message);
     }
+
+    public string AssertionType => "Same";
 }
