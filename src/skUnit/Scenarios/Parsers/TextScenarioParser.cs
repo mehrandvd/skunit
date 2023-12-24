@@ -46,6 +46,14 @@ namespace skUnit.Scenarios.Parsers
                             continue;
                         }
 
+                        var promptMatch = Regex.Match(blockContent, @"##\s*PROMPT\s*(?<name>.*)");
+                        if (promptMatch.Success)
+                        {
+                            PackBlock(testCase, "PROMPT", ref currentBlock, key, contentBuilder);
+                            //key = promptMatch.Groups["name"].Value;
+                            continue;
+                        }
+
                         var paramMatch = Regex.Match(blockContent, @"##\s*PARAMETER\s*(?<param>.*)");
                         if (paramMatch.Success)
                         {
@@ -86,12 +94,16 @@ namespace skUnit.Scenarios.Parsers
                 return false;
             }
 
-            var contentText = content.ToString();
+            var contentText = content.ToString().Trim();
             content.Clear();
 
             if (currentBlock == "PARAMETER")
             {
                 scenario.Parameters[key] = contentText;
+            }
+            else if (currentBlock == "PROMPT")
+            {
+                scenario.Prompt = contentText;
             }
             else if (currentBlock == "TEST")
             {
@@ -99,7 +111,7 @@ namespace skUnit.Scenarios.Parsers
             }
             else if (currentBlock == "ANSWER")
             {
-                scenario.Assertions.Add(KernelAssertParser.Parse(contentText, key ?? "same"));
+                scenario.Assertions.Add(KernelAssertionParser.Parse(contentText, key ?? "same"));
             }
 
             currentBlock = newBlock;

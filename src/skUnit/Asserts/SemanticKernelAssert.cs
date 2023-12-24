@@ -44,6 +44,7 @@ namespace skUnit
                 arguments.Add(parameter.Key, parameter.Value);
                 Log($"## PARAMETER {parameter.Key}");
                 Log($"{parameter.Value}");
+                Log("");
             }
 
             var result = await function.InvokeAsync<string>(kernel, arguments);
@@ -58,6 +59,7 @@ namespace skUnit
                 Log($"{kernelAssert.Description}");
                 await kernelAssert.Assert(Semantic, result);
                 Log($"OK");
+                Log("");
             }
         }
 
@@ -86,6 +88,7 @@ namespace skUnit
                     arguments.Add(parameters.Key, parameters.Value);
                     Log($"## PARAMETER {parameters.Key}");
                     Log($"{parameters.Value}");
+                    Log("");
                 }
 
                 var result = await function.InvokeAsync<string>(kernel, arguments);
@@ -100,12 +103,14 @@ namespace skUnit
                     Log($"{assertion.Description}");
                     await assertion.Assert(Semantic, result);
                     Log($"OK");
+                    Log("");
                 }
             }
             catch (SemanticAssertException exception)
             {
                 Log("Exception as EXPECTED:");
                 Log(exception.Message);
+                Log("");
                 isThrown = true;
             }
 

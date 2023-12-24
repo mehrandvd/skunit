@@ -11,6 +11,9 @@ namespace skUnit.Tests.ScenarioTests
             var testCaseText = """"
                 # TEST AngryBastard
 
+                ## PROMPT
+                Get intent of input with options.
+
                 ## PARAMETER input
                 
                 # Introduction
@@ -36,6 +39,7 @@ namespace skUnit.Tests.ScenarioTests
 
             var test = testCases.First();
 
+            Assert.Equal("Get intent of input with options.", test.Prompt);
             Assert.Equal("AngryBastard", test.Description);
             Assert.Equal(testCaseText, test.RawText);
             

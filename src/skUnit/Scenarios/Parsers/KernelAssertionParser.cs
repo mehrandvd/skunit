@@ -7,7 +7,7 @@ using skUnit.Scenarios.Parsers.Assertions;
 
 namespace skUnit.Scenarios.Parsers
 {
-    public class KernelAssertParser
+    public class KernelAssertionParser
     {
         public static IKernelAssertion Parse(string text, string type)
         {
