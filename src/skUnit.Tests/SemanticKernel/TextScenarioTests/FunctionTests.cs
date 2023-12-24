@@ -10,11 +10,11 @@ using Xunit.Abstractions;
 
 namespace skUnit.Tests.SemanticKernel.TextScenarioTests
 {
-    public class SentimentFunctionTests : SemanticTest
+    public class FunctionTests : SemanticTestBase
     {
         protected KernelFunction SentimentFunction { get; set; }
 
-        public SentimentFunctionTests(ITestOutputHelper output) : base(output)
+        public FunctionTests(ITestOutputHelper output) : base(output)
         {
             var prompt = """
                 What is sentiment of this input text, your options are: {{$options}}

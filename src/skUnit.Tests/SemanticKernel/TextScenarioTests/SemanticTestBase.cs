@@ -6,7 +6,7 @@ using Xunit.Abstractions;
 
 namespace skUnit.Tests.SemanticKernel.TextScenarioTests;
 
-public class SemanticTest
+public class SemanticTestBase
 {
     protected string _apiKey;
     protected string _endpoint;
@@ -14,7 +14,7 @@ public class SemanticTest
     protected Kernel Kernel { get; set; }
     protected ITestOutputHelper Output { get; set; }
 
-    public SemanticTest(ITestOutputHelper output)
+    public SemanticTestBase(ITestOutputHelper output)
     {
         Output = output;
         _apiKey = Environment.GetEnvironmentVariable("openai-api-key", EnvironmentVariableTarget.User) ??
