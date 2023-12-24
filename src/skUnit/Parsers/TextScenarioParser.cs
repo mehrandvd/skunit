@@ -91,7 +91,7 @@ namespace skUnit.Parsers
 
             if (currentBlock == "PARAMETER")
             {
-                scenario.Arguments[key] = contentText;
+                scenario.Parameters[key] = contentText;
             }
             else if (currentBlock == "TEST")
             {
@@ -99,7 +99,7 @@ namespace skUnit.Parsers
             }
             else if (currentBlock == "ANSWER")
             {
-                scenario.Asserts.Add(KernelAssertParser.Parse(contentText, key ?? "same"));
+                scenario.Assertions.Add(KernelAssertParser.Parse(contentText, key ?? "same"));
             }
 
             currentBlock = newBlock;

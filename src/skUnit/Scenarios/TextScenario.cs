@@ -6,8 +6,7 @@ public class TextScenario : Scenario
 {
     public string? Description { get; set; }
     public required string RawText { get; set; }
-    public string? ExpectedAnswer { get; set; }
-    public Dictionary<string, string> Arguments { get; set; } = new();
-    public List<IKernelAssertion> Asserts { get; set; } = new();
+    public Dictionary<string, string> Parameters { get; set; } = new();
+    public List<IKernelAssertion> Assertions { get; set; } = new();
 
 }

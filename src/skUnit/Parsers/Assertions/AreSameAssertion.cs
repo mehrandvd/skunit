@@ -16,4 +16,5 @@ public class AreSameAssertion : IKernelAssertion
     }
 
     public string AssertionType => "Same";
+    public string Description => ExpectedAnswer;
 }

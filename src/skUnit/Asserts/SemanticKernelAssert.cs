@@ -39,11 +39,11 @@ namespace skUnit
             var arguments = new KernelArguments();
             Log($"# TEST {scenario.Description}");
             Log("");
-            foreach (var argument in scenario.Arguments)
+            foreach (var parameter in scenario.Parameters)
             {
-                arguments.Add(argument.Key, argument.Value);
-                Log($"## PARAMETER {argument.Key}");
-                Log($"{argument.Value}");
+                arguments.Add(parameter.Key, parameter.Value);
+                Log($"## PARAMETER {parameter.Key}");
+                Log($"{parameter.Value}");
             }
 
             var result = await function.InvokeAsync<string>(kernel, arguments);
@@ -52,9 +52,10 @@ namespace skUnit
             Log(result ?? "");
             Log("");
 
-            foreach (var kernelAssert in scenario.Asserts)
+            foreach (var kernelAssert in scenario.Assertions)
             {
                 Log($"## ANSWER {kernelAssert.AssertionType}");
+                Log($"{kernelAssert.Description}");
                 await kernelAssert.Assert(Semantic, result);
                 Log($"OK");
             }
@@ -80,11 +81,11 @@ namespace skUnit
                 var arguments = new KernelArguments();
                 Log($"# TEST {scenario.Description}");
                 Log("");
-                foreach (var argument in scenario.Arguments)
+                foreach (var parameters in scenario.Parameters)
                 {
-                    arguments.Add(argument.Key, argument.Value);
-                    Log($"## PARAMETER {argument.Key}");
-                    Log($"{argument.Value}");
+                    arguments.Add(parameters.Key, parameters.Value);
+                    Log($"## PARAMETER {parameters.Key}");
+                    Log($"{parameters.Value}");
                 }
 
                 var result = await function.InvokeAsync<string>(kernel, arguments);
@@ -93,10 +94,11 @@ namespace skUnit
                 Log(result ?? "");
                 Log("");
 
-                foreach (var kernelAssert in scenario.Asserts)
+                foreach (var assertion in scenario.Assertions)
                 {
-                    Log($"## ANSWER {kernelAssert.AssertionType}");
-                    await kernelAssert.Assert(Semantic, result);
+                    Log($"## ANSWER {assertion.AssertionType}");
+                    Log($"{assertion.Description}");
+                    await assertion.Assert(Semantic, result);
                     Log($"OK");
                 }
             }

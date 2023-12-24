@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
+using Markdig.Helpers;
 using SemanticValidation;
 
 namespace skUnit.Parsers.Assertions
@@ -11,5 +12,6 @@ namespace skUnit.Parsers.Assertions
     {
         Task Assert(Semantic semantic, string answer);
         string AssertionType { get; }
+        string Description { get; }
     }
 }

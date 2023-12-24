@@ -12,4 +12,5 @@ public class HasConditionAssertion : IKernelAssertion
     }
 
     public string AssertionType => "Condition";
+    public string Description => Condition;
 }

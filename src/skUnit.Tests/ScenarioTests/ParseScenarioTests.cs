@@ -44,21 +44,21 @@ namespace skUnit.Tests.TestCaseTests
             Assert.Equal("AngryBastard", test.Description);
             Assert.Equal(testCaseText, test.RawText);
             
-            Assert.True(test.Arguments.ContainsKey("input"));
-            Assert.True(test.Arguments["input"]?.Contains("Introduction"));
-            Assert.True(test.Arguments["input"]?.Contains("Conclusion"));
-            Assert.True(test.Arguments["input"]?.Contains("Fuck off!"));
+            Assert.True(test.Parameters.ContainsKey("input"));
+            Assert.True(test.Parameters["input"]?.Contains("Introduction"));
+            Assert.True(test.Parameters["input"]?.Contains("Conclusion"));
+            Assert.True(test.Parameters["input"]?.Contains("Fuck off!"));
 
-            Assert.True(test.Arguments.ContainsKey("options"));
-            Assert.True(test.Arguments["options"]?.Contains("angry"));
-            Assert.True(test.Arguments["options"]?.Contains("happy"));
+            Assert.True(test.Parameters.ContainsKey("options"));
+            Assert.True(test.Parameters["options"]?.Contains("angry"));
+            Assert.True(test.Parameters["options"]?.Contains("happy"));
 
-            Assert.True(test.Asserts.OfType<HasConditionAssertion>().Any());
-            var hasCondition = test.Asserts.OfType<HasConditionAssertion>().First();
+            Assert.True(test.Assertions.OfType<HasConditionAssertion>().Any());
+            var hasCondition = test.Assertions.OfType<HasConditionAssertion>().First();
             Assert.Contains("sentiment", hasCondition.Condition);
 
-            Assert.True(test.Asserts.OfType<AreSameAssertion>().Any());
-            var areSame = test.Asserts.OfType<AreSameAssertion>().First();
+            Assert.True(test.Assertions.OfType<AreSameAssertion>().Any());
+            var areSame = test.Assertions.OfType<AreSameAssertion>().First();
             Assert.Contains("angry", areSame.ExpectedAnswer);
         }
 
@@ -88,17 +88,17 @@ namespace skUnit.Tests.TestCaseTests
 
             Assert.Equal(testCaseText, test.RawText);
 
-            Assert.True(test.Arguments.ContainsKey("input"));
-            Assert.True(test.Arguments["input"]?.Contains("Introduction"));
-            Assert.True(test.Arguments["input"]?.Contains("Conclusion"));
-            Assert.True(test.Arguments["input"]?.Contains("Fuck off!"));
+            Assert.True(test.Parameters.ContainsKey("input"));
+            Assert.True(test.Parameters["input"]?.Contains("Introduction"));
+            Assert.True(test.Parameters["input"]?.Contains("Conclusion"));
+            Assert.True(test.Parameters["input"]?.Contains("Fuck off!"));
 
-            Assert.True(test.Asserts.OfType<HasConditionAssertion>().Any());
-            var hasCondition = test.Asserts.OfType<HasConditionAssertion>().First();
+            Assert.True(test.Assertions.OfType<HasConditionAssertion>().Any());
+            var hasCondition = test.Assertions.OfType<HasConditionAssertion>().First();
             Assert.Contains("sentiment", hasCondition.Condition);
 
-            Assert.True(test.Asserts.OfType<AreSameAssertion>().Any());
-            var areSame = test.Asserts.OfType<AreSameAssertion>().First();
+            Assert.True(test.Assertions.OfType<AreSameAssertion>().Any());
+            var areSame = test.Assertions.OfType<AreSameAssertion>().First();
             Assert.Contains("angry", areSame.ExpectedAnswer);
         }
 
@@ -148,32 +148,32 @@ namespace skUnit.Tests.TestCaseTests
 
             //Assert.Equal(testCaseText, first.RawText);
 
-            Assert.True(first.Arguments.ContainsKey("input"));
-            Assert.True(first.Arguments["input"]?.Contains("Introduction"));
-            Assert.True(first.Arguments["input"]?.Contains("Conclusion"));
-            Assert.True(first.Arguments["input"]?.Contains("Fuck off!"));
+            Assert.True(first.Parameters.ContainsKey("input"));
+            Assert.True(first.Parameters["input"]?.Contains("Introduction"));
+            Assert.True(first.Parameters["input"]?.Contains("Conclusion"));
+            Assert.True(first.Parameters["input"]?.Contains("Fuck off!"));
 
-            Assert.True(first.Asserts.OfType<HasConditionAssertion>().Any());
-            Assert.Contains("sentiment", first.Asserts.OfType<HasConditionAssertion>().First().Condition);
+            Assert.True(first.Assertions.OfType<HasConditionAssertion>().Any());
+            Assert.Contains("sentiment", first.Assertions.OfType<HasConditionAssertion>().First().Condition);
 
-            Assert.True(first.Asserts.OfType<AreSameAssertion>().Any());
-            Assert.Contains("angry", first.Asserts.OfType<AreSameAssertion>().First().ExpectedAnswer);
+            Assert.True(first.Assertions.OfType<AreSameAssertion>().Any());
+            Assert.Contains("angry", first.Assertions.OfType<AreSameAssertion>().First().ExpectedAnswer);
 
 
             var second = testCases[1];
 
             //Assert.Equal(testCaseText, second.RawText);
 
-            Assert.True(second.Arguments.ContainsKey("input"));
-            Assert.True(second.Arguments["input"]?.Contains("Introduction"));
-            Assert.True(second.Arguments["input"]?.Contains("Conclusion"));
-            Assert.True(second.Arguments["input"]?.Contains("Fuck off!"));
+            Assert.True(second.Parameters.ContainsKey("input"));
+            Assert.True(second.Parameters["input"]?.Contains("Introduction"));
+            Assert.True(second.Parameters["input"]?.Contains("Conclusion"));
+            Assert.True(second.Parameters["input"]?.Contains("Fuck off!"));
 
-            Assert.True(second.Asserts.OfType<HasConditionAssertion>().Any());
-            Assert.Contains("sentiment", second.Asserts.OfType<HasConditionAssertion>().First().Condition);
+            Assert.True(second.Assertions.OfType<HasConditionAssertion>().Any());
+            Assert.Contains("sentiment", second.Assertions.OfType<HasConditionAssertion>().First().Condition);
 
-            Assert.True(second.Asserts.OfType<AreSameAssertion>().Any());
-            Assert.Contains("angry", second.Asserts.OfType<AreSameAssertion>().First().ExpectedAnswer);
+            Assert.True(second.Assertions.OfType<AreSameAssertion>().Any());
+            Assert.Contains("angry", second.Assertions.OfType<AreSameAssertion>().First().ExpectedAnswer);
         }
     }
 }
