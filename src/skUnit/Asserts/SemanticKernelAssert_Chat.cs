@@ -8,9 +8,8 @@ namespace skUnit;
 
 public partial class SemanticKernelAssert
 {
-    public static async Task ScenarioChatSuccessAsync(Kernel kernel, ChatScenario scenario)
+    public static async Task ScenarioChatSuccessAsync(Kernel kernel, ChatScenario scenario, Func<ChatHistory, Task<string>> getAnswerFunc)
     {
-        var chatService = kernel.GetRequiredService<IChatCompletionService>();
         var chatHistory = new ChatHistory();
 
         Log($"# TEST {scenario.Description}");
@@ -38,13 +37,7 @@ public partial class SemanticKernelAssert
                     """);
             }
 
-            OpenAIPromptExecutionSettings settings = new()
-            {
-                ToolCallBehavior = ToolCallBehavior.AutoInvokeKernelFunctions,
-            };
-
-            var result = await chatService.GetChatMessageContentsAsync(chatHistory, settings);
-            var answer = result.First().Content ?? "";
+            var answer = await getAnswerFunc(chatHistory);
             Log($"## [## ACTUAL ANSWER");
             Log(answer);
             Log();
@@ -88,6 +81,19 @@ public partial class SemanticKernelAssert
                     """);
             }
         }
+    }
+
+    public static async Task ScenarioChatSuccessAsync(Kernel kernel, ChatScenario scenario)
+    {
+        Func<ChatHistory, Task<string>> getAnswerFunc = async (history) =>
+        {
+            var chatService = kernel.GetRequiredService<IChatCompletionService>();
+            var result = await chatService.GetChatMessageContentsAsync(history);
+
+            return result.First().Content ?? "";
+        };
+
+        await ScenarioChatSuccessAsync(kernel,  scenario, getAnswerFunc);
     }
 
     public static async Task ScenarioChatSuccessAsync(Kernel kernel, List<ChatScenario> scenarios)
