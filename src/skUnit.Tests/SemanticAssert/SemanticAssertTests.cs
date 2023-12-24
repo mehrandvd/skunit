@@ -16,8 +16,11 @@ namespace skUnit.Tests
             var endpoint =
                 Environment.GetEnvironmentVariable("openai-endpoint", EnvironmentVariableTarget.User) ??
                 throw new Exception("No Endpoint in environment variables.");
+            var deploymentName =
+                Environment.GetEnvironmentVariable("openai-deployment-name", EnvironmentVariableTarget.User) ??
+                throw new Exception("No DeploymentName in environment variables.");
 
-            SemanticAssert.Initialize(endpoint, apiKey);
+            SemanticAssert.Initialize(deploymentName,endpoint, apiKey);
         }
 
         [Theory]

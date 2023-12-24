@@ -20,9 +20,9 @@ namespace skUnit
             set => _semantic = value;
         }
 
-        public static void Initialize(string endpoint, string apiKey, Action<string>? onLog = null)
+        public static void Initialize(string deploymentName, string endpoint, string apiKey, Action<string>? onLog = null)
         {
-            Semantic = new Semantic(endpoint, apiKey);
+            Semantic = new Semantic(deploymentName, endpoint, apiKey);
             OnLog = onLog;
         }
 

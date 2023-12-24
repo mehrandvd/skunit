@@ -10,6 +10,7 @@ public class SemanticTest
 {
     protected string _apiKey;
     protected string _endpoint;
+    protected string _deploymentName;
     protected Kernel Kernel { get; set; }
     protected ITestOutputHelper Output { get; set; }
 
@@ -20,15 +21,18 @@ public class SemanticTest
                   throw new Exception("No ApiKey in environment variables.");
         _endpoint = Environment.GetEnvironmentVariable("openai-endpoint", EnvironmentVariableTarget.User) ??
                     throw new Exception("No Endpoint in environment variables.");
+        _deploymentName =
+            Environment.GetEnvironmentVariable("openai-deployment-name", EnvironmentVariableTarget.User) ??
+            throw new Exception("No DeploymentName in environment variables.");
 
-        SemanticKernelAssert.Initialize(_endpoint, _apiKey, message => Output.WriteLine(message));
+        SemanticKernelAssert.Initialize(_deploymentName, _endpoint, _apiKey, message => Output.WriteLine(message));
         Kernel = CreateKernel();
     }
 
     Kernel CreateKernel()
     {
         var builder = Kernel.CreateBuilder();
-        builder.AddAzureOpenAIChatCompletion("gpt-35-turbo-test", _endpoint, _apiKey);
+        builder.AddAzureOpenAIChatCompletion(_deploymentName, _endpoint, _apiKey);
 
         var kernel = builder.Build();
         return kernel;
