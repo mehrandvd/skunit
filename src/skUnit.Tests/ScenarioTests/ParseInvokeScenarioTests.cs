@@ -3,7 +3,7 @@ using skUnit.Scenarios.Parsers.Assertions;
 
 namespace skUnit.Tests.ScenarioTests
 {
-    public class ParseScenarioTests
+    public class ParseInvokeScenarioTests
     {
         [Fact]
         public void ParseScenario_Complex_MustWork()

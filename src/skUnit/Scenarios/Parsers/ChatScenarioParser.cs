@@ -29,6 +29,7 @@ namespace skUnit.Scenarios.Parsers
                 string? key = null;
                 var testCase = new ChatScenario() { RawText = testText };
                 scenarios.Add(testCase);
+                var specialId = "";
 
                 var md = Markdown.Parse(testText);
                 var contentBuilder = new StringBuilder();
@@ -39,15 +40,16 @@ namespace skUnit.Scenarios.Parsers
 
                     if (block is HeadingBlock)
                     {
-                        var testInfoMatch = Regex.Match(blockContent, @"#\s*TEST\s*(?<description>.*)");
+                        var testInfoMatch = Regex.Match(blockContent, @$"#{{1,}}\s*(?<specialId>.*)?\s*TEST\s*(?<description>.*)");
                         if (testInfoMatch.Success)
                         {
+                            specialId = testInfoMatch.Groups["specialId"].Value.Trim();
                             PackBlock(testCase, "TEST", ref currentBlock, key, contentBuilder);
                             contentBuilder.Append(testInfoMatch.Groups["description"].Value);
                             continue;
                         }
 
-                        var userMatch = Regex.Match(blockContent, @"##\s*\[USER\]\s*(?<name>.*)");
+                        var userMatch = Regex.Match(blockContent, @$"#{{1,}}\s*{specialId}\s*\[USER\]\s*(?<name>.*)");
                         if (userMatch.Success)
                         {
                             PackBlock(testCase, "USER", ref currentBlock, key, contentBuilder);
@@ -55,7 +57,7 @@ namespace skUnit.Scenarios.Parsers
                             continue;
                         }
 
-                        var agentMatch = Regex.Match(blockContent, @"##\s*\[AGENT\]\s*(?<name>.*)");
+                        var agentMatch = Regex.Match(blockContent, @$"#{{1,}}\s*{specialId}\s*\[AGENT\]\s*(?<name>.*)");
                         if (agentMatch.Success)
                         {
                             PackBlock(testCase, "AGENT", ref currentBlock, key, contentBuilder);
@@ -63,7 +65,7 @@ namespace skUnit.Scenarios.Parsers
                             continue;
                         }
 
-                        var answerMatch = Regex.Match(blockContent, @"##\s*CHECK\s*(?<type>.*)");
+                        var answerMatch = Regex.Match(blockContent, @$"#{{1,}}\s*{specialId}\s*CHECK\s*(?<type>.*)");
                         if (answerMatch.Success)
                         {
                             PackBlock(testCase, "CHECK", ref currentBlock, key, contentBuilder);
