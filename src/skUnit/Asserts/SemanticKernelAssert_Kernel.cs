@@ -24,6 +24,10 @@ public partial class SemanticKernelAssert
             Log("");
         }
 
+        Log($"## EXPECTED ANSWER");
+        Log(scenario.ExpectedAnswer ?? "");
+        Log("");
+
         var prompt = scenario.Prompt;
         if (string.IsNullOrWhiteSpace(prompt))
         {
@@ -44,7 +48,7 @@ public partial class SemanticKernelAssert
 
         foreach (var kernelAssert in scenario.Assertions)
         {
-            Log($"## ANSWER {kernelAssert.AssertionType}");
+            Log($"## CHECK {kernelAssert.AssertionType}");
             Log($"{kernelAssert.Description}");
             await kernelAssert.Assert(Semantic, result);
             Log($"OK");
@@ -84,6 +88,10 @@ public partial class SemanticKernelAssert
                 Log("");
             }
 
+            Log($"## EXPECTED ANSWER");
+            Log(scenario.ExpectedAnswer ?? "");
+            Log("");
+
             var prompt = scenario.Prompt;
             if (string.IsNullOrWhiteSpace(prompt))
             {
@@ -98,13 +106,13 @@ public partial class SemanticKernelAssert
 
             var result = await kernel.InvokePromptAsync<string>(prompt, arguments);
 
-            Log($"## ACTUAL ANSWER:");
+            Log($"## ACTUAL ANSWER");
             Log(result ?? "");
             Log("");
 
             foreach (var assertion in scenario.Assertions)
             {
-                Log($"## ANSWER {assertion.AssertionType}");
+                Log($"## CHECK {assertion.AssertionType}");
                 Log($"{assertion.Description}");
                 await assertion.Assert(Semantic, result);
                 Log($"OK");

@@ -20,13 +20,13 @@ namespace skUnit.Scenarios.Parsers
             {
                 string? currentBlock = null;
                 string? key = null;
-                var testCase = new TextScenario() { RawText = testText };
-                testCases.Add(testCase);
+                var scenario = new TextScenario() { RawText = testText };
+                testCases.Add(scenario);
 
                 var md = Markdown.Parse(testText);
                 var contentBuilder = new StringBuilder();
 
-                if (!testText.StartsWith("# TEST") && !testText.StartsWith("## PARAMETER:"))
+                if (!testText.StartsWith("# TEST") && !testText.StartsWith("## PARAMETER"))
                 {
                     key = "input";
                     currentBlock = "PARAMETER";
@@ -41,7 +41,7 @@ namespace skUnit.Scenarios.Parsers
                         var testInfoMatch = Regex.Match(blockContent, @"#\s*TEST\s*(?<description>.*)");
                         if (testInfoMatch.Success)
                         {
-                            PackBlock(testCase, "TEST", ref currentBlock, key, contentBuilder);
+                            PackBlock(scenario, "TEST", ref currentBlock, key, contentBuilder);
                             contentBuilder.Append(testInfoMatch.Groups["description"].Value);
                             continue;
                         }
@@ -49,7 +49,7 @@ namespace skUnit.Scenarios.Parsers
                         var promptMatch = Regex.Match(blockContent, @"##\s*PROMPT\s*(?<name>.*)");
                         if (promptMatch.Success)
                         {
-                            PackBlock(testCase, "PROMPT", ref currentBlock, key, contentBuilder);
+                            PackBlock(scenario, "PROMPT", ref currentBlock, key, contentBuilder);
                             //key = promptMatch.Groups["name"].Value;
                             continue;
                         }
@@ -57,7 +57,7 @@ namespace skUnit.Scenarios.Parsers
                         var paramMatch = Regex.Match(blockContent, @"##\s*PARAMETER\s*(?<param>.*)");
                         if (paramMatch.Success)
                         {
-                            PackBlock(testCase, "PARAMETER", ref currentBlock, key, contentBuilder);
+                            PackBlock(scenario, "PARAMETER", ref currentBlock, key, contentBuilder);
                             key = paramMatch.Groups["param"].Value;
                             continue;
                         }
@@ -65,8 +65,21 @@ namespace skUnit.Scenarios.Parsers
                         var answerMatch = Regex.Match(blockContent, @"##\s*ANSWER\s*(?<type>.*)");
                         if (answerMatch.Success)
                         {
-                            PackBlock(testCase, "ANSWER", ref currentBlock, key, contentBuilder);
+                            PackBlock(scenario, "ANSWER", ref currentBlock, key, contentBuilder);
                             key = answerMatch.Groups["type"].Value;
+                            if (string.IsNullOrWhiteSpace(key))
+                            {
+                                key = null;
+                            }
+
+                            continue;
+                        }
+
+                        var checkMatch = Regex.Match(blockContent, @"###\s*CHECK\s*(?<type>.*)");
+                        if (checkMatch.Success)
+                        {
+                            PackBlock(scenario, "CHECK", ref currentBlock, key, contentBuilder);
+                            key = checkMatch.Groups["type"].Value;
                             if (string.IsNullOrWhiteSpace(key))
                             {
                                 key = null;
@@ -79,7 +92,7 @@ namespace skUnit.Scenarios.Parsers
                     contentBuilder.AppendLine(blockContent);
                 }
 
-                PackBlock(testCase, "END", ref currentBlock, key, contentBuilder);
+                PackBlock(scenario, "END", ref currentBlock, key, contentBuilder);
 
             }
 
@@ -111,7 +124,24 @@ namespace skUnit.Scenarios.Parsers
             }
             else if (currentBlock == "ANSWER")
             {
-                scenario.Assertions.Add(KernelAssertionParser.Parse(contentText, key ?? "similar"));
+                if (!string.IsNullOrWhiteSpace(key))
+                {
+                    scenario.Assertions.Add(KernelAssertionParser.Parse(contentText, key));
+                }
+
+                scenario.ExpectedAnswer = contentText;
+            }
+            else if (currentBlock == "CHECK")
+            {
+                var checkType = key ?? "similar";
+                var checkText = contentText;
+
+                if (string.IsNullOrWhiteSpace(checkText) && checkType == "similar")
+                {
+                    checkText = scenario.ExpectedAnswer ?? "";
+                }
+
+                scenario.Assertions.Add(KernelAssertionParser.Parse(checkText, key ?? "similar"));
             }
 
             currentBlock = newBlock;

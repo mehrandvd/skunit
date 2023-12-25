@@ -8,7 +8,7 @@ namespace skUnit.Tests.ScenarioTests
         [Fact]
         public void ParseScenario_Complex_MustWork()
         {
-            var testCaseText = """"
+            var testCaseText = """
                 # TEST AngryBastard
 
                 ## PROMPT
@@ -25,13 +25,12 @@ namespace skUnit.Tests.ScenarioTests
                 ## PARAMETER options
                 angry, happy
 
-                ## ANSWER
+                ## ANSWER Similar
                 The sentiment is angry
-                """
-
-                ## ANSWER CONDITION
+                
+                ### CHECK Condition
                 Expresses a sentiment
-                """";
+                """;
 
             var testCases = TextScenarioParser.Parse(testCaseText, "");
 
@@ -41,6 +40,7 @@ namespace skUnit.Tests.ScenarioTests
 
             Assert.Equal("Get intent of input with options.", test.Prompt);
             Assert.Equal("AngryBastard", test.Description);
+            Assert.Equal("The sentiment is angry", test.ExpectedAnswer);
             Assert.Equal(testCaseText, test.RawText);
             
             Assert.True(test.Parameters.ContainsKey("input"));
@@ -64,7 +64,7 @@ namespace skUnit.Tests.ScenarioTests
         [Fact]
         public void ParseScenario_Light_MustWork()
         {
-            var testCaseText = """"
+            var testCaseText = """
                 # Introduction
                 You are such a bastard
                 
@@ -73,11 +73,12 @@ namespace skUnit.Tests.ScenarioTests
                 
                 ## ANSWER
                 The sentiment is angry
-                """
                 
-                ## ANSWER CONDITION
+                ### CHECK
+
+                ### CHECK CONDITION
                 Expresses a sentiment
-                """";
+                """;
 
             var testCases = TextScenarioParser.Parse(testCaseText, "");
 
@@ -105,18 +106,17 @@ namespace skUnit.Tests.ScenarioTests
         [Fact]
         public void ParseScenario_Multiple_MustWork()
         {
-            var testCaseText = """"
+            var testCaseText = """
                 # Introduction
                 You are such a bastard
                 
                 # Conclusion
                 Fuck off!
                 
-                ## ANSWER
+                ## ANSWER Similar
                 The sentiment is angry
-                """
-                
-                ## ANSWER CONDITION
+
+                ### CHECK CONDITION
                 Expresses a sentiment
 
                 -------------------
@@ -133,11 +133,10 @@ namespace skUnit.Tests.ScenarioTests
 
                 ## ANSWER
                 The sentiment is angry
-                """
                 
-                ## ANSWER CONDITION
+                ### CHECK CONDITION
                 Expresses a sentiment
-                """";
+                """;
 
             var testCases = TextScenarioParser.Parse(testCaseText, "");
 
@@ -171,8 +170,7 @@ namespace skUnit.Tests.ScenarioTests
             Assert.True(second.Assertions.OfType<HasConditionAssertion>().Any());
             Assert.Contains("sentiment", second.Assertions.OfType<HasConditionAssertion>().First().Condition);
 
-            Assert.True(second.Assertions.OfType<AreSameAssertion>().Any());
-            Assert.Contains("angry", second.Assertions.OfType<AreSameAssertion>().First().ExpectedAnswer);
+            Assert.False(second.Assertions.OfType<AreSameAssertion>().Any());
         }
     }
 }

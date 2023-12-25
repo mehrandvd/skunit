@@ -1,11 +1,11 @@
 You are such a bastard, Fuck off!
 
-## ANSWER
+## ANSWER Similar
 The sentiment is angry
 
 ---------------------------------
 
 Go away and never come back to me, you laier!
 
-## ANSWER
+## ANSWER Similar
 The sentiment is angry

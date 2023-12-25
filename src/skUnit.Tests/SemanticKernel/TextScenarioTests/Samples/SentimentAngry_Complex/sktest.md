@@ -4,7 +4,9 @@
 What is sentiment of this input text, your options are: {{$options}}
                 
 [[input text]]
+
 {{$input}}
+
 [[end of input text]]
                 
 just result the sentiment without any spaces.
@@ -20,7 +22,7 @@ happy,angry
 ## ANSWER
 The sentiment is angry
 
-## ANSWER Contains
+### CHECK Contains
 angry
 
 ---------------------------------
@@ -31,7 +33,9 @@ angry
 What is sentiment of this input text, your options are: {{$options}}
                 
 [[input text]]
+
 {{$input}}
+
 [[end of input text]]
                 
 just result the sentiment without any spaces.
@@ -45,3 +49,5 @@ happy,angry
 
 ## ANSWER
 The sentiment is angry
+
+### CHECK

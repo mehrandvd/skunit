@@ -19,9 +19,13 @@ public partial class SemanticKernelAssert
             Log("");
         }
 
+        Log($"## EXPECTED ANSWER");
+        Log(scenario.ExpectedAnswer ?? "");
+        Log("");
+
         var result = await function.InvokeAsync<string>(kernel, arguments);
 
-        Log($"## ACTUAL ANSWER:");
+        Log($"## ACTUAL ANSWER");
         Log(result ?? "");
         Log("");
 
@@ -64,9 +68,13 @@ public partial class SemanticKernelAssert
                 Log("");
             }
 
+            Log($"## EXPECTED ANSWER");
+            Log(scenario.ExpectedAnswer ?? "");
+            Log("");
+
             var result = await function.InvokeAsync<string>(kernel, arguments);
 
-            Log($"## ACTUAL ANSWER:");
+            Log($"## ACTUAL ANSWER");
             Log(result ?? "");
             Log("");
 

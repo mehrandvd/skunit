@@ -9,5 +9,5 @@ public class TextScenario : Scenario
     public required string RawText { get; set; }
     public Dictionary<string, string> Parameters { get; set; } = new();
     public List<IKernelAssertion> Assertions { get; set; } = new();
-    
+    public string? ExpectedAnswer { get; set; }
 }
