@@ -1,14 +1,8 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Net;
-using System.Text;
-using System.Threading.Tasks;
-using Microsoft.SemanticKernel;
+﻿using Microsoft.SemanticKernel;
 using skUnit.Exceptions;
 using Xunit.Abstractions;
 
-namespace skUnit.Tests.SemanticKernel.InvokeScenarioTests
+namespace skUnit.Tests.SemanticKernelTests.InvokeScenarioTests
 {
     public class FunctionTests : SemanticTestBase
     {

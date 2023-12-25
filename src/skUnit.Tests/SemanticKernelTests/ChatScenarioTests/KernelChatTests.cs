@@ -1,11 +1,9 @@
 ﻿using Microsoft.SemanticKernel;
-using Microsoft.SemanticKernel.Connectors.OpenAI;
-using skUnit.Exceptions;
-using skUnit.Tests.SemanticKernel.ChatScenarioTests.Plugins;
-using skUnit.Tests.SemanticKernel.InvokeScenarioTests;
+using skUnit.Tests.SemanticKernelTests.ChatScenarioTests.Plugins;
+using skUnit.Tests.SemanticKernelTests.InvokeScenarioTests;
 using Xunit.Abstractions;
 
-namespace skUnit.Tests.SemanticKernel.ChatScenarioTests
+namespace skUnit.Tests.SemanticKernelTests.ChatScenarioTests
 {
     public class KernelChatTests : SemanticTestBase
     {

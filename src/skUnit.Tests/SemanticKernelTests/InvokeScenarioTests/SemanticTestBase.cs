@@ -6,7 +6,7 @@ using skUnit.Scenarios;
 using skUnit.Scenarios.Parsers;
 using Xunit.Abstractions;
 
-namespace skUnit.Tests.SemanticKernel.InvokeScenarioTests;
+namespace skUnit.Tests.SemanticKernelTests.InvokeScenarioTests;
 
 public class SemanticTestBase
 {

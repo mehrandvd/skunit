@@ -1,12 +1,7 @@
-﻿using System;
-using System.Collections.Generic;
-using System.ComponentModel;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
+﻿using System.ComponentModel;
 using Microsoft.SemanticKernel;
 
-namespace skUnit.Tests.SemanticKernel.ChatScenarioTests.Plugins
+namespace skUnit.Tests.SemanticKernelTests.ChatScenarioTests.Plugins
 {
     public class PocomoPlugin
     {
