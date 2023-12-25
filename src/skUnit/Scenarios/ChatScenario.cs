@@ -1,4 +1,5 @@
 ﻿using Microsoft.SemanticKernel.ChatCompletion;
+using skUnit.Scenarios.Parsers;
 using skUnit.Scenarios.Parsers.Assertions;
 
 namespace skUnit.Scenarios;
@@ -8,7 +9,7 @@ namespace skUnit.Scenarios;
 /// It contains the required inputs to call a InvokeAsync like: ChatItems.
 /// Also it contains the expected output for each level of chat by: Assertions
 /// </summary>
-public class ChatScenario
+public class ChatScenario : Scenario<ChatScenario, ChatScenarioParser>
 {
     public string? Description { get; set; }
     public required string RawText { get; set; }

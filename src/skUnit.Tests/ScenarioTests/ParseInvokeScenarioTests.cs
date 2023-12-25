@@ -1,4 +1,5 @@
-﻿using skUnit.Scenarios.Parsers;
+﻿using skUnit.Scenarios;
+using skUnit.Scenarios.Parsers;
 using skUnit.Scenarios.Parsers.Assertions;
 
 namespace skUnit.Tests.ScenarioTests
@@ -32,11 +33,11 @@ namespace skUnit.Tests.ScenarioTests
                 Expresses a sentiment
                 """;
 
-            var testCases = InvokeScenarioParser.Parse(testCaseText, "");
+            var scenarios = InvokeScenario.LoadFromText(testCaseText, "");
 
-            Assert.NotEmpty(testCases);
+            Assert.NotEmpty(scenarios);
 
-            var test = testCases.First();
+            var test = scenarios.First();
 
             Assert.Equal("Get intent of input with options.", test.Prompt);
             Assert.Equal("AngryBastard", test.Description);
@@ -79,11 +80,11 @@ namespace skUnit.Tests.ScenarioTests
                 Expresses a sentiment
                 """;
 
-            var testCases = InvokeScenarioParser.Parse(testCaseText, "");
+            var scenarios = InvokeScenario.LoadFromText(testCaseText, "");
 
-            Assert.NotEmpty(testCases);
+            Assert.NotEmpty(scenarios);
 
-            var test = testCases.First();
+            var test = scenarios.First();
 
             Assert.Equal(testCaseText, test.RawText);
 
@@ -135,7 +136,7 @@ namespace skUnit.Tests.ScenarioTests
                 Expresses a sentiment
                 """;
 
-            var testCases = InvokeScenarioParser.Parse(testCaseText, "");
+            var testCases = InvokeScenario.LoadFromText(testCaseText, "");
 
             Assert.Equal(2, testCases.Count);
 
@@ -221,11 +222,11 @@ namespace skUnit.Tests.ScenarioTests
                 Expresses a sentiment
                 """;
 
-            var testCases = InvokeScenarioParser.Parse(testCaseText, "");
+            var scenarios = InvokeScenario.LoadFromText(testCaseText, "");
 
-            Assert.NotEmpty(testCases);
+            Assert.NotEmpty(scenarios);
 
-            var first = testCases.First();
+            var first = scenarios.First();
 
             Assert.Equal("Get intent of input with options.", first.Prompt);
             Assert.Equal("AngryBastard", first.Description);
@@ -248,7 +249,7 @@ namespace skUnit.Tests.ScenarioTests
             Assert.Contains("angry", first.Assertions.OfType<AreSimilarAssertion>().First().ExpectedAnswer);
 
 
-            var second = testCases[1];
+            var second = scenarios[1];
 
             Assert.Equal("Get intent of input with options.", second.Prompt);
             Assert.Equal("AngryBastard", second.Description);

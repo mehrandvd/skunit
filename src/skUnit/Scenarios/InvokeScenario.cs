@@ -1,4 +1,6 @@
-﻿using skUnit.Scenarios.Parsers.Assertions;
+﻿using Humanizer;
+using skUnit.Scenarios.Parsers;
+using skUnit.Scenarios.Parsers.Assertions;
 
 namespace skUnit.Scenarios;
 
@@ -7,7 +9,7 @@ namespace skUnit.Scenarios;
 /// It contains the required inputs to call a InvokeAsync like: prompt and parameters.
 /// Also it contains the expected output by properties like: ExpectedAnswer and Assertions
 /// </summary>
-public class InvokeScenario
+public class InvokeScenario : Scenario<InvokeScenario, InvokeScenarioParser>
 {
     /// <summary>
     /// This property will only be used if this scenario is running on a kernel like:

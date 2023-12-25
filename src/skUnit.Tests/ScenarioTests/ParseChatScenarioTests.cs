@@ -5,6 +5,7 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
+using skUnit.Scenarios;
 
 namespace skUnit.Tests.ScenarioTests;
 
@@ -45,7 +46,7 @@ public class ParseChatScenarioTests
                 
                 """;
 
-        var scenarios = ChatScenarioParser.Parse(scenarioText, "");
+        var scenarios = ChatScenario.LoadFromText(scenarioText, "");
 
         Assert.NotEmpty(scenarios);
 
@@ -89,7 +90,7 @@ public class ParseChatScenarioTests
                 
                 """;
 
-        var scenarios = ChatScenarioParser.Parse(scenarioText, "");
+        var scenarios = ChatScenario.LoadFromText(scenarioText, "");
 
         Assert.NotEmpty(scenarios);
 

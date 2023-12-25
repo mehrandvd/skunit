@@ -1,4 +1,5 @@
 ﻿using System.Reflection;
+using Markdig.Helpers;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Logging;
 using Microsoft.SemanticKernel;
@@ -10,9 +11,9 @@ namespace skUnit.Tests.SemanticKernelTests.InvokeScenarioTests;
 
 public class SemanticTestBase
 {
-    private string _apiKey;
-    private string _endpoint;
-    private string _deploymentName;
+    private readonly string _apiKey;
+    private readonly string _endpoint;
+    private readonly string _deploymentName;
     protected Kernel Kernel { get; set; }
     protected SemanticKernelAssert SemanticKernelAssert { get; set; }
     protected ITestOutputHelper Output { get; set; }
@@ -48,37 +49,32 @@ public class SemanticTestBase
 
     protected async Task<List<InvokeScenario>> LoadInvokeScenarioAsync(string scenario)
     {
-        var testContent = await LoadTextTestAsync(scenario);
-        var scenarios = InvokeScenarioParser.Parse(testContent, "");
+        var scenarioText = await LoadResourceAsync($"skUnit.Tests.SemanticKernelTests.InvokeScenarioTests.Samples.{scenario}.sktest.md");
+        var scenarios = InvokeScenario.LoadFromText(scenarioText, "");
         return scenarios;
-    }
-
-    private async Task<string> LoadTextTestAsync(string scenario)
-    {
-        var assembly = Assembly.GetExecutingAssembly();
-        var resourceName = $"skUnit.Tests.SemanticKernelTests.InvokeScenarioTests.Samples.{scenario}.sktest.md";
-        await using Stream stream = assembly.GetManifestResourceStream(resourceName);
-        using StreamReader reader = new StreamReader(stream);
-        var result = await reader.ReadToEndAsync();
-        return result ?? "";
     }
 
     protected async Task<List<ChatScenario>> LoadChatScenarioAsync(string scenario)
     {
-        var testContent = await LoadChatTestAsync(scenario);
-        var scenarios = ChatScenarioParser.Parse(testContent, "");
+        var scenarioText = await LoadResourceAsync($"skUnit.Tests.SemanticKernelTests.ChatScenarioTests.Samples.{scenario}.skchat.md");
+        var scenarios = ChatScenario.LoadFromText(scenarioText, "");
         return scenarios;
     }
 
-    private async Task<string> LoadChatTestAsync(string scenario)
+    public async Task<string> LoadResourceAsync(string resource)
     {
         var assembly = Assembly.GetExecutingAssembly();
-        var resourceName = $"skUnit.Tests.SemanticKernelTests.ChatScenarioTests.Samples.{scenario}.skchat.md";
-        await using Stream stream = assembly.GetManifestResourceStream(resourceName);
+
+        if (assembly is null)
+            throw new InvalidOperationException($"ExecutingAssembly not found.");
+
+        await using Stream? stream = assembly.GetManifestResourceStream(resource);
+
+        if (stream is null)
+            throw new InvalidOperationException($"Resource not found '{resource}'");
+        
         using StreamReader reader = new StreamReader(stream);
         var result = await reader.ReadToEndAsync();
-        return result ?? "";
+        return result;
     }
-
-
 }

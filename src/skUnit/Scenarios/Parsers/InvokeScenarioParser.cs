@@ -11,7 +11,7 @@ using System.Diagnostics.CodeAnalysis;
 
 namespace skUnit.Scenarios.Parsers
 {
-    public static class InvokeScenarioParser
+    public class InvokeScenarioParser : IScenarioParser<InvokeScenario>
     {
         /// <summary>
         /// Parses an InvokeScenario from <paramref name="text"/>
@@ -19,7 +19,7 @@ namespace skUnit.Scenarios.Parsers
         /// <param name="text"></param>
         /// <param name="config"></param>
         /// <returns></returns>
-        public static List<InvokeScenario> Parse(string text, string config)
+        public List<InvokeScenario> Parse(string text, string config)
         {
             var scenarioTexts = Regex.Split(text, Environment.NewLine + @"-{5,}" + Environment.NewLine, RegexOptions.Multiline);
             var scenarios = new List<InvokeScenario>();
