@@ -11,17 +11,17 @@ using System.Diagnostics.CodeAnalysis;
 
 namespace skUnit.Scenarios.Parsers
 {
-    public static class TextScenarioParser
+    public static class InvokeScenarioParser
     {
-        public static List<TextScenario> Parse(string text, string config)
+        public static List<InvokeScenario> Parse(string text, string config)
         {
             var scenarioTexts = Regex.Split(text, Environment.NewLine + @"-{5,}" + Environment.NewLine, RegexOptions.Multiline);
-            var testCases = new List<TextScenario>();
+            var testCases = new List<InvokeScenario>();
             foreach (var scenarioText in scenarioTexts)
             {
                 string? currentBlock = null;
                 string? key = null;
-                var scenario = new TextScenario() { RawText = scenarioText };
+                var scenario = new InvokeScenario() { RawText = scenarioText };
                 testCases.Add(scenario);
                 var specialId = "";
 
@@ -102,7 +102,7 @@ namespace skUnit.Scenarios.Parsers
             return testCases;
         }
 
-        private static bool PackBlock(TextScenario scenario, string newBlock, ref string? currentBlock, string? key, StringBuilder content)
+        private static bool PackBlock(InvokeScenario scenario, string newBlock, ref string? currentBlock, string? key, StringBuilder content)
         {
             if (currentBlock is null)
             {

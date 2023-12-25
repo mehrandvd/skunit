@@ -2,7 +2,7 @@
 using Microsoft.SemanticKernel.Connectors.OpenAI;
 using skUnit.Exceptions;
 using skUnit.Tests.SemanticKernel.ChatScenarioTests.Plugins;
-using skUnit.Tests.SemanticKernel.TextScenarioTests;
+using skUnit.Tests.SemanticKernel.InvokeScenarioTests;
 using Xunit.Abstractions;
 
 namespace skUnit.Tests.SemanticKernel.ChatScenarioTests

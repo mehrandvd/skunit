@@ -6,7 +6,7 @@ using skUnit.Scenarios;
 using skUnit.Scenarios.Parsers;
 using Xunit.Abstractions;
 
-namespace skUnit.Tests.SemanticKernel.TextScenarioTests;
+namespace skUnit.Tests.SemanticKernel.InvokeScenarioTests;
 
 public class SemanticTestBase
 {
@@ -45,17 +45,17 @@ public class SemanticTestBase
         return kernel;
     }
 
-    protected async Task<List<TextScenario>> LoadTextScenarioAsync(string scenario)
+    protected async Task<List<InvokeScenario>> LoadInvokeScenarioAsync(string scenario)
     {
         var testContent = await LoadTextTestAsync(scenario);
-        var scenarios = TextScenarioParser.Parse(testContent, "");
+        var scenarios = InvokeScenarioParser.Parse(testContent, "");
         return scenarios;
     }
 
     private async Task<string> LoadTextTestAsync(string scenario)
     {
         var assembly = Assembly.GetExecutingAssembly();
-        var resourceName = $"skUnit.Tests.SemanticKernel.TextScenarioTests.Samples.{scenario}.sktest.md";
+        var resourceName = $"skUnit.Tests.SemanticKernel.InvokeScenarioTests.Samples.{scenario}.sktest.md";
         await using Stream stream = assembly.GetManifestResourceStream(resourceName);
         using StreamReader reader = new StreamReader(stream);
         var result = await reader.ReadToEndAsync();

@@ -8,7 +8,7 @@ using Microsoft.SemanticKernel;
 using skUnit.Exceptions;
 using Xunit.Abstractions;
 
-namespace skUnit.Tests.SemanticKernel.TextScenarioTests
+namespace skUnit.Tests.SemanticKernel.InvokeScenarioTests
 {
     public class KernelTests : SemanticTestBase
     {
@@ -20,14 +20,14 @@ namespace skUnit.Tests.SemanticKernel.TextScenarioTests
         [Fact]
         public async Task Angry_True_MustWork()
         {
-            var scenarios = await LoadTextScenarioAsync("SentimentAngry_Complex");
+            var scenarios = await LoadInvokeScenarioAsync("SentimentAngry_Complex");
             await SemanticKernelAssert.CheckScenarioAsync(Kernel, scenarios);
         }
 
         [Fact]
         public async Task Angry_False_MustWork()
         {
-            var scenarios = await LoadTextScenarioAsync("SentimentHappy");
+            var scenarios = await LoadInvokeScenarioAsync("SentimentHappy");
             await SemanticKernelAssert.ScenarioThrowsAsync<SemanticAssertException>(Kernel, scenarios);
 
             //foreach (var scenario in scenarios)

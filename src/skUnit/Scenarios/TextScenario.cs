@@ -2,7 +2,12 @@
 
 namespace skUnit.Scenarios;
 
-public class TextScenario
+/// <summary>
+/// An InvokeScenario is a scenario to test a Kernel, Function or Plugin.
+/// It contains the required inputs to call a InvokeAsync like: prompt and parameters.
+/// Also it contains the expected output by properties like: ExpectedAnswer and Assertions
+/// </summary>
+public class InvokeScenario
 {
     public string? Prompt { get; set; }
     public string? Description { get; set; }
