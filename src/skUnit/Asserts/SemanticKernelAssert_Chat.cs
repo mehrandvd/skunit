@@ -8,7 +8,25 @@ namespace skUnit;
 
 public partial class SemanticKernelAssert
 {
-    public static async Task ScenarioChatSuccessAsync(Kernel kernel, ChatScenario scenario, Func<ChatHistory, Task<string>> getAnswerFunc)
+    /// <summary>
+    /// Checks whether the <paramref name="scenario"/> passes on the given <paramref name="kernel"/>
+    /// using its ChatCompletionService.
+    /// If you want to test the kernel using something other than ChatCompletionService (for example using your own function),
+    /// pass <paramref name="getAnswerFunc"/> and specify how do you want the answer be created from chat history like:
+    /// <code>
+    /// getAnswerFunc = async history =>
+    ///     await AnswerChatFunction.InvokeAsync(kernel, new KernelArguments()
+    ///     {
+    ///         ["history"] = history,
+    ///     });
+    /// </code>
+    /// </summary>
+    /// <param name="kernel"></param>
+    /// <param name="scenario"></param>
+    /// <param name="getAnswerFunc"></param>
+    /// <returns></returns>
+    /// <exception cref="InvalidOperationException">If the OpenAI was unable to generate a valid response.</exception>
+    public static async Task CheckChatScenarioAsync(Kernel kernel, ChatScenario scenario, Func<ChatHistory, Task<string>>? getAnswerFunc = null)
     {
         var chatHistory = new ChatHistory();
 
@@ -42,6 +60,14 @@ public partial class SemanticKernelAssert
                     {chatItem.Content}
                     """);
             }
+
+            getAnswerFunc ??= async (history) =>
+            {
+                var chatService = kernel.GetRequiredService<IChatCompletionService>();
+                var result = await chatService.GetChatMessageContentsAsync(history);
+
+                return result.First().Content ?? "";
+            };
 
             var answer = await getAnswerFunc(chatHistory);
             Log($"## [ACTUAL ANSWER]");
@@ -89,100 +115,32 @@ public partial class SemanticKernelAssert
         }
     }
 
-    public static async Task ScenarioChatSuccessAsync(Kernel kernel, ChatScenario scenario)
-    {
-        Func<ChatHistory, Task<string>> getAnswerFunc = async (history) =>
-        {
-            var chatService = kernel.GetRequiredService<IChatCompletionService>();
-            var result = await chatService.GetChatMessageContentsAsync(history);
-
-            return result.First().Content ?? "";
-        };
-
-        await ScenarioChatSuccessAsync(kernel,  scenario, getAnswerFunc);
-    }
-
-    public static async Task ScenarioChatSuccessAsync(Kernel kernel, List<ChatScenario> scenarios)
+    /// <summary>
+    /// Checks whether all of the <paramref name="scenarios"/> passes on the given <paramref name="kernel"/>
+    /// using its ChatCompletionService.
+    /// If you want to test the kernel using something other than ChatCompletionService (for example using your own function),
+    /// pass <paramref name="getAnswerFunc"/> and specify how do you want the answer be created from chat history like:
+    /// <code>
+    /// getAnswerFunc = async history =>
+    ///     await AnswerChatFunction.InvokeAsync(kernel, new KernelArguments()
+    ///     {
+    ///         ["history"] = history,
+    ///     });
+    /// </code>
+    /// </summary>
+    /// <param name="kernel"></param>
+    /// <param name="scenarios"></param>
+    /// <param name="getAnswerFunc"></param>
+    /// <returns></returns>
+    /// <exception cref="InvalidOperationException">If the OpenAI was unable to generate a valid response.</exception>
+    public static async Task CheckChatScenarioAsync(Kernel kernel, List<ChatScenario> scenarios, Func<ChatHistory, Task<string>>? getAnswerFunc = null)
     {
         foreach (var scenario in scenarios)
         {
-            await ScenarioChatSuccessAsync(kernel, scenario);
-            Log("");
+            await CheckChatScenarioAsync(kernel, scenario, getAnswerFunc);
+            Log();
             Log("----------------------------------");
-            Log("");
+            Log();
         }
     }
-
-    //public static async Task ScenarioChatThrowsAsync<TSemanticAssertException>(Kernel kernel, ChatScenario scenario) where TSemanticAssertException : SemanticAssertException
-    //{
-    //    var isThrown = false;
-    //    try
-    //    {
-    //        var arguments = new KernelArguments();
-    //        Log($"# TEST {scenario.Description}");
-    //        Log("");
-
-    //        Log($"# PROMPT");
-    //        Log($"{scenario.Prompt}");
-    //        Log("");
-
-    //        foreach (var parameters in scenario.Parameters)
-    //        {
-    //            arguments.Add(parameters.Key, parameters.Value);
-    //            Log($"## PARAMETER {parameters.Key}");
-    //            Log($"{parameters.Value}");
-    //            Log("");
-    //        }
-
-    //        var prompt = scenario.Prompt;
-    //        if (string.IsNullOrWhiteSpace(prompt))
-    //        {
-    //            scenario.Parameters.TryGetValue("input", out prompt);
-    //        }
-
-    //        if (prompt is null)
-    //            throw new InvalidOperationException($"""
-    //                Prompt is null for scenario: 
-    //                {scenario.RawText}
-    //                """);
-
-    //        var result = await kernel.InvokePromptAsync<string>(prompt, arguments);
-
-    //        Log($"## ACTUAL ANSWER:");
-    //        Log(result ?? "");
-    //        Log("");
-
-    //        foreach (var assertion in scenario.Assertions)
-    //        {
-    //            Log($"## ANSWER {assertion.AssertionType}");
-    //            Log($"{assertion.Description}");
-    //            await assertion.Assert(Semantic, result);
-    //            Log($"OK");
-    //            Log("");
-    //        }
-    //    }
-    //    catch (SemanticAssertException exception)
-    //    {
-    //        Log("Exception as EXPECTED:");
-    //        Log(exception.Message);
-    //        Log("");
-    //        isThrown = true;
-    //    }
-
-    //    if (!isThrown)
-    //    {
-    //        throw new Exception($"Expected for an exception of type: {typeof(TSemanticAssertException).FullName}");
-    //    }
-    //}
-
-    //public static async Task ScenarioChatThrowsAsync<TSemanticAssertException>(Kernel kernel, List<ChatScenario> scenarios) where TSemanticAssertException : SemanticAssertException
-    //{
-    //    foreach (var scenario in scenarios)
-    //    {
-    //        await ScenarioThrowsAsync<TSemanticAssertException>(kernel, scenario);
-    //        Log("");
-    //        Log("----------------------------------");
-    //        Log("");
-    //    }
-    //}
 }

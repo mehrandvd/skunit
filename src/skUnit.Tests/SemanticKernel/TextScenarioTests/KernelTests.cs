@@ -21,7 +21,7 @@ namespace skUnit.Tests.SemanticKernel.TextScenarioTests
         public async Task Angry_True_MustWork()
         {
             var scenarios = await LoadTextScenarioAsync("SentimentAngry_Complex");
-            await SemanticKernelAssert.ScenarioSuccessAsync(Kernel, scenarios);
+            await SemanticKernelAssert.CheckScenarioAsync(Kernel, scenarios);
         }
 
         [Fact]

@@ -18,7 +18,7 @@ namespace skUnit.Tests.SemanticKernel.ChatScenarioTests
         public async Task EiffelTallChat_MustWork()
         {
             var scenarios = await LoadChatScenarioAsync("EiffelTallChat");
-            await SemanticKernelAssert.ScenarioChatSuccessAsync(Kernel, scenarios);
+            await SemanticKernelAssert.CheckChatScenarioAsync(Kernel, scenarios);
         }
 
         [Fact(Skip = "It doesn't work functions yet.")]
@@ -30,7 +30,7 @@ namespace skUnit.Tests.SemanticKernel.ChatScenarioTests
             Kernel.ImportPluginFromType<PocomoPlugin>();
 
             var scenarios = await LoadChatScenarioAsync("PocomoPriceChat");
-            await SemanticKernelAssert.ScenarioChatSuccessAsync(Kernel, scenarios);
+            await SemanticKernelAssert.CheckChatScenarioAsync(Kernel, scenarios);
         }
     }
 

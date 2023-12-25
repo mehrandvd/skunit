@@ -42,13 +42,27 @@ namespace skUnit
 
         }
 
+        /// <summary>
+        /// Checks whether <paramref name="first"/> and <paramref name="second"/> string are semantically similar.
+        /// It uses the kernel and OpenAI to check this semantically.
+        /// <example>
+        /// <code>
+        /// SemanticAssert.SimilarAsync("This automobile is red", "The car is red") // returns true
+        /// SemanticAssert.SimilarAsync("This tree is red", "The car is red") // returns false
+        /// </code>
+        /// </example>
+        /// </summary>
+        /// <param name="first"></param>
+        /// <param name="second"></param>
+        /// <returns></returns>
+        /// <exception cref="InvalidOperationException">If the OpenAI was unable to generate a valid response.</exception>
         public static async Task SimilarAsync(string first, string second)
         {
             var result = await Semantic.AreSimilarAsync(first, second);
 
             if (result is null)
             {
-                throw new SemanticAssertException("Unable to accomplish the semantic assert.");
+                throw new InvalidOperationException("Unable to accomplish the semantic assert.");
             }
 
             if (!result.IsValid)
@@ -57,11 +71,43 @@ namespace skUnit
             }
         }
 
+        /// <summary>
+        /// Checks whether <paramref name="first"/> and <paramref name="second"/> string are semantically similar.
+        /// It uses the kernel and OpenAI to check this semantically.
+        /// <example>
+        /// <code>
+        /// SemanticAssert.Similar("This automobile is red", "The car is red") // returns true
+        /// SemanticAssert.Similar("This tree is red", "The car is red") // returns false
+        /// </code>
+        /// </example>
+        /// </summary>
+        /// <param name="first"></param>
+        /// <param name="second"></param>
+        /// <returns></returns>
+        /// <exception cref="InvalidOperationException">If the OpenAI was unable to generate a valid response.</exception>
         public static void Similar(string first, string second)
         {
             SimilarAsync(first, second).GetAwaiter().GetResult();
         }
 
+        /// <summary>
+        /// Checks whether <paramref name="first"/> and <paramref name="second"/> string are NOT semantically similar.
+        /// It uses the kernel and OpenAI to check this semantically. It also describes the reason that they are not similar.
+        /// <example>
+        /// <code>
+        /// SemanticAssert.NotSimilarAsync("This bicycle is red", "The car is red")
+        /// // returns:
+        /// {
+        ///   IsValid: false,
+        ///   Reason: "The first text describes a red bicycle, while the second text describes a red car. They are not semantically equivalent."
+        /// }
+        /// </code>
+        /// </example>
+        /// </summary>
+        /// <param name="first"></param>
+        /// <param name="second"></param>
+        /// <returns></returns>
+        /// <exception cref="InvalidOperationException">If the OpenAI was unable to generate a valid response.</exception>
         public static async Task NotSimilarAsync(string first, string second)
         {
             var result = await Semantic.AreSimilarAsync(first, second);
@@ -81,15 +127,27 @@ namespace skUnit
             }
         }
 
+        /// <summary>
+        /// Checks whether <paramref name="first"/> and <paramref name="second"/> string are NOT semantically similar.
+        /// It uses the kernel and OpenAI to check this semantically. It also describes the reason that they are not similar.
+        /// <example>
+        /// <code>
+        /// SemanticAssert.NotSimilar("This bicycle is red", "The car is red")
+        /// // returns:
+        /// {
+        ///   IsValid: false,
+        ///   Reason: "The first text describes a red bicycle, while the second text describes a red car. They are not semantically equivalent."
+        /// }
+        /// </code>
+        /// </example>
+        /// </summary>
+        /// <param name="first"></param>
+        /// <param name="second"></param>
+        /// <returns></returns>
+        /// <exception cref="InvalidOperationException">If the OpenAI was unable to generate a valid response.</exception>
         public static void NotSimilar(string first, string second)
         {
             NotSimilarAsync(first, second).GetAwaiter().GetResult();
-        }
-
-
-        public static void Satisfies(string input, string condition)
-        {
-
         }
     }
 }
