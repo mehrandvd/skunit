@@ -9,12 +9,12 @@ using skUnit.Exceptions;
 namespace skUnit
 {
     /// <summary>
-	/// Contains various static methods that are used to semantically verify that conditions are met during the
+	/// Contains various methods that are used to semantically verify that conditions are met during the
 	/// process of running tests. This class uses SemanticKernel and OpenAI to validate these assertions semantically.
 	/// </summary>
     public class SemanticAssert
     {
-        private static Semantic Semantic { get; set; } = default!;
+        private Semantic Semantic { get; set; }
 
         /// <summary>
         /// This class needs a SemanticKernel kernel to work.
@@ -25,10 +25,9 @@ namespace skUnit
         /// <param name="deploymentName"></param>
         /// <param name="endpoint"></param>
         /// <param name="apiKey"></param>
-        public static void Initialize(string deploymentName, string endpoint, string apiKey)
+        public SemanticAssert(string deploymentName, string endpoint, string apiKey)
         {
             Semantic = new Semantic(deploymentName,endpoint, apiKey);
-
         }
 
         /// <summary>
@@ -36,7 +35,7 @@ namespace skUnit
         /// Pass your pre-configured kernel to this constructor.
         /// </summary>
         /// <param name="kernel"></param>
-        public static void Initialize(Kernel kernel)
+        public SemanticAssert(Kernel kernel)
         {
             Semantic = new Semantic(kernel);
 
@@ -56,7 +55,7 @@ namespace skUnit
         /// <param name="second"></param>
         /// <returns></returns>
         /// <exception cref="InvalidOperationException">If the OpenAI was unable to generate a valid response.</exception>
-        public static async Task SimilarAsync(string first, string second)
+        public async Task SimilarAsync(string first, string second)
         {
             var result = await Semantic.AreSimilarAsync(first, second);
 
@@ -85,7 +84,7 @@ namespace skUnit
         /// <param name="second"></param>
         /// <returns></returns>
         /// <exception cref="InvalidOperationException">If the OpenAI was unable to generate a valid response.</exception>
-        public static void Similar(string first, string second)
+        public void Similar(string first, string second)
         {
             SimilarAsync(first, second).GetAwaiter().GetResult();
         }
@@ -108,7 +107,7 @@ namespace skUnit
         /// <param name="second"></param>
         /// <returns></returns>
         /// <exception cref="InvalidOperationException">If the OpenAI was unable to generate a valid response.</exception>
-        public static async Task NotSimilarAsync(string first, string second)
+        public async Task NotSimilarAsync(string first, string second)
         {
             var result = await Semantic.AreSimilarAsync(first, second);
 
@@ -145,7 +144,7 @@ namespace skUnit
         /// <param name="second"></param>
         /// <returns></returns>
         /// <exception cref="InvalidOperationException">If the OpenAI was unable to generate a valid response.</exception>
-        public static void NotSimilar(string first, string second)
+        public void NotSimilar(string first, string second)
         {
             NotSimilarAsync(first, second).GetAwaiter().GetResult();
         }

@@ -1,11 +1,13 @@
 using skUnit.Exceptions;
 using Xunit.Abstractions;
 
-namespace skUnit.Tests.SemanticAssert
+namespace skUnit.Tests.SemanticAssertTests
 {
     public class SemanticAssertTests
     {
         private ITestOutputHelper Output { get; set; }
+        private SemanticAssert SemanticAssert { get; set; }
+
         public SemanticAssertTests(ITestOutputHelper output)
         {
             Output = output;
@@ -20,21 +22,21 @@ namespace skUnit.Tests.SemanticAssert
                 Environment.GetEnvironmentVariable("openai-deployment-name", EnvironmentVariableTarget.User) ??
                 throw new Exception("No DeploymentName in environment variables.");
 
-            skUnit.SemanticAssert.Initialize(deploymentName,endpoint, apiKey);
+            SemanticAssert = new SemanticAssert(deploymentName, endpoint, apiKey);
         }
 
         [Theory]
         [MemberData(nameof(GetSimilarData))]
         public void Similar_True_MustWork(string first, string second)
         {
-            skUnit.SemanticAssert.Similar(first, second);
+            SemanticAssert.Similar(first, second);
         }
 
         [Theory]
         [MemberData(nameof(GetNonSimilarData))]
         public void Similar_False_MustWork(string first, string second)
         {
-            var exception = Assert.Throws<SemanticAssertException>(() => skUnit.SemanticAssert.Similar(first, second));
+            var exception = Assert.Throws<SemanticAssertException>(() => SemanticAssert.Similar(first, second));
             Output.WriteLine($"""
                 [Explanation]
                 {exception.Message}
@@ -45,14 +47,14 @@ namespace skUnit.Tests.SemanticAssert
         [MemberData(nameof(GetNonSimilarData))]
         public void NotSimilar_True_MustWork(string first, string second)
         {
-            skUnit.SemanticAssert.NotSimilar(first, second);
+            SemanticAssert.NotSimilar(first, second);
         }
 
         [Theory]
         [MemberData(nameof(GetSimilarData))]
         public void NotSimilar_False_MustWork(string first, string second)
         {
-            var exception = Assert.Throws<SemanticAssertException>(() => skUnit.SemanticAssert.NotSimilar(first, second));
+            var exception = Assert.Throws<SemanticAssertException>(() => SemanticAssert.NotSimilar(first, second));
             Output.WriteLine($"""
                 [Explanation]
                 {exception.Message}
