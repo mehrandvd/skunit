@@ -13,6 +13,12 @@ namespace skUnit.Scenarios.Parsers
 {
     public static class InvokeScenarioParser
     {
+        /// <summary>
+        /// Parses an InvokeScenario from <paramref name="text"/>
+        /// </summary>
+        /// <param name="text"></param>
+        /// <param name="config"></param>
+        /// <returns></returns>
         public static List<InvokeScenario> Parse(string text, string config)
         {
             var scenarioTexts = Regex.Split(text, Environment.NewLine + @"-{5,}" + Environment.NewLine, RegexOptions.Multiline);

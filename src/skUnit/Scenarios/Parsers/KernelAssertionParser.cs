@@ -9,6 +9,16 @@ namespace skUnit.Scenarios.Parsers
 {
     public class KernelAssertionParser
     {
+        /// <summary>
+        /// Parses an assertion text to a related KernelAssertion. For example:
+        /// <code>
+        /// HasConditionAssertion, AreSimilarAssertion, ContainsAllAssertion
+        /// </code>
+        /// </summary>
+        /// <param name="text"></param>
+        /// <param name="type"></param>
+        /// <returns></returns>
+        /// <exception cref="InvalidOperationException"></exception>
         public static IKernelAssertion Parse(string text, string type)
         {
             return type.ToLower() switch
