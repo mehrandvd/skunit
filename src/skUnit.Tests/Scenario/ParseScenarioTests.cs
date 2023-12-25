@@ -172,5 +172,106 @@ namespace skUnit.Tests.ScenarioTests
 
             Assert.False(second.Assertions.OfType<AreSameAssertion>().Any());
         }
+
+        [Fact]
+        public void ParseScenario_SpecialId_MustWork()
+        {
+            var testCaseText = """
+                # ~ TEST AngryBastard
+
+                ## ~ PROMPT
+                Get intent of input with options.
+
+                ## ~ PARAMETER input
+                
+                # ~ Introduction
+                You are such a bastard
+
+                # ~ Conclusion
+                Fuck off!
+
+                ## ~ PARAMETER options
+                angry, happy
+
+                ## ~ ANSWER Similar
+                The sentiment is angry
+                
+                ### ~ CHECK Condition
+                Expresses a sentiment
+                
+                -------------------
+                
+                # sk TEST AngryBastard
+                
+                ## sk PROMPT
+                Get intent of input with options.
+                
+                ## sk PARAMETER input
+                
+                # sk Introduction
+                You are such a bastard
+                
+                # sk Conclusion
+                Fuck off!
+                
+                ## sk PARAMETER options
+                angry, happy
+                
+                ## sk ANSWER Similar
+                The sentiment is angry
+                
+                ### sk CHECK Condition
+                Expresses a sentiment
+                """;
+
+            var testCases = TextScenarioParser.Parse(testCaseText, "");
+
+            Assert.NotEmpty(testCases);
+
+            var first = testCases.First();
+
+            Assert.Equal("Get intent of input with options.", first.Prompt);
+            Assert.Equal("AngryBastard", first.Description);
+            Assert.Equal("The sentiment is angry", first.ExpectedAnswer);
+
+            Assert.True(first.Parameters.ContainsKey("input"));
+            Assert.True(first.Parameters["input"]?.Contains("Introduction"));
+            Assert.True(first.Parameters["input"]?.Contains("Conclusion"));
+            Assert.True(first.Parameters["input"]?.Contains("Fuck off!"));
+
+            Assert.True(first.Parameters.ContainsKey("options"));
+            Assert.True(first.Parameters["options"]?.Contains("angry"));
+            Assert.True(first.Parameters["options"]?.Contains("happy"));
+
+            Assert.True(first.Assertions.OfType<HasConditionAssertion>().Any());
+            var hasCondition = first.Assertions.OfType<HasConditionAssertion>().First();
+            Assert.Contains("sentiment", hasCondition.Condition);
+
+            Assert.True(first.Assertions.OfType<AreSameAssertion>().Any());
+            var areSame = first.Assertions.OfType<AreSameAssertion>().First();
+            Assert.Contains("angry", areSame.ExpectedAnswer);
+
+
+            var second = testCases[1];
+
+            Assert.Equal("Get intent of input with options.", second.Prompt);
+            Assert.Equal("AngryBastard", second.Description);
+            Assert.Equal("The sentiment is angry", second.ExpectedAnswer);
+
+            Assert.True(second.Parameters.ContainsKey("input"));
+            Assert.True(second.Parameters["input"]?.Contains("Introduction"));
+            Assert.True(second.Parameters["input"]?.Contains("Conclusion"));
+            Assert.True(second.Parameters["input"]?.Contains("Fuck off!"));
+
+            Assert.True(second.Parameters.ContainsKey("options"));
+            Assert.True(second.Parameters["options"]?.Contains("angry"));
+            Assert.True(second.Parameters["options"]?.Contains("happy"));
+
+            Assert.True(second.Assertions.OfType<HasConditionAssertion>().Any());
+            Assert.Contains("sentiment", second.Assertions.OfType<HasConditionAssertion>().First().Condition);
+
+            Assert.True(second.Assertions.OfType<AreSameAssertion>().Any());
+            Assert.Contains("angry", second.Assertions.OfType<AreSameAssertion>().First().ExpectedAnswer);
+        }
     }
 }
