@@ -24,17 +24,17 @@ namespace skUnit.Tests.SemanticAssert
         }
 
         [Theory]
-        [MemberData(nameof(GetSameData))]
-        public void Same_True_MustWork(string first, string second)
+        [MemberData(nameof(GetSimilarData))]
+        public void Similar_True_MustWork(string first, string second)
         {
-            skUnit.SemanticAssert.Same(first, second);
+            skUnit.SemanticAssert.Similar(first, second);
         }
 
         [Theory]
-        [MemberData(nameof(GetNotSameData))]
-        public void Same_False_MustWork(string first, string second)
+        [MemberData(nameof(GetNonSimilarData))]
+        public void Similar_False_MustWork(string first, string second)
         {
-            var exception = Assert.Throws<SemanticAssertException>(() => skUnit.SemanticAssert.Same(first, second));
+            var exception = Assert.Throws<SemanticAssertException>(() => skUnit.SemanticAssert.Similar(first, second));
             Output.WriteLine($"""
                 [Explanation]
                 {exception.Message}
@@ -42,24 +42,24 @@ namespace skUnit.Tests.SemanticAssert
         }
 
         [Theory]
-        [MemberData(nameof(GetNotSameData))]
-        public void NotSame_True_MustWork(string first, string second)
+        [MemberData(nameof(GetNonSimilarData))]
+        public void NotSimilar_True_MustWork(string first, string second)
         {
-            skUnit.SemanticAssert.NotSame(first, second);
+            skUnit.SemanticAssert.NotSimilar(first, second);
         }
 
         [Theory]
-        [MemberData(nameof(GetSameData))]
-        public void NotSame_False_MustWork(string first, string second)
+        [MemberData(nameof(GetSimilarData))]
+        public void NotSimilar_False_MustWork(string first, string second)
         {
-            var exception = Assert.Throws<SemanticAssertException>(() => skUnit.SemanticAssert.NotSame(first, second));
+            var exception = Assert.Throws<SemanticAssertException>(() => skUnit.SemanticAssert.NotSimilar(first, second));
             Output.WriteLine($"""
                 [Explanation]
                 {exception.Message}
                 """);
         }
 
-        public static IEnumerable<object[]> GetNotSameData()
+        public static IEnumerable<object[]> GetNonSimilarData()
         {
             yield return new object[]
             {
@@ -73,7 +73,7 @@ namespace skUnit.Tests.SemanticAssert
             };
         }
 
-        public static IEnumerable<object[]> GetSameData()
+        public static IEnumerable<object[]> GetSimilarData()
         {
             yield return new object[]
             {

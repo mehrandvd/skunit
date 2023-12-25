@@ -14,7 +14,7 @@ namespace skUnit.Scenarios.Parsers
             return type.ToLower() switch
             {
                 "condition" => new HasConditionAssertion() { Condition = text },
-                "similar" => new AreSameAssertion() { ExpectedAnswer = text },
+                "similar" => new AreSimilarAssertion() { ExpectedAnswer = text },
                 "contains" => new ContainsAllAssertion() { Texts = text.Split(',', '،') },
                 "containsall" => new ContainsAllAssertion() { Texts = text.Split(',', '،') },
                 "containsany" => new ContainsAnyAssertion() { Texts = text.Split(',', '،') },

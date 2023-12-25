@@ -8,57 +8,82 @@ using skUnit.Exceptions;
 
 namespace skUnit
 {
+    /// <summary>
+	/// Contains various static methods that are used to semantically verify that conditions are met during the
+	/// process of running tests. This class uses SemanticKernel and OpenAI to validate these assertions semantically.
+	/// </summary>
     public class SemanticAssert
     {
         private static Semantic Semantic { get; set; } = default!;
+
+        /// <summary>
+        /// This class needs a SemanticKernel kernel to work.
+        /// Using this constructor you can use an AzureOpenAI subscription to configure it.
+        /// If you want to connect using an OpenAI client, you can configure your kernel
+        /// as you like and pass your pre-configured kernel using the other constructor.
+        /// </summary>
+        /// <param name="deploymentName"></param>
+        /// <param name="endpoint"></param>
+        /// <param name="apiKey"></param>
         public static void Initialize(string deploymentName, string endpoint, string apiKey)
         {
             Semantic = new Semantic(deploymentName,endpoint, apiKey);
 
         }
 
-        public static async Task SameAsync(string first, string second)
+        /// <summary>
+        /// This class needs a SemanticKernel kernel to work.
+        /// Pass your pre-configured kernel to this constructor.
+        /// </summary>
+        /// <param name="kernel"></param>
+        public static void Initialize(Kernel kernel)
         {
-            var result = await Semantic.AreSameAsync(first, second);
+            Semantic = new Semantic(kernel);
+
+        }
+
+        public static async Task SimilarAsync(string first, string second)
+        {
+            var result = await Semantic.AreSimilarAsync(first, second);
 
             if (result is null)
             {
                 throw new SemanticAssertException("Unable to accomplish the semantic assert.");
             }
 
-            if (!result.Success)
+            if (!result.IsValid)
             {
-                throw new SemanticAssertException(result.Message ?? "No reason is provided.");
+                throw new SemanticAssertException(result.Reason ?? "No reason is provided.");
             }
         }
 
-        public static void Same(string first, string second)
+        public static void Similar(string first, string second)
         {
-            SameAsync(first, second).GetAwaiter().GetResult();
+            SimilarAsync(first, second).GetAwaiter().GetResult();
         }
 
-        public static async Task NotSameAsync(string first, string second)
+        public static async Task NotSimilarAsync(string first, string second)
         {
-            var result = await Semantic.AreSameAsync(first, second);
+            var result = await Semantic.AreSimilarAsync(first, second);
 
             if (result is null)
             {
                 throw new SemanticAssertException("Unable to accomplish the semantic assert.");
             }
 
-            if (result.Success)
+            if (result.IsValid)
             {
                 throw new SemanticAssertException($"""
-                    These are semantically same:
+                    These are semantically similar:
                     [FIRST]: {first}
                     [SECOND]: {second} 
                     """);
             }
         }
 
-        public static void NotSame(string first, string second)
+        public static void NotSimilar(string first, string second)
         {
-            NotSameAsync(first, second).GetAwaiter().GetResult();
+            NotSimilarAsync(first, second).GetAwaiter().GetResult();
         }
 
 

@@ -56,9 +56,8 @@ namespace skUnit.Tests.ScenarioTests
             var hasCondition = test.Assertions.OfType<HasConditionAssertion>().First();
             Assert.Contains("sentiment", hasCondition.Condition);
 
-            Assert.True(test.Assertions.OfType<AreSameAssertion>().Any());
-            var areSame = test.Assertions.OfType<AreSameAssertion>().First();
-            Assert.Contains("angry", areSame.ExpectedAnswer);
+            Assert.True(test.Assertions.OfType<AreSimilarAssertion>().Any());
+            Assert.Contains("angry", test.Assertions.OfType<AreSimilarAssertion>().First().ExpectedAnswer);
         }
 
         [Fact]
@@ -94,12 +93,10 @@ namespace skUnit.Tests.ScenarioTests
             Assert.True(test.Parameters["input"]?.Contains("Fuck off!"));
 
             Assert.True(test.Assertions.OfType<HasConditionAssertion>().Any());
-            var hasCondition = test.Assertions.OfType<HasConditionAssertion>().First();
-            Assert.Contains("sentiment", hasCondition.Condition);
+            Assert.Contains("sentiment", test.Assertions.OfType<HasConditionAssertion>().First().Condition);
 
-            Assert.True(test.Assertions.OfType<AreSameAssertion>().Any());
-            var areSame = test.Assertions.OfType<AreSameAssertion>().First();
-            Assert.Contains("angry", areSame.ExpectedAnswer);
+            Assert.True(test.Assertions.OfType<AreSimilarAssertion>().Any());
+            Assert.Contains("angry", test.Assertions.OfType<AreSimilarAssertion>().First().ExpectedAnswer);
         }
 
 
@@ -154,8 +151,8 @@ namespace skUnit.Tests.ScenarioTests
             Assert.True(first.Assertions.OfType<HasConditionAssertion>().Any());
             Assert.Contains("sentiment", first.Assertions.OfType<HasConditionAssertion>().First().Condition);
 
-            Assert.True(first.Assertions.OfType<AreSameAssertion>().Any());
-            Assert.Contains("angry", first.Assertions.OfType<AreSameAssertion>().First().ExpectedAnswer);
+            Assert.True(first.Assertions.OfType<AreSimilarAssertion>().Any());
+            Assert.Contains("angry", first.Assertions.OfType<AreSimilarAssertion>().First().ExpectedAnswer);
 
 
             var second = testCases[1];
@@ -170,7 +167,7 @@ namespace skUnit.Tests.ScenarioTests
             Assert.True(second.Assertions.OfType<HasConditionAssertion>().Any());
             Assert.Contains("sentiment", second.Assertions.OfType<HasConditionAssertion>().First().Condition);
 
-            Assert.False(second.Assertions.OfType<AreSameAssertion>().Any());
+            Assert.False(second.Assertions.OfType<AreSimilarAssertion>().Any());
         }
 
         [Fact]
@@ -247,9 +244,8 @@ namespace skUnit.Tests.ScenarioTests
             var hasCondition = first.Assertions.OfType<HasConditionAssertion>().First();
             Assert.Contains("sentiment", hasCondition.Condition);
 
-            Assert.True(first.Assertions.OfType<AreSameAssertion>().Any());
-            var areSame = first.Assertions.OfType<AreSameAssertion>().First();
-            Assert.Contains("angry", areSame.ExpectedAnswer);
+            Assert.True(first.Assertions.OfType<AreSimilarAssertion>().Any());
+            Assert.Contains("angry", first.Assertions.OfType<AreSimilarAssertion>().First().ExpectedAnswer);
 
 
             var second = testCases[1];
@@ -270,8 +266,8 @@ namespace skUnit.Tests.ScenarioTests
             Assert.True(second.Assertions.OfType<HasConditionAssertion>().Any());
             Assert.Contains("sentiment", second.Assertions.OfType<HasConditionAssertion>().First().Condition);
 
-            Assert.True(second.Assertions.OfType<AreSameAssertion>().Any());
-            Assert.Contains("angry", second.Assertions.OfType<AreSameAssertion>().First().ExpectedAnswer);
+            Assert.True(second.Assertions.OfType<AreSimilarAssertion>().Any());
+            Assert.Contains("angry", second.Assertions.OfType<AreSimilarAssertion>().First().ExpectedAnswer);
         }
     }
 }

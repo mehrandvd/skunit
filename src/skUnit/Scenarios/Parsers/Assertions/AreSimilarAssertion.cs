@@ -3,16 +3,16 @@ using skUnit.Exceptions;
 
 namespace skUnit.Scenarios.Parsers.Assertions;
 
-public class AreSameAssertion : IKernelAssertion
+public class AreSimilarAssertion : IKernelAssertion
 {
     public required string ExpectedAnswer { get; set; }
 
     public async Task Assert(Semantic semantic, string answer)
     {
-        var result = await semantic.AreSameAsync(answer, ExpectedAnswer);
+        var result = await semantic.AreSimilarAsync(answer, ExpectedAnswer);
 
-        if (!result.Success)
-            throw new SemanticAssertException(result.Message);
+        if (!result.IsValid)
+            throw new SemanticAssertException(result.Reason ?? "No reason is provided.");
     }
 
     public string AssertionType => "Similar";
