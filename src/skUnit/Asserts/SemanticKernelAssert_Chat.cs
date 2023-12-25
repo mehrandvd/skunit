@@ -24,6 +24,12 @@ public partial class SemanticKernelAssert
             Log(chatItem.Content);
             Log();
 
+            if (chatItem.Role == AuthorRole.System)
+            {
+                chatHistory.AddUserMessage(chatItem.Content);
+                continue;
+            }
+
             if (chatItem.Role == AuthorRole.User)
             {
                 chatHistory.AddUserMessage(chatItem.Content);
