@@ -10,10 +10,11 @@ namespace skUnit.Tests.SemanticKernel.InvokeScenarioTests;
 
 public class SemanticTestBase
 {
-    protected string _apiKey;
-    protected string _endpoint;
-    protected string _deploymentName;
+    private string _apiKey;
+    private string _endpoint;
+    private string _deploymentName;
     protected Kernel Kernel { get; set; }
+    protected SemanticKernelAssert SemanticKernelAssert { get; set; }
     protected ITestOutputHelper Output { get; set; }
 
     public SemanticTestBase(ITestOutputHelper output)
@@ -27,7 +28,7 @@ public class SemanticTestBase
             Environment.GetEnvironmentVariable("openai-deployment-name", EnvironmentVariableTarget.User) ??
             throw new Exception("No DeploymentName in environment variables.");
 
-        SemanticKernelAssert.Initialize(_deploymentName, _endpoint, _apiKey, message => Output.WriteLine(message));
+        SemanticKernelAssert = new SemanticKernelAssert(_deploymentName, _endpoint, _apiKey, message => Output.WriteLine(message));
         Kernel = CreateKernel();
     }
 
@@ -55,7 +56,7 @@ public class SemanticTestBase
     private async Task<string> LoadTextTestAsync(string scenario)
     {
         var assembly = Assembly.GetExecutingAssembly();
-        var resourceName = $"skUnit.Tests.SemanticKernel.InvokeScenarioTests.Samples.{scenario}.sktest.md";
+        var resourceName = $"skUnit.Tests.SemanticKernelTests.InvokeScenarioTests.Samples.{scenario}.sktest.md";
         await using Stream stream = assembly.GetManifestResourceStream(resourceName);
         using StreamReader reader = new StreamReader(stream);
         var result = await reader.ReadToEndAsync();
@@ -72,7 +73,7 @@ public class SemanticTestBase
     private async Task<string> LoadChatTestAsync(string scenario)
     {
         var assembly = Assembly.GetExecutingAssembly();
-        var resourceName = $"skUnit.Tests.SemanticKernel.ChatScenarioTests.Samples.{scenario}.skchat.md";
+        var resourceName = $"skUnit.Tests.SemanticKernelTests.ChatScenarioTests.Samples.{scenario}.skchat.md";
         await using Stream stream = assembly.GetManifestResourceStream(resourceName);
         using StreamReader reader = new StreamReader(stream);
         var result = await reader.ReadToEndAsync();

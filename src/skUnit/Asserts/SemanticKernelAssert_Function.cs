@@ -18,7 +18,7 @@ public partial class SemanticKernelAssert
     /// <param name="function"></param>
     /// <param name="scenario"></param>
     /// <returns></returns>
-    public static async Task CheckScenarioAsync(Kernel kernel, KernelFunction function, InvokeScenario scenario)
+    public async Task CheckScenarioAsync(Kernel kernel, KernelFunction function, InvokeScenario scenario)
     {
         var arguments = new KernelArguments();
         Log($"# TEST {scenario.Description}");
@@ -63,7 +63,9 @@ public partial class SemanticKernelAssert
     /// <param name="function"></param>
     /// <param name="scenarios"></param>
     /// <returns></returns>
-    public static async Task CheckScenarioAsync(Kernel kernel, KernelFunction function,
+    public async Task CheckScenarioAsync(
+        Kernel kernel, 
+        KernelFunction function,
         List<InvokeScenario> scenarios)
     {
         foreach (var scenario in scenarios)
@@ -88,8 +90,11 @@ public partial class SemanticKernelAssert
     /// <param name="function"></param>
     /// <param name="scenario"></param>
     /// <returns></returns>
-    public static async Task ScenarioThrowsAsync<TSemanticAssertException>(Kernel kernel, KernelFunction function,
-        InvokeScenario scenario) where TSemanticAssertException : SemanticAssertException
+    public async Task ScenarioThrowsAsync<TSemanticAssertException>(
+        Kernel kernel, 
+        KernelFunction function,
+        InvokeScenario scenario
+        ) where TSemanticAssertException : SemanticAssertException
     {
         var isThrown = false;
         try
@@ -151,8 +156,11 @@ public partial class SemanticKernelAssert
     /// <param name="function"></param>
     /// <param name="scenarios"></param>
     /// <returns></returns>
-    public static async Task ScenarioThrowsAsync<TSemanticAssertException>(Kernel kernel, KernelFunction function,
-        List<InvokeScenario> scenarios) where TSemanticAssertException : SemanticAssertException
+    public async Task ScenarioThrowsAsync<TSemanticAssertException>(
+        Kernel kernel, 
+        KernelFunction function,
+        List<InvokeScenario> scenarios
+        ) where TSemanticAssertException : SemanticAssertException
     {
         foreach (var scenario in scenarios)
         {

@@ -11,18 +11,13 @@ using skUnit.Scenarios;
 namespace skUnit
 {
     /// <summary>
-    /// This class is for testing SemanticKernel kernels and functions semantically. It contains various static methods
+    /// This class is for testing SemanticKernel kernels and functions semantically. It contains various methods
     /// that you can test kernels and functions with scenarios. Scenarios are some markdown files with a specific format.
     /// </summary>
     public partial class SemanticKernelAssert
     {
-        private static Semantic? _semantic;
-        private static Action<string>? OnLog { get; set; }
-        private static Semantic Semantic
-        {
-            get => _semantic ?? throw new InvalidOperationException("KernelAssert has not initialized yet.");
-            set => _semantic = value;
-        }
+        private Action<string>? OnLog { get; set; }
+        private Semantic Semantic { get; set; }
 
         /// <summary>
         /// This class needs a SemanticKernel kernel to work.
@@ -33,7 +28,7 @@ namespace skUnit
         /// <param name="deploymentName"></param>
         /// <param name="endpoint"></param>
         /// <param name="apiKey"></param>
-        public static void Initialize(string deploymentName, string endpoint, string apiKey, Action<string>? onLog = null)
+        public SemanticKernelAssert(string deploymentName, string endpoint, string apiKey, Action<string>? onLog = null)
         {
             Semantic = new Semantic(deploymentName, endpoint, apiKey);
             OnLog = onLog;
@@ -44,14 +39,14 @@ namespace skUnit
         /// Pass your pre-configured kernel to this constructor.
         /// </summary>
         /// <param name="kernel"></param>
-        public static void Initialize(Kernel kernel, Action<string>? onLog = null)
+        public SemanticKernelAssert(Kernel kernel, Action<string>? onLog = null)
         {
             Semantic = new Semantic(kernel);
             OnLog = onLog;
 
         }
 
-        private static void Log(string? message = "")
+        private void Log(string? message = "")
         {
             if (OnLog is not null)
             {

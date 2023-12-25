@@ -26,7 +26,7 @@ public partial class SemanticKernelAssert
     /// <param name="getAnswerFunc"></param>
     /// <returns></returns>
     /// <exception cref="InvalidOperationException">If the OpenAI was unable to generate a valid response.</exception>
-    public static async Task CheckChatScenarioAsync(Kernel kernel, ChatScenario scenario, Func<ChatHistory, Task<string>>? getAnswerFunc = null)
+    public async Task CheckChatScenarioAsync(Kernel kernel, ChatScenario scenario, Func<ChatHistory, Task<string>>? getAnswerFunc = null)
     {
         var chatHistory = new ChatHistory();
 
@@ -133,7 +133,7 @@ public partial class SemanticKernelAssert
     /// <param name="getAnswerFunc"></param>
     /// <returns></returns>
     /// <exception cref="InvalidOperationException">If the OpenAI was unable to generate a valid response.</exception>
-    public static async Task CheckChatScenarioAsync(Kernel kernel, List<ChatScenario> scenarios, Func<ChatHistory, Task<string>>? getAnswerFunc = null)
+    public async Task CheckChatScenarioAsync(Kernel kernel, List<ChatScenario> scenarios, Func<ChatHistory, Task<string>>? getAnswerFunc = null)
     {
         foreach (var scenario in scenarios)
         {
