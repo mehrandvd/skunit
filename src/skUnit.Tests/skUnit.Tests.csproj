@@ -10,29 +10,29 @@
   </PropertyGroup>
 
   <ItemGroup>
+    <None Remove="SemanticKernel\ChatScenarioTests\Samples\EiffelTallChat\skchat.md" />
     <None Remove="SemanticKernel\ChatScenarioTests\Samples\PocomoPriceChat\config.json" />
-    <None Remove="SemanticKernel\ChatScenarioTests\Samples\PocomoPriceChat\skchat.txt" />
+    <None Remove="SemanticKernel\ChatScenarioTests\Samples\PocomoPriceChat\skchat.md" />
     <None Remove="SemanticKernel\ChatScenarioTests\Samples\EiffelTallChat\config.json" />
-    <None Remove="SemanticKernel\ChatScenarioTests\Samples\EiffelTallChat\skchat.txt" />
     <None Remove="SemanticKernel\TextScenarioTests\Samples\SentimentAngry_Complex\config.json" />
-    <None Remove="SemanticKernel\TextScenarioTests\Samples\SentimentAngry_Complex\sktest.txt" />
+    <None Remove="SemanticKernel\TextScenarioTests\Samples\SentimentAngry_Complex\sktest.md" />
     <None Remove="SemanticKernel\TextScenarioTests\Samples\SentimentAngry_Light\config.json" />
-    <None Remove="SemanticKernel\TextScenarioTests\Samples\SentimentAngry_Light\sktest.txt" />
+    <None Remove="SemanticKernel\TextScenarioTests\Samples\SentimentAngry_Light\sktest.md" />
     <None Remove="SemanticKernel\TextScenarioTests\Samples\SentimentHappy\config.json" />
-    <None Remove="SemanticKernel\TextScenarioTests\Samples\SentimentHappy\sktest.txt" />
+    <None Remove="SemanticKernel\TextScenarioTests\Samples\SentimentHappy\sktest.md" />
   </ItemGroup>
 
   <ItemGroup>
     <EmbeddedResource Include="SemanticKernel\ChatScenarioTests\Samples\PocomoPriceChat\config.json" />
-    <EmbeddedResource Include="SemanticKernel\ChatScenarioTests\Samples\PocomoPriceChat\skchat.txt" />
+    <EmbeddedResource Include="SemanticKernel\ChatScenarioTests\Samples\PocomoPriceChat\skchat.md" />
     <EmbeddedResource Include="SemanticKernel\ChatScenarioTests\Samples\EiffelTallChat\config.json" />
-    <EmbeddedResource Include="SemanticKernel\ChatScenarioTests\Samples\EiffelTallChat\skchat.txt" />
+    <EmbeddedResource Include="SemanticKernel\ChatScenarioTests\Samples\EiffelTallChat\skchat.md" />
     <EmbeddedResource Include="SemanticKernel\TextScenarioTests\Samples\SentimentAngry_Complex\config.json" />
-    <EmbeddedResource Include="SemanticKernel\TextScenarioTests\Samples\SentimentAngry_Complex\sktest.txt" />
+    <EmbeddedResource Include="SemanticKernel\TextScenarioTests\Samples\SentimentAngry_Complex\sktest.md" />
     <EmbeddedResource Include="SemanticKernel\TextScenarioTests\Samples\SentimentAngry_Light\config.json" />
-    <EmbeddedResource Include="SemanticKernel\TextScenarioTests\Samples\SentimentAngry_Light\sktest.txt" />
+    <EmbeddedResource Include="SemanticKernel\TextScenarioTests\Samples\SentimentAngry_Light\sktest.md" />
     <EmbeddedResource Include="SemanticKernel\TextScenarioTests\Samples\SentimentHappy\config.json" />
-    <EmbeddedResource Include="SemanticKernel\TextScenarioTests\Samples\SentimentHappy\sktest.txt" />
+    <EmbeddedResource Include="SemanticKernel\TextScenarioTests\Samples\SentimentHappy\sktest.md" />
   </ItemGroup>
 
   <ItemGroup>

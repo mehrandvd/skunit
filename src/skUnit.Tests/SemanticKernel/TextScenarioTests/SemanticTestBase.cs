@@ -55,7 +55,7 @@ public class SemanticTestBase
     private async Task<string> LoadTextTestAsync(string scenario)
     {
         var assembly = Assembly.GetExecutingAssembly();
-        var resourceName = $"skUnit.Tests.SemanticKernel.TextScenarioTests.Samples.{scenario}.sktest.txt";
+        var resourceName = $"skUnit.Tests.SemanticKernel.TextScenarioTests.Samples.{scenario}.sktest.md";
         await using Stream stream = assembly.GetManifestResourceStream(resourceName);
         using StreamReader reader = new StreamReader(stream);
         var result = await reader.ReadToEndAsync();
@@ -72,7 +72,7 @@ public class SemanticTestBase
     private async Task<string> LoadChatTestAsync(string scenario)
     {
         var assembly = Assembly.GetExecutingAssembly();
-        var resourceName = $"skUnit.Tests.SemanticKernel.ChatScenarioTests.Samples.{scenario}.skchat.txt";
+        var resourceName = $"skUnit.Tests.SemanticKernel.ChatScenarioTests.Samples.{scenario}.skchat.md";
         await using Stream stream = assembly.GetManifestResourceStream(resourceName);
         using StreamReader reader = new StreamReader(stream);
         var result = await reader.ReadToEndAsync();
