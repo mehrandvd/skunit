@@ -3,7 +3,7 @@ using skUnit.Scenarios.Parsers.Assertions;
 
 namespace skUnit.Scenarios;
 
-public class ChatScenario : Scenario
+public class ChatScenario
 {
     public string? Description { get; set; }
     public required string RawText { get; set; }

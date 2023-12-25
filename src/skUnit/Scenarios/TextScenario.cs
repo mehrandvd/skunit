@@ -2,7 +2,7 @@
 
 namespace skUnit.Scenarios;
 
-public class TextScenario : Scenario
+public class TextScenario
 {
     public string? Prompt { get; set; }
     public string? Description { get; set; }
