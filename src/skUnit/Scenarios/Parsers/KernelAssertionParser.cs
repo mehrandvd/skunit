@@ -21,13 +21,18 @@ namespace skUnit.Scenarios.Parsers
         /// <exception cref="InvalidOperationException"></exception>
         public static IKernelAssertion Parse(string text, string type)
         {
-            return type.ToLower() switch
+            return type.Trim().ToLower() switch
             {
-                "condition" => new HasConditionAssertion() { Condition = text },
-                "similar" => new AreSimilarAssertion() { ExpectedAnswer = text },
-                "contains" => new ContainsAllAssertion() { Texts = text.Split(',', '،') },
-                "containsall" => new ContainsAllAssertion() { Texts = text.Split(',', '،') },
-                "containsany" => new ContainsAnyAssertion() { Texts = text.Split(',', '،') },
+                "condition" 
+                    => new HasConditionAssertion() { Condition = text },
+                "similar" 
+                    => new AreSimilarAssertion() { ExpectedAnswer = text },
+                "contains" or "contain" or "containsall"
+                    => new ContainsAllAssertion() { Texts = text.Split(',', '،') },
+                "containsany" 
+                    => new ContainsAnyAssertion() { Texts = text.Split(',', '،') },
+                "equal" or "equals"
+                    => new EqualsAssertion() { ExpectedAnswer = text },
                 _ => throw new InvalidOperationException($"Not valid assert type: {type}")
             };
         }
