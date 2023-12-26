@@ -101,4 +101,7 @@ The sentiment is happy
 In this style, an expected answer is just written to serve as a reminder of the anticipated answer (which will not be used during assertions); 
 and then a `## CHECK SemanticSimilar` is used to explicitly perform the assertion.
 
-However, `SemanticSimilar` is not the only assertion method. There are many more assertions available (like SemanticCondition, Equals, ...), which will be discussed later.
+However, `SemanticSimilar` is not the only assertion method. There are many more assertion checks available (like **SemanticCondition**, **Equals**). 
+
+You can see the full list of CHECK statements here: [CHECK Statement spec](https://github.com/mehrandvd/skunit/blob/main/docs/check-statements-spec.md).
+
