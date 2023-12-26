@@ -49,32 +49,11 @@ public class SemanticTestBase
 
     protected async Task<List<InvokeScenario>> LoadInvokeScenarioAsync(string scenario)
     {
-        var scenarioText = await LoadResourceAsync($"skUnit.Tests.SemanticKernelTests.InvokeScenarioTests.Samples.{scenario}.sktest.md");
-        var scenarios = InvokeScenario.LoadFromText(scenarioText, "");
-        return scenarios;
+        return await InvokeScenario.LoadFromResourceAsync($"skUnit.Tests.SemanticKernelTests.InvokeScenarioTests.Samples.{scenario}.sktest.md", Assembly.GetExecutingAssembly());
     }
 
     protected async Task<List<ChatScenario>> LoadChatScenarioAsync(string scenario)
     {
-        var scenarioText = await LoadResourceAsync($"skUnit.Tests.SemanticKernelTests.ChatScenarioTests.Samples.{scenario}.skchat.md");
-        var scenarios = ChatScenario.LoadFromText(scenarioText, "");
-        return scenarios;
-    }
-
-    public async Task<string> LoadResourceAsync(string resource)
-    {
-        var assembly = Assembly.GetExecutingAssembly();
-
-        if (assembly is null)
-            throw new InvalidOperationException($"ExecutingAssembly not found.");
-
-        await using Stream? stream = assembly.GetManifestResourceStream(resource);
-
-        if (stream is null)
-            throw new InvalidOperationException($"Resource not found '{resource}'");
-        
-        using StreamReader reader = new StreamReader(stream);
-        var result = await reader.ReadToEndAsync();
-        return result;
+        return await ChatScenario.LoadFromResourceAsync($"skUnit.Tests.SemanticKernelTests.ChatScenarioTests.Samples.{scenario}.skchat.md", Assembly.GetExecutingAssembly());
     }
 }
