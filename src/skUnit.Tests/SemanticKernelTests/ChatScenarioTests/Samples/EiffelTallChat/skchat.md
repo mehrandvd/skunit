@@ -1,4 +1,4 @@
-# TEST Height Discussion
+# SCENARIO Height Discussion
 
 ## [USER]
 Is Eiffel tall?

@@ -10,7 +10,7 @@ namespace skUnit.Tests.ScenarioTests
         public void ParseScenario_Complex_MustWork()
         {
             var testCaseText = """
-                # TEST AngryBastard
+                # SCENARIO AngryBastard
 
                 ## PROMPT
                 Get intent of input with options.
@@ -119,7 +119,7 @@ namespace skUnit.Tests.ScenarioTests
 
                 -------------------
 
-                # TEST AngryBastard
+                # SCENARIO AngryBastard
 
                 ## PARAMETER input
 
@@ -175,7 +175,7 @@ namespace skUnit.Tests.ScenarioTests
         public void ParseScenario_SpecialId_MustWork()
         {
             var testCaseText = """
-                # ~ TEST AngryBastard
+                # ~ SCENARIO AngryBastard
 
                 ## ~ PROMPT
                 Get intent of input with options.
@@ -199,7 +199,7 @@ namespace skUnit.Tests.ScenarioTests
                 
                 -------------------
                 
-                # sk TEST AngryBastard
+                # sk SCENARIO AngryBastard
                 
                 ## sk PROMPT
                 Get intent of input with options.

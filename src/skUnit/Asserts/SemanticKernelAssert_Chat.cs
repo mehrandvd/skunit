@@ -30,7 +30,7 @@ public partial class SemanticKernelAssert
     {
         var chatHistory = new ChatHistory();
 
-        Log($"# TEST {scenario.Description}");
+        Log($"# SCENARIO {scenario.Description}");
         Log("");
 
         var queue = new Queue<ChatItem>(scenario.ChatItems);

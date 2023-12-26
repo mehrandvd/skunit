@@ -34,7 +34,7 @@ namespace skUnit.Scenarios.Parsers
                 var md = Markdown.Parse(scenarioText);
                 var contentBuilder = new StringBuilder();
 
-                if (!scenarioText.StartsWith("# TEST") && !scenarioText.StartsWith("## PARAMETER"))
+                if (!scenarioText.StartsWith("# SCENARIO") && !scenarioText.StartsWith("## PARAMETER"))
                 {
                     key = "input";
                     currentBlock = "PARAMETER";
@@ -46,11 +46,11 @@ namespace skUnit.Scenarios.Parsers
 
                     if (block is HeadingBlock)
                     {
-                        var testInfoMatch = Regex.Match(blockContent, @"#{1,}\s*(?<specialId>.*)?\s*TEST\s*(?<description>.*)");
+                        var testInfoMatch = Regex.Match(blockContent, @"#{1,}\s*(?<specialId>.*)?\s*SCENARIO\s*(?<description>.*)");
                         if (testInfoMatch.Success)
                         {
                             specialId = testInfoMatch.Groups["specialId"].Value.Trim();
-                            PackBlock(scenario, "TEST", ref currentBlock, key, contentBuilder);
+                            PackBlock(scenario, "SCENARIO", ref currentBlock, key, contentBuilder);
                             contentBuilder.Append(testInfoMatch.Groups["description"].Value);
                             continue;
                         }
@@ -127,7 +127,7 @@ namespace skUnit.Scenarios.Parsers
             {
                 scenario.Prompt = contentText;
             }
-            else if (currentBlock == "TEST")
+            else if (currentBlock == "SCENARIO")
             {
                 scenario.Description = contentText;
             }

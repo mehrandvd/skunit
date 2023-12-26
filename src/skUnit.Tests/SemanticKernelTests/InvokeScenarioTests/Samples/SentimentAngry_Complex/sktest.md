@@ -1,4 +1,4 @@
-# TEST AngryBastard
+# SCENARIO AngryBastard
 
 ## PROMPT
 What is sentiment of this input text, your options are: {{$options}}
@@ -25,9 +25,12 @@ The sentiment is angry
 ### CHECK Contains
 angry
 
+### CHECK Equals
+angry
+
 ---------------------------------
 
-# TEST NeverComeBack
+# SCENARIO NeverComeBack
 
 ## PROMPT
 What is sentiment of this input text, your options are: {{$options}}

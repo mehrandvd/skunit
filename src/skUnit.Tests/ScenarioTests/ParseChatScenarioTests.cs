@@ -15,7 +15,7 @@ public class ParseChatScenarioTests
     public void ParseScenario_Complex_MustWork()
     {
         var scenarioText = """
-                # TEST Height Discussion
+                # SCENARIO Height Discussion
 
                 ### [USER]
                 Is Eiffel tall?
@@ -59,7 +59,7 @@ public class ParseChatScenarioTests
     public void ParseScenario_SpecialId_MustWork()
     {
         var scenarioText = """
-                # sk TEST Height Discussion
+                # sk SCENARIO Height Discussion
 
                 ### sk [USER]
                 Is Eiffel tall?

@@ -40,11 +40,11 @@ namespace skUnit.Scenarios.Parsers
 
                     if (block is HeadingBlock)
                     {
-                        var testInfoMatch = Regex.Match(blockContent, @$"#{{1,}}\s*(?<specialId>.*)?\s*TEST\s*(?<description>.*)");
+                        var testInfoMatch = Regex.Match(blockContent, @$"#{{1,}}\s*(?<specialId>.*)?\s*SCENARIO\s*(?<description>.*)");
                         if (testInfoMatch.Success)
                         {
                             specialId = testInfoMatch.Groups["specialId"].Value.Trim();
-                            PackBlock(testCase, "TEST", ref currentBlock, key, contentBuilder);
+                            PackBlock(testCase, "SCENARIO", ref currentBlock, key, contentBuilder);
                             contentBuilder.Append(testInfoMatch.Groups["description"].Value);
                             continue;
                         }
@@ -116,7 +116,7 @@ namespace skUnit.Scenarios.Parsers
             {
                 scenario.ChatItems.Add(new ChatItem(AuthorRole.Tool, contentText));
             }
-            else if (currentBlock == "TEST")
+            else if (currentBlock == "SCENARIO")
             {
                 scenario.Description = contentText;
             }

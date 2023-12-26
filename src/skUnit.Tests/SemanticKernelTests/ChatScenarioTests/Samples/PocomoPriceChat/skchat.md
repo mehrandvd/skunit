@@ -1,4 +1,4 @@
-# TEST Best Car Discussion
+# SCENARIO Best Car Discussion
 
 ## [USER]
 What is the price of pocomo?

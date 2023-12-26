@@ -19,7 +19,7 @@ public partial class SemanticKernelAssert
     /// <returns></returns>
     public async Task CheckScenarioAsync(Kernel kernel, InvokeScenario scenario)
     {
-        Log($"# TEST {scenario.Description}");
+        Log($"# SCENARIO {scenario.Description}");
         Log("");
 
         Log($"# PROMPT");
@@ -106,7 +106,7 @@ public partial class SemanticKernelAssert
         try
         {
             var arguments = new KernelArguments();
-            Log($"# TEST {scenario.Description}");
+            Log($"# SCENARIO {scenario.Description}");
             Log("");
 
             Log($"# PROMPT");

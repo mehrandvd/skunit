@@ -1,4 +1,4 @@
-# TEST AngryBastard
+# SCENARIO AngryBastard
 
 ## PROMPT
 What is sentiment of this input text, your options are: {{$options}}
@@ -22,7 +22,7 @@ The sentiment is happy
 
 ---------------------------------
 
-# TEST NeverComeBack
+# SCENARIO NeverComeBack
 
 ## PARAMETER input
 Go away and never come back to me, you laier!
