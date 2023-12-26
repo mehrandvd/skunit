@@ -26,10 +26,10 @@ namespace skUnit.Tests.ScenarioTests
                 ## PARAMETER options
                 angry, happy
 
-                ## ANSWER Similar
+                ## ANSWER SemanticSimilar
                 The sentiment is angry
                 
-                ### CHECK Condition
+                ### CHECK SemanticCondition
                 Expresses a sentiment
                 """;
 
@@ -76,7 +76,7 @@ namespace skUnit.Tests.ScenarioTests
                 
                 ### CHECK
 
-                ### CHECK CONDITION
+                ### CHECK SemanticCondition
                 Expresses a sentiment
                 """;
 
@@ -111,10 +111,10 @@ namespace skUnit.Tests.ScenarioTests
                 # Conclusion
                 Fuck off!
                 
-                ## ANSWER Similar
+                ## ANSWER SemanticSimilar
                 The sentiment is angry
 
-                ### CHECK CONDITION
+                ### CHECK SemanticCondition
                 Expresses a sentiment
 
                 -------------------
@@ -132,7 +132,7 @@ namespace skUnit.Tests.ScenarioTests
                 ## ANSWER
                 The sentiment is angry
                 
-                ### CHECK CONDITION
+                ### CHECK SemanticCondition
                 Expresses a sentiment
                 """;
 
@@ -191,10 +191,10 @@ namespace skUnit.Tests.ScenarioTests
                 ## ~ PARAMETER options
                 angry, happy
 
-                ## ~ ANSWER Similar
+                ## ~ ANSWER SemanticSimilar
                 The sentiment is angry
                 
-                ### ~ CHECK Condition
+                ### ~ CHECK SemanticCondition
                 Expresses a sentiment
                 
                 -------------------
@@ -215,10 +215,10 @@ namespace skUnit.Tests.ScenarioTests
                 ## sk PARAMETER options
                 angry, happy
                 
-                ## sk ANSWER Similar
+                ## sk ANSWER SemanticSimilar
                 The sentiment is angry
                 
-                ### sk CHECK Condition
+                ### sk CHECK SemanticCondition
                 Expresses a sentiment
                 """;
 

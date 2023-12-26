@@ -23,7 +23,7 @@ public class ParseChatScenarioTests
                 ## [AGENT]
                 Yes it is
 
-                ### CHECK Condition
+                ### CHECK SemanticCondition
                 Approves that eiffel tower is tall or is positive about it.
 
                 ## [USER]
@@ -32,7 +32,7 @@ public class ParseChatScenarioTests
                 ## [AGENT]
                 Yes it is tall too
 
-                ### CHECK CONDITION
+                ### CHECK SemanticCondition
                 The sentence is positive.
 
                 ## [USER]
@@ -41,7 +41,7 @@ public class ParseChatScenarioTests
                 ## [AGENT]
                 No it is not tall.
 
-                ### CHECK CONDITION
+                ### CHECK SemanticCondition
                 The sentence is negative.
                 
                 """;
@@ -67,7 +67,7 @@ public class ParseChatScenarioTests
                 ## sk [AGENT]
                 Yes it is
 
-                ### sk CHECK Condition
+                ### sk CHECK SemanticCondition
                 Approves that eiffel tower is tall or is positive about it.
 
                 ## sk [USER]
@@ -76,7 +76,7 @@ public class ParseChatScenarioTests
                 ## sk [AGENT]
                 Yes it is tall too
 
-                ### sk CHECK CONDITION
+                ### sk CHECK SemanticCondition
                 The sentence is positive.
 
                 ## sk [USER]
@@ -85,7 +85,7 @@ public class ParseChatScenarioTests
                 ## sk [AGENT]
                 No it is not tall.
 
-                ### sk CHECK CONDITION
+                ### sk CHECK SemanticCondition
                 The sentence is negative.
                 
                 """;

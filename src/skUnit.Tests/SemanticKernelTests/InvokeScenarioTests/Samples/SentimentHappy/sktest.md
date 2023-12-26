@@ -17,7 +17,7 @@ You are such a bastard, Fuck off!
 ## PARAMETER options
 happy,angry
 
-## ANSWER Similar
+## ANSWER SemanticSimilar
 The sentiment is happy
 
 ---------------------------------
@@ -30,5 +30,5 @@ Go away and never come back to me, you laier!
 ## PARAMETER options
 happy,angry
 
-## ANSWER Similar
+## ANSWER SemanticSimilar
 The sentiment is happy

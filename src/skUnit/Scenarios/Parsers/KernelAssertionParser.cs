@@ -23,9 +23,9 @@ namespace skUnit.Scenarios.Parsers
         {
             return type.Trim().ToLower() switch
             {
-                "condition" 
+                "semanticcondition" or "semantic-condition"
                     => new HasConditionAssertion() { Condition = text },
-                "similar" 
+                "semanticsimilar" or "semantic-similar"
                     => new AreSimilarAssertion() { ExpectedAnswer = text },
                 "contains" or "contain" or "containsall"
                     => new ContainsAllAssertion() { Texts = text.Split(',', '،') },

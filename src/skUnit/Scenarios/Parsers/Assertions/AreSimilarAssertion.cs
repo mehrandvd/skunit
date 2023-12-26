@@ -28,7 +28,7 @@ public class AreSimilarAssertion : IKernelAssertion
             throw new SemanticAssertException(result.Reason ?? "No reason is provided.");
     }
 
-    public string AssertionType => "Similar";
+    public string AssertionType => "SemanticSimilar";
     public string Description => ExpectedAnswer;
 
     public override string ToString() => $"{AssertionType}: {ExpectedAnswer}";

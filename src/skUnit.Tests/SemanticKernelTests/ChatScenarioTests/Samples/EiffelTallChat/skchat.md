@@ -6,7 +6,7 @@ Is Eiffel tall?
 ## [AGENT]
 Yes it is
 
-### CHECK Condition
+### CHECK SemanticCondition
 Approves that eiffel tower is tall or is positive about it.
 
 ## [USER]
@@ -15,7 +15,7 @@ What about everest mountain?
 ## [AGENT]
 Yes it is tall too
 
-### CHECK CONDITION
+### CHECK SemanticCondition
 The sentence is positive.
 
 ## [USER]
@@ -24,6 +24,6 @@ What about a mouse?
 ## [AGENT]
 No it is not tall.
 
-### CHECK CONDITION
+### CHECK SemanticCondition
 The sentence is negative.
 

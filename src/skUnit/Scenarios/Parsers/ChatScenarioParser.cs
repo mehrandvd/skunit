@@ -123,10 +123,10 @@ namespace skUnit.Scenarios.Parsers
             else if (currentBlock == "CHECK")
             {
                 var chatItem = scenario.ChatItems.Last();
-                var checkType = key ?? "similar";
+                var checkType = key ?? "SemanticSimilar";
                 var checkText = contentText;
 
-                if (string.IsNullOrWhiteSpace(checkText) && checkType == "similar")
+                if (string.IsNullOrWhiteSpace(checkText) && checkType == "SemanticSimilar")
                 {
                     checkText = chatItem.Content;
                 }
