@@ -68,9 +68,9 @@ The sentiment is happy
 In this style, the expected answer is just a reminder and not used for comparison; 
 and then a `## CHECK SemanticSimilar` is used to explicitly perform the assertion.
 
-However, `SemanticSimilar` is not the only assertion method. skUnit supports many other assertions (like `SemanticCondition`, `Equals` and ...), which we will explain later.
+However, `SemanticSimilar` is not the only assertion method. There are many more assertion checks available (like **SemanticCondition**, **Equals**). 
 
-Sure, here's a revised version:
+You can see the full list of CHECK statements here: [CHECK Statement spec](https://github.com/mehrandvd/skunit/blob/main/docs/check-statements-spec.md).
 
 ## Executing a Test Using a Scenario
 Executing tests is a straightforward process. You have the flexibility to utilize any preferred test frameworks such as xUnit, nUnit, or MSTest. With just two lines of code, you can load and run a test:
