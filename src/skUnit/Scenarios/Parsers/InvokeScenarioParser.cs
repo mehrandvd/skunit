@@ -11,23 +11,23 @@ using System.Diagnostics.CodeAnalysis;
 
 namespace skUnit.Scenarios.Parsers
 {
-    public class InvokeScenarioParser : IScenarioParser<InvokeScenario>
+    public class InvocationScenarioParser : IScenarioParser<InvocationScenario>
     {
         /// <summary>
-        /// Parses an InvokeScenario from <paramref name="text"/>
+        /// Parses an InvocationScenario from <paramref name="text"/>
         /// </summary>
         /// <param name="text"></param>
         /// <param name="config"></param>
         /// <returns></returns>
-        public List<InvokeScenario> Parse(string text, string config)
+        public List<InvocationScenario> Parse(string text, string config)
         {
             var scenarioTexts = Regex.Split(text, Environment.NewLine + @"-{5,}" + Environment.NewLine, RegexOptions.Multiline);
-            var scenarios = new List<InvokeScenario>();
+            var scenarios = new List<InvocationScenario>();
             foreach (var scenarioText in scenarioTexts)
             {
                 string? currentBlock = null;
                 string? key = null;
-                var scenario = new InvokeScenario() { RawText = scenarioText };
+                var scenario = new InvocationScenario() { RawText = scenarioText };
                 scenarios.Add(scenario);
                 var specialId = "";
 
@@ -108,7 +108,7 @@ namespace skUnit.Scenarios.Parsers
             return scenarios;
         }
 
-        private static bool PackBlock(InvokeScenario scenario, string newBlock, ref string? currentBlock, string? key, StringBuilder content)
+        private static bool PackBlock(InvocationScenario scenario, string newBlock, ref string? currentBlock, string? key, StringBuilder content)
         {
             if (currentBlock is null)
             {

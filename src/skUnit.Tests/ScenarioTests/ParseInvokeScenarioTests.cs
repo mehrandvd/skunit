@@ -33,7 +33,7 @@ namespace skUnit.Tests.ScenarioTests
                 Expresses a sentiment
                 """;
 
-            var scenarios = InvokeScenario.LoadFromText(testCaseText, "");
+            var scenarios = InvocationScenario.LoadFromText(testCaseText, "");
 
             Assert.NotEmpty(scenarios);
 
@@ -80,7 +80,7 @@ namespace skUnit.Tests.ScenarioTests
                 Expresses a sentiment
                 """;
 
-            var scenarios = InvokeScenario.LoadFromText(testCaseText, "");
+            var scenarios = InvocationScenario.LoadFromText(testCaseText, "");
 
             Assert.NotEmpty(scenarios);
 
@@ -136,7 +136,7 @@ namespace skUnit.Tests.ScenarioTests
                 Expresses a sentiment
                 """;
 
-            var testCases = InvokeScenario.LoadFromText(testCaseText, "");
+            var testCases = InvocationScenario.LoadFromText(testCaseText, "");
 
             Assert.Equal(2, testCases.Count);
 
@@ -222,7 +222,7 @@ namespace skUnit.Tests.ScenarioTests
                 Expresses a sentiment
                 """;
 
-            var scenarios = InvokeScenario.LoadFromText(testCaseText, "");
+            var scenarios = InvocationScenario.LoadFromText(testCaseText, "");
 
             Assert.NotEmpty(scenarios);
 

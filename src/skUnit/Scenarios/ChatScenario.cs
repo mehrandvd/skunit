@@ -5,7 +5,7 @@ using skUnit.Scenarios.Parsers.Assertions;
 namespace skUnit.Scenarios;
 
 /// <summary>
-/// An InvokeScenario is a scenario to test a ChatCompletionService, Kernel, Function or Plugin.
+/// A ChatScenario is a scenario to test a ChatCompletionService, Kernel, Function or Plugin.
 /// It contains the required inputs to call a InvokeAsync like: ChatItems.
 /// Also it contains the expected output for each level of chat by: Assertions
 /// </summary>

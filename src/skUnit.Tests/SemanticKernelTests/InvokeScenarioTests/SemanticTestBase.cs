@@ -47,9 +47,9 @@ public class SemanticTestBase
         return kernel;
     }
 
-    protected async Task<List<InvokeScenario>> LoadInvokeScenarioAsync(string scenario)
+    protected async Task<List<InvocationScenario>> LoadInvokeScenarioAsync(string scenario)
     {
-        return await InvokeScenario.LoadFromResourceAsync($"skUnit.Tests.SemanticKernelTests.InvokeScenarioTests.Samples.{scenario}.sktest.md", Assembly.GetExecutingAssembly());
+        return await InvocationScenario.LoadFromResourceAsync($"skUnit.Tests.SemanticKernelTests.InvokeScenarioTests.Samples.{scenario}.sktest.md", Assembly.GetExecutingAssembly());
     }
 
     protected async Task<List<ChatScenario>> LoadChatScenarioAsync(string scenario)

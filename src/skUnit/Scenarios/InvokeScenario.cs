@@ -5,11 +5,11 @@ using skUnit.Scenarios.Parsers.Assertions;
 namespace skUnit.Scenarios;
 
 /// <summary>
-/// An InvokeScenario is a scenario to test a Kernel, Function or Plugin.
+/// An InvocationScenario is a scenario to test a Kernel, Function or Plugin.
 /// It contains the required inputs to call a InvokeAsync like: prompt and parameters.
 /// Also it contains the expected output by properties like: ExpectedAnswer and Assertions
 /// </summary>
-public class InvokeScenario : Scenario<InvokeScenario, InvokeScenarioParser>
+public class InvocationScenario : Scenario<InvocationScenario, InvocationScenarioParser>
 {
     /// <summary>
     /// This property will only be used if this scenario is running on a kernel like:
