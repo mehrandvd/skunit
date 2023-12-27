@@ -3,7 +3,7 @@
 [![NuGet version (skUnit)](https://img.shields.io/nuget/v/skUnit.svg?style=flat)](https://www.nuget.org/packages/skUnit/)
 [![NuGet downloads](https://img.shields.io/nuget/dt/skUnit.svg?style=flat)](https://www.nuget.org/packages/skUnit)
 
-**skUnit** is a testing tool for [SemanticKernel](https://github.com/microsoft/semantic-kernel) units, such as plugin functions and kernels.
+**skUnit** is a testing tool for [SemanticKernel](https://github.com/microsoft/semantic-kernel) units, such as _plugin functions_ and _kernels_.
 
 For example, you can use skUnit to test a `GetSentiment` function that analyzes a text and returns its sentiment, such as _"Happy"_ or _"Sad"_.
 You can write different scenarios to check how the function behaves with various inputs, such as:
