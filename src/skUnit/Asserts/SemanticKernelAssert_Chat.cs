@@ -69,11 +69,6 @@ public partial class SemanticKernelAssert
                 return result.First().Content ?? "";
             };
 
-            var answer = await getAnswerFunc(chatHistory);
-            Log($"## [ACTUAL ANSWER]");
-            Log(answer);
-            Log();
-
             chatItem = queue.Dequeue();
 
             if (chatItem.Role == AuthorRole.Assistant)
@@ -93,9 +88,14 @@ public partial class SemanticKernelAssert
                     """);
             }
 
+            var answer = await getAnswerFunc(chatHistory);
+            Log($"### [ACTUAL ANSWER]");
+            Log(answer);
+            Log();
+
             foreach (var assertion in chatItem.Assertions)
             {
-                Log($"## CHECK {assertion.AssertionType}");
+                Log($"### CHECK {assertion.AssertionType}");
                 Log($"{assertion.Description}");
                 await assertion.Assert(Semantic, answer);
                 Log($"OK");
