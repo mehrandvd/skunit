@@ -89,7 +89,7 @@ It checks if the output is a valid JSON, and if each of its properties meets the
 ### CHECK JsonCheck
 {
   "name": ["Equals", "Mehran"],
-  "description: ["SemanticCondition", "It mentions that he is a good software architect."]
+  "description": ["SemanticCondition", "It mentions that he is a good software architect."]
 }
 ```
 This check passes if the output is a valid JSON and:
