@@ -75,10 +75,39 @@ This check passes if the output semantically meets the condition: "It talks abou
 
 If it fails while executing the test, it **shows** why the output does not meet the condition semantically with a message like this:
 ```md
-## CHECK SemanticCondition
+### CHECK SemanticCondition
 It talks about trees
 Exception as EXPECTED:
 The input text does not talk about trees
 ```
 
 For this statement, all these are the same: `SemanticCondition`, `Semantic-Condition`
+
+## CHECK JsonCheck
+It checks if the output is a valid JSON, and if each of its properties meets the specified condition.
+```md
+### CHECK JsonCheck
+{
+  "name": ["Equals", "Mehran"],
+  "description: ["SemanticCondition", "It mentions that he is a good software architect."]
+}
+```
+This check passes if the output is a valid JSON and:
+ - It has a `name` property with a value equal to `Mehran`
+ - It has a `description` property with a value that meets this semantic condition: "It mentions that he is a good software architect."
+
+This check is great for asserting functions that are going to return a specific JSON.
+
+## CHECK Empty
+It ensures that the answer is empty.
+```md
+### CHECK Empty
+```
+This statement checks if the output is empty.
+
+## CHECK NotEmpty
+It ensures that the answer is not empty.
+```md
+### CHECK NotEmpty
+```
+This statement checks if the output is empty.
