@@ -122,7 +122,7 @@ Here's another example of an executing The [Chatting about Eiffel height](https:
 
 
 ## Requirements
-- .NET 8.0 or higher
+- .NET 7.0 or higher
 - An OpenAI API key
 
 
