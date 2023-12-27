@@ -44,7 +44,7 @@ public partial class SemanticKernelAssert
 
             if (chatItem.Role == AuthorRole.System)
             {
-                chatHistory.AddUserMessage(chatItem.Content);
+                chatHistory.AddSystemMessage(chatItem.Content);
                 continue;
             }
 
@@ -75,13 +75,14 @@ public partial class SemanticKernelAssert
             Log();
 
             chatItem = queue.Dequeue();
-            Log($"## [EXPECTED ANSWER]");
-            Log(chatItem.Content);
-            Log();
 
             if (chatItem.Role == AuthorRole.Assistant)
             {
-                chatHistory.AddUserMessage(chatItem.Content);
+                chatHistory.AddAssistantMessage(chatItem.Content);
+
+                Log($"## [EXPECTED ANSWER]");
+                Log(chatItem.Content);
+                Log();
             }
             else
             {
@@ -99,18 +100,6 @@ public partial class SemanticKernelAssert
                 await assertion.Assert(Semantic, answer);
                 Log($"OK");
                 Log("");
-            }
-
-            if (chatItem.Role == AuthorRole.Assistant)
-            {
-                chatHistory.AddAssistantMessage(chatItem.Content);
-            }
-            else
-            {
-                throw new InvalidOperationException($"""
-                    Expected [AGENT] message but it is not: 
-                    [{chatItem.Role}]: {chatItem.Content}
-                    """);
             }
         }
     }
