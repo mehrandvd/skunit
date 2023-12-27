@@ -18,6 +18,12 @@ Happy
 
 This scenario verifies that the function returns _"Happy"_ when the input is _"Such a beautiful day it is"_.
 
+This is an **Invocation Scenario**, which tests a single function call. You can also write **Chat Scenarios**, which test a sequence of interactions between the user and the SemanticKernel.
+
+One of the benefits of skUnit scenarios is that they are valid **Markdown** files, which makes them very readable and easy to edit. For example, you can see how clear and simple this scenario is: [Chatting about Eiffel height](https://github.com/mehrandvd/skunit/blob/main/src/skUnit.Tests/SemanticKernelTests/ChatScenarioTests/Samples/EiffelTallChat/skchat.md)
+
+> skUnit scenarios are valid **Markdown** files, which makes them very readable and easy to edit.
+
 skUnit offers many features to help you write more complex and flexible scenarios. In this section, we will show you some of them with an example.
 
 Suppose you have a function called `GetSentiment` that takes two parameters and returns a sentence describing the sentiment of the text:
@@ -103,7 +109,11 @@ Exception as EXPECTED:
 The two texts are not semantically equivalent. The first text expresses anger, while the second text expresses happiness.
 ```
 
-As demonstrated, when a `SemanticSimilar` check fails, it provides a semantic explanation for the failure. This feature proves to be incredibly useful during debugging.
+> As demonstrated, when a `SemanticSimilar` check fails, it provides a semantic explanation for the failure. This feature proves to be incredibly useful during debugging.
+
+Here's another example of an executed test:
+![image](https://github.com/mehrandvd/skunit/assets/5070766/37cf7232-e187-41dc-827d-d9630ce86c71)
+
 
 ## Requirements
 - .NET 8.0 or higher
