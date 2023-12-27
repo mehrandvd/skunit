@@ -1,7 +1,7 @@
 ﻿<Project Sdk="Microsoft.NET.Sdk">
 
   <PropertyGroup>
-    <TargetFramework>net8.0</TargetFramework>
+    <TargetFramework>net7.0</TargetFramework>
     <ImplicitUsings>enable</ImplicitUsings>
     <Nullable>enable</Nullable>
     <Title>skUnit</Title>
@@ -17,7 +17,7 @@
   <ItemGroup>
     <PackageReference Include="Markdig" Version="0.34.0" />
     <PackageReference Include="Microsoft.SemanticKernel" Version="1.0.1" />
-    <PackageReference Include="SemanticValidation" Version="0.8.0-beta" />
+    <PackageReference Include="SemanticValidation" Version="0.11.0-beta" />
   </ItemGroup>
 
   <ItemGroup>
