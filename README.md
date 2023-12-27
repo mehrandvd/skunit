@@ -20,12 +20,6 @@ This scenario verifies that the function returns _"Happy"_ when the input is _"S
 
 This is an **Invocation Scenario**, which tests a single function call. You can also write **Chat Scenarios**, which test a sequence of interactions between the user and the SemanticKernel.
 
-One of the benefits of skUnit scenarios is that they are valid **Markdown** files, which makes them very readable and easy to edit. For example, you can see how clear and simple this scenario is: [Chatting about Eiffel height](https://github.com/mehrandvd/skunit/blob/main/src/skUnit.Tests/SemanticKernelTests/ChatScenarioTests/Samples/EiffelTallChat/skchat.md)
-
-![image](https://github.com/mehrandvd/skunit/assets/5070766/53d009a9-4a0b-44dc-91e0-b0be81b4c5a7)
-
-> skUnit scenarios are valid **Markdown** files, which makes them very readable and easy to edit.
-
 skUnit offers many features to help you write more complex and flexible scenarios. In this section, we will show you some of them with an example.
 
 Suppose you have a function called `GetSentiment` that takes two parameters and returns a sentence describing the sentiment of the text:
@@ -79,6 +73,16 @@ and then a `## CHECK SemanticSimilar` is used to explicitly perform the assertio
 However, `SemanticSimilar` is not the only assertion method. There are many more assertion checks available (like **SemanticCondition**, **Equals**). 
 
 You can see the full list of CHECK statements here: [CHECK Statement spec](https://github.com/mehrandvd/skunit/blob/main/docs/check-statements-spec.md).
+
+## Scenarios are Valid Markdowns
+
+One of the benefits of skUnit scenarios is that they are valid **Markdown** files, which makes them very readable and easy to edit. 
+
+> skUnit scenarios are valid **Markdown** files, which makes them very readable and easy to edit.
+
+For example, you can see how clear and simple this scenario is: [Chatting about Eiffel height](https://github.com/mehrandvd/skunit/blob/main/src/skUnit.Tests/SemanticKernelTests/ChatScenarioTests/Samples/EiffelTallChat/skchat.md)
+
+![image](https://github.com/mehrandvd/skunit/assets/5070766/53d009a9-4a0b-44dc-91e0-b0be81b4c5a7)
 
 ## Executing a Test Using a Scenario
 Executing tests is a straightforward process. You have the flexibility to utilize any preferred test frameworks such as xUnit, nUnit, or MSTest. With just two lines of code, you can load and run a test:
