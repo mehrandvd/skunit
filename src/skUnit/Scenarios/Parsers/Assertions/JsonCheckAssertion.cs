@@ -38,21 +38,21 @@ namespace skUnit.Scenarios.Parsers.Assertions
         }
 
         /// <summary>
-        /// Checks if <paramref name="answer"/> is similar to ExpectedAnswer using <paramref name="semantic"/>
+        /// Checks if <paramref name="answer"/> is meets the conditions in JsonCheck <paramref name="semantic"/>
         /// </summary>
         /// <param name="semantic"></param>
         /// <param name="answer"></param>
         /// <returns></returns>
         /// <exception cref="SemanticAssertException"></exception>
-        public async Task Assert(Semantic semantic, string answer)
+        public async Task Assert(Semantic semantic, string input)
         {
-            var answerJson = JsonSerializer.Deserialize<JsonObject>(answer, new JsonSerializerOptions()
+            var answerJson = JsonSerializer.Deserialize<JsonObject>(input, new JsonSerializerOptions()
                 {
                     AllowTrailingCommas = true
                 })
                 ?? throw new InvalidOperationException($"""
                     Can not parse answer to json: 
-                    {answer}
+                    {input}
                     """);
 
             if (JsonCheck is null)
@@ -62,14 +62,14 @@ namespace skUnit.Scenarios.Parsers.Assertions
             {
                 var checkArray = prop.Value?.AsArray();
 
-                if (checkArray is null || checkArray.Count != 2)
+                if (checkArray is null || checkArray.Count > 2)
                     throw new InvalidOperationException($"""
-                        JsonCheck has not a proper array, (it should have only 2 members): 
+                        JsonCheck has not a proper array, (it should have maximum 2 members): 
                         {checkArray?.ToJsonString()}
                         """);
 
                 var check = checkArray[0]?.GetValue<string>();
-                var body = checkArray[1]?.GetValue<string>() ?? "";
+                var body = checkArray.ElementAtOrDefault(1)?.GetValue<string>() ?? "";
 
                 if (string.IsNullOrWhiteSpace(check))
                     throw new InvalidOperationException($"JsonCheck check field is empty: {checkArray?.ToJsonString()}");
@@ -106,7 +106,7 @@ namespace skUnit.Scenarios.Parsers.Assertions
                 {
                     throw new SemanticAssertException($"""
                             Property '{ prop.Key}  ' not found in answer:
-                            { answer} 
+                            {input} 
                             """ );
                 }
             }

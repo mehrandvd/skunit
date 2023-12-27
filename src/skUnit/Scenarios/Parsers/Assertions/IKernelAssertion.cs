@@ -9,17 +9,17 @@ using SemanticValidation;
 namespace skUnit.Scenarios.Parsers.Assertions
 {
     /// <summary>
-    /// An assertion that can be applied to the answer returned by a kernel.
+    /// An assertion that can be applied to the input returned by a kernel.
     /// </summary>
     public interface IKernelAssertion
     {
         /// <summary>
-        /// Checks if the <paramref name="answer"/> can pass the assertion using <paramref name="semantic"/>
+        /// Checks if the <paramref name="input"/> can pass the assertion using <paramref name="semantic"/>
         /// </summary>
         /// <param name="semantic"></param>
-        /// <param name="answer"></param>
+        /// <param name="input"></param>
         /// <returns></returns>
-        Task Assert(Semantic semantic, string answer);
+        Task Assert(Semantic semantic, string input);
         string AssertionType { get; }
         string Description { get; }
     }

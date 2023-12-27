@@ -20,9 +20,9 @@ public class AreSimilarAssertion : IKernelAssertion
     /// <param name="answer"></param>
     /// <returns></returns>
     /// <exception cref="SemanticAssertException"></exception>
-    public async Task Assert(Semantic semantic, string answer)
+    public async Task Assert(Semantic semantic, string input)
     {
-        var result = await semantic.AreSimilarAsync(answer, ExpectedAnswer);
+        var result = await semantic.AreSimilarAsync(input, ExpectedAnswer);
 
         if (!result.IsValid)
             throw new SemanticAssertException(result.Reason ?? "No reason is provided.");

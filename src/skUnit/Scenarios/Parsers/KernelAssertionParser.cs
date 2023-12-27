@@ -35,6 +35,10 @@ namespace skUnit.Scenarios.Parsers
                     => new EqualsAssertion() { ExpectedAnswer = text },
                 "jsoncheck" 
                     => new JsonCheckAssertion().SetJsonAssertText(text),
+                "empty"
+                    => new EmptyAssertion(),
+                "notempty"
+                    => new NotEmptyAssertion(),
 
                 _ => throw new InvalidOperationException($"Not valid assert type: {type}")
             };

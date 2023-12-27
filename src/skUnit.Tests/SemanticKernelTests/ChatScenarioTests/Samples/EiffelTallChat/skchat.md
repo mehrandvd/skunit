@@ -42,6 +42,11 @@ Example:
 
 ### CHECK JsonCheck
 {
+	"height": ["NotEmpty", ""]
+}
+
+### CHECK JsonCheck
+{
 	"height": ["Contain", "meters"]
 }
 
