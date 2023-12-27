@@ -33,6 +33,9 @@ namespace skUnit.Scenarios.Parsers
                     => new ContainsAnyAssertion() { Texts = text.Split(',', '،') },
                 "equal" or "equals"
                     => new EqualsAssertion() { ExpectedAnswer = text },
+                "jsoncheck" 
+                    => new JsonCheckAssertion().SetJsonAssertText(text),
+
                 _ => throw new InvalidOperationException($"Not valid assert type: {type}")
             };
         }

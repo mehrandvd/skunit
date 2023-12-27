@@ -27,3 +27,21 @@ No it is not tall.
 ### CHECK SemanticCondition
 The sentence is negative.
 
+## [USER]
+Give me a json containing the Eiffel height.
+
+Example: 
+{
+	"height": "330 meters"
+}
+
+## [AGENT]
+{
+	"height": "330 meters"
+}
+
+### CHECK JsonCheck
+{
+	"height": ["Contain", "meters"]
+}
+
