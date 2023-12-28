@@ -98,6 +98,18 @@ This check passes if the output is a valid JSON and:
 
 This check is great for asserting functions that are going to return a specific JSON.
 
+To make your `.md` files more readable, you can annotate your JSON with ` ``` `:
+
+``````md
+### CHECK JsonCheck
+```json
+{
+  "name": ["Equals", "Mehran"],
+  "description": ["SemanticCondition", "It mentions that he is a good software architect."]
+}
+```
+``````
+
 ## CHECK Empty
 It ensures that the answer is empty.
 ```md
