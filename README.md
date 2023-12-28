@@ -118,8 +118,8 @@ The two texts are not semantically equivalent. The first text expresses anger, w
 > As demonstrated, when a `SemanticSimilar` check fails, it provides a semantic explanation for the failure. This feature proves to be incredibly useful during debugging.
 
 Here's another example of an executing The [Chatting about Eiffel height](https://github.com/mehrandvd/skunit/blob/main/src/skUnit.Tests/SemanticKernelTests/ChatScenarioTests/Samples/EiffelTallChat/skchat.md) test:
-![image](https://github.com/mehrandvd/skunit/assets/5070766/37cf7232-e187-41dc-827d-d9630ce86c71)
 
+![image](https://github.com/mehrandvd/skunit/assets/5070766/56bc08fe-0955-4ed4-9b4c-5d4ff416b3d3)
 
 ## Requirements
 - .NET 7.0 or higher
