@@ -190,5 +190,6 @@ OK
 OK
 ```
 
-This output is generated line by line as the test is executed.
+This output is generated line by line as the test is executed:
+
 ![image](https://github.com/mehrandvd/skunit/assets/5070766/146a26d5-c73c-47f2-aeba-e9e9c6c48dcd)
