@@ -134,7 +134,7 @@ Yes, the Eiffel Tower in Paris, France, is tall at 330 meters (1,083 feet) in he
 
 ### CHECK Condition
 Confirms that the Eiffel Tower is tall or expresses positivity.
-OK
+✅ OK
 
 ## [USER]
 What about Everest Mountain?
@@ -147,7 +147,7 @@ Yes, Mount Everest is the tallest mountain in the world, with a peak that reache
 
 ### CHECK Condition
 The sentence is positive.
-OK
+✅ OK
 
 ## [USER]
 What about a mouse?
@@ -160,7 +160,7 @@ No, a mouse is not tall.
 
 ### CHECK Condition
 The sentence is negative.
-OK
+✅ OK
 
 ## [USER]
 Give me a JSON containing the Eiffel height.
@@ -183,15 +183,16 @@ Example:
 {
 	"height": ["NotEmpty", ""]
 }
-OK
+✅ OK
 
 ### CHECK JsonCheck
 {
 	"height": ["Contain", "meters"]
 }
-OK
+✅ OK
 ```
 
 This output is generated line by line as the test is executed:
 
-![image](https://github.com/mehrandvd/skunit/assets/5070766/146a26d5-c73c-47f2-aeba-e9e9c6c48dcd)
+![image](https://github.com/mehrandvd/skunit/assets/5070766/f3ef8a37-ceab-444f-b6f4-098557b61bfa)
+
