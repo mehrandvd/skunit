@@ -97,9 +97,21 @@ public partial class SemanticKernelAssert
             {
                 Log($"### CHECK {assertion.AssertionType}");
                 Log($"{assertion.Description}");
-                await assertion.Assert(Semantic, answer);
-                Log($"OK");
-                Log("");
+                
+                try
+                {
+                    await assertion.Assert(Semantic, answer);
+                    Log($"✅ OK");
+                    Log("");
+                }
+                catch (SemanticAssertException exception)
+                {
+                    Log("❌ FAIL");
+                    Log("Reason:");
+                    Log(exception.Message);
+                    Log();
+                    throw;
+                }
             }
         }
     }

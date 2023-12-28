@@ -57,13 +57,26 @@ public partial class SemanticKernelAssert
         Log(result ?? "");
         Log("");
 
-        foreach (var kernelAssert in scenario.Assertions)
+        foreach (var assertion in scenario.Assertions)
         {
-            Log($"## CHECK {kernelAssert.AssertionType}");
-            Log($"{kernelAssert.Description}");
-            await kernelAssert.Assert(Semantic, result);
-            Log($"OK");
-            Log("");
+            Log($"## CHECK {assertion.AssertionType}");
+            Log($"{assertion.Description}");
+
+            try
+            {
+                await assertion.Assert(Semantic, result);
+                Log($"✅ OK");
+                Log("");
+            }
+            catch (SemanticAssertException exception)
+            {
+                Log("❌ FAIL");
+                Log("Reason:");
+                Log(exception.Message);
+                Log();
+                throw;
+            }
+            
         }
     }
 
@@ -147,9 +160,21 @@ public partial class SemanticKernelAssert
             {
                 Log($"## CHECK {assertion.AssertionType}");
                 Log($"{assertion.Description}");
-                await assertion.Assert(Semantic, result);
-                Log($"OK");
-                Log("");
+
+                try
+                {
+                    await assertion.Assert(Semantic, result);
+                    Log($"✅ OK");
+                    Log("");
+                }
+                catch (SemanticAssertException exception)
+                {
+                    Log("❌ FAIL");
+                    Log("Reason:");
+                    Log(exception.Message);
+                    Log();
+                    throw;
+                }
             }
         }
         catch (SemanticAssertException exception)
