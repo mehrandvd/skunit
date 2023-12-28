@@ -1,4 +1,5 @@
 ﻿using SemanticValidation;
+using skUnit.Exceptions;
 
 namespace skUnit.Scenarios.Parsers.Assertions;
 
@@ -17,7 +18,10 @@ public class HasConditionAssertion : IKernelAssertion
     /// <returns></returns>
     public async Task Assert(Semantic semantic, string input)
     {
-        await semantic.HasConditionAsync(input, Condition);
+        var result = await semantic.HasConditionAsync(input, Condition);
+
+        if (!result.IsValid)
+            throw new SemanticAssertException(result.Reason ?? "No reason is provided.");
     }
 
     public string AssertionType => "Condition";
