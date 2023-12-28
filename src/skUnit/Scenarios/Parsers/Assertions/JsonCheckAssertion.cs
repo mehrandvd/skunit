@@ -7,6 +7,7 @@ using System.Text;
 using System.Text.Json;
 using System.Text.Json.Nodes;
 using System.Threading.Tasks;
+using skUnit.Utils;
 
 namespace skUnit.Scenarios.Parsers.Assertions
 {
@@ -21,13 +22,10 @@ namespace skUnit.Scenarios.Parsers.Assertions
         {
             if (string.IsNullOrWhiteSpace(jsonAssertText))
                 throw new InvalidOperationException("The JsonCheck is empty.");
-            
-            JsonCheckText = (jsonAssertText ?? "").Trim(' ', '`');
 
-            var json = JsonSerializer.Deserialize<JsonObject>(JsonCheckText, new JsonSerializerOptions()
-            {
-                AllowTrailingCommas = true
-            });
+            JsonCheckText = (jsonAssertText ?? "");
+
+            var json = OpenAiUtil.ParseJson<JsonObject>(JsonCheckText);
 
             JsonCheck = json ?? throw new InvalidOperationException($"""
                     Can not parse json: 
@@ -46,10 +44,7 @@ namespace skUnit.Scenarios.Parsers.Assertions
         /// <exception cref="SemanticAssertException"></exception>
         public async Task Assert(Semantic semantic, string input)
         {
-            var answerJson = JsonSerializer.Deserialize<JsonObject>(input, new JsonSerializerOptions()
-                {
-                    AllowTrailingCommas = true
-                })
+            var answerJson = OpenAiUtil.ParseJson<JsonObject>(input)
                 ?? throw new InvalidOperationException($"""
                     Can not parse answer to json: 
                     {input}

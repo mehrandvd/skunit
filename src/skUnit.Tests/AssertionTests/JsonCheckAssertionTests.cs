@@ -38,7 +38,7 @@ namespace skUnit.Tests.AssertionTests
             var assertion = new JsonCheckAssertion();
 
             assertion.SetJsonAssertText("""
-                ```
+                ```json
                 {
                     "name": ["EQUAL", "Mehran"],
                     "address": ["Contain", "Tehran, Vanak"]
