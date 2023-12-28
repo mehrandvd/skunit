@@ -30,8 +30,7 @@ Yes it is tall too
 It agrees that Everest mountain is tall or expresses a positive sentiment.
 ```
 
-![image](https://github.com/mehrandvd/skunit/assets/5070766/96ba48dc-022f-4e51-9113-23e215a5c44c)
-
+![image](https://github.com/mehrandvd/skunit/assets/5070766/156b0831-e4f3-4e4b-b1b0-e2ec868efb5f)
 
 ### Sub-scenario 1
 The first sub-scenario tests how the agent responds to the question `Is Eiffel tall?`. 
