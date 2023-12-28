@@ -7,7 +7,7 @@ using System.Text;
 using System.Text.Json;
 using System.Text.Json.Nodes;
 using System.Threading.Tasks;
-using skUnit.Utils;
+using SemanticValidation.Utils;
 
 namespace skUnit.Scenarios.Parsers.Assertions
 {
@@ -25,7 +25,7 @@ namespace skUnit.Scenarios.Parsers.Assertions
 
             JsonCheckText = (jsonAssertText ?? "");
 
-            var json = OpenAiUtil.ParseJson<JsonObject>(JsonCheckText);
+            var json = SemanticUtils.PowerParseJson<JsonObject>(JsonCheckText);
 
             JsonCheck = json ?? throw new InvalidOperationException($"""
                     Can not parse json: 
@@ -44,8 +44,8 @@ namespace skUnit.Scenarios.Parsers.Assertions
         /// <exception cref="SemanticAssertException"></exception>
         public async Task Assert(Semantic semantic, string input)
         {
-            var answerJson = OpenAiUtil.ParseJson<JsonObject>(input)
-                ?? throw new InvalidOperationException($"""
+            var answerJson = SemanticUtils.PowerParseJson<JsonObject>(input)
+                             ?? throw new InvalidOperationException($"""
                     Can not parse answer to json: 
                     {input}
                     """);
