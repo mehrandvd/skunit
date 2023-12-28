@@ -1,5 +1,3 @@
-I can help you improve your text. Here is a possible revision:
-
 # Chat Scenario Spec
 A chat scenario is a way of testing how SemanticKernel units, such as plugin functions and kernels, respond to user inputs in skUnit. 
 A chat scenario consists of one or more sub-scenarios, each representing a dialogue turn between the user and the agent.
