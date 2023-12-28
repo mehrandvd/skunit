@@ -1,4 +1,4 @@
-# Invocation Scenario Specification
+# Invocation Scenario Spec
 ## What is an invocation scenario?
 An invocation scenario is a way of testing SemanticKernel units, such as *plugin functions* and *kernels*, in skUnit. 
 A scenario consists of providing some input to a unit, invoking it, and checking the expected output.
