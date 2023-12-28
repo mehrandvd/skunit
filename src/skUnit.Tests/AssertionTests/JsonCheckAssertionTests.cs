@@ -33,6 +33,30 @@ namespace skUnit.Tests.AssertionTests
         }
 
         [Fact]
+        public async Task JasonCheck_BackQuote_MustWork()
+        {
+            var assertion = new JsonCheckAssertion();
+
+            assertion.SetJsonAssertText("""
+                ```
+                {
+                    "name": ["EQUAL", "Mehran"],
+                    "address": ["Contain", "Tehran, Vanak"]
+                }
+                ```
+                """);
+
+            Assert.NotNull(assertion.JsonCheck);
+
+            await assertion.Assert(null, """
+                {
+                    "name": "Mehran",
+                    "address": "The address is in Vanak area of Tehran"
+                }
+                """);
+        }
+
+        [Fact]
         public async Task JasonCheck_Contains_Fail_MustWork()
         {
             var assertion = new JsonCheckAssertion();

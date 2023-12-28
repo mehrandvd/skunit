@@ -22,7 +22,7 @@ namespace skUnit.Scenarios.Parsers.Assertions
             if (string.IsNullOrWhiteSpace(jsonAssertText))
                 throw new InvalidOperationException("The JsonCheck is empty.");
             
-            JsonCheckText = jsonAssertText ?? "";
+            JsonCheckText = (jsonAssertText ?? "").Trim(' ', '`');
 
             var json = JsonSerializer.Deserialize<JsonObject>(JsonCheckText, new JsonSerializerOptions()
             {
