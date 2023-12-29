@@ -73,8 +73,6 @@ public partial class SemanticKernelAssert
 
             if (chatItem.Role == AuthorRole.Assistant)
             {
-                chatHistory.AddAssistantMessage(chatItem.Content);
-
                 Log($"## [EXPECTED ANSWER]");
                 Log(chatItem.Content);
                 Log();
@@ -88,7 +86,13 @@ public partial class SemanticKernelAssert
                     """);
             }
 
+
             var answer = await getAnswerFunc(chatHistory);
+
+            // To let chatHistory stay clean for gettig the answer
+            chatHistory.AddAssistantMessage(chatItem.Content);
+
+
             Log($"### [ACTUAL ANSWER]");
             Log(answer);
             Log();
