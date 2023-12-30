@@ -138,29 +138,41 @@ namespace skUnit.Scenarios.Parsers
                 //    throw new InvalidOperationException($"Call is not valid: {key}");
 
                 var function = key;
-                var argsJson = SemanticUtils.PowerParseJson<JsonObject>(contentText);
 
                 var arguments = new List<FunctionCallArgument>();
 
-                foreach (var prop in argsJson)
+                if (!string.IsNullOrWhiteSpace(contentText))
                 {
-                    var argument = new FunctionCallArgument()
-                    {
-                        Name = prop.Key,
-                    };
-                    var propValue = prop.Value.GetValue<string>();
+                    var argsJson = SemanticUtils.PowerParseJson<JsonObject>(contentText);
 
-                    if (propValue.StartsWith("$"))
-                    {
-                        argument.InputVariable = propValue.Trim('$', ' ');
-                    }
-                    else
-                    {
-                        argument.LiteralValue = propValue;
-                    }
+                    if (argsJson is null)
+                        throw new InvalidOperationException($"""
+                                Unable to parse CALL JSON:
+                                { contentText} 
+                                """ );
 
-                    arguments.Add(argument);
+                    foreach (var prop in argsJson)
+                    {
+                        var argument = new FunctionCallArgument()
+                        {
+                            Name = prop.Key,
+                        };
+                        var propValue = prop.Value?.GetValue<string>() ?? "";
+
+                        if (propValue.StartsWith("$"))
+                        {
+                            argument.InputVariable = propValue.Trim('$', ' ');
+                        }
+                        else
+                        {
+                            argument.LiteralValue = propValue;
+                        }
+
+                        arguments.Add(argument);
+                    }
                 }
+
+                
 
                 scenario.ChatItems.Last().FunctionCalls.Add(new FunctionCall()
                 {
