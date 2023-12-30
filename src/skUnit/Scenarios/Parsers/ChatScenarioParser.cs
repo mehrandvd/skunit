@@ -4,9 +4,11 @@ using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Text;
+using System.Text.Json.Nodes;
 using System.Text.RegularExpressions;
 using System.Threading.Tasks;
 using Microsoft.SemanticKernel.ChatCompletion;
+using SemanticValidation.Utils;
 using skUnit.Scenarios;
 
 namespace skUnit.Scenarios.Parsers
@@ -65,6 +67,14 @@ namespace skUnit.Scenarios.Parsers
                             continue;
                         }
 
+                        var callMatch = Regex.Match(blockContent, @$"#{{1,}}\s*{specialId}\s*CALL\s*(?<functionCall>.*)");
+                        if (callMatch.Success)
+                        {
+                            PackBlock(testCase, "CALL", ref currentBlock, key, contentBuilder);
+                            key = callMatch.Groups["functionCall"].Value;
+                            continue;
+                        }
+
                         var answerMatch = Regex.Match(blockContent, @$"#{{1,}}\s*{specialId}\s*CHECK\s*(?<type>.*)");
                         if (answerMatch.Success)
                         {
@@ -120,6 +130,44 @@ namespace skUnit.Scenarios.Parsers
             {
                 scenario.Description = contentText;
             }
+            else if (currentBlock == "CALL")
+            {
+                //var match = Regex.Match(key, @"(?<function>.*)\((?<args>.*)\)");
+
+                //if (!match.Success)
+                //    throw new InvalidOperationException($"Call is not valid: {key}");
+
+                var function = key;
+                var argsJson = SemanticUtils.PowerParseJson<JsonObject>(contentText);
+
+                var arguments = new List<FunctionCallArgument>();
+
+                foreach (var prop in argsJson)
+                {
+                    var argument = new FunctionCallArgument()
+                    {
+                        Name = prop.Key,
+                    };
+                    var propValue = prop.Value.GetValue<string>();
+
+                    if (propValue.StartsWith("$"))
+                    {
+                        argument.InputVariable = propValue.Trim('$', ' ');
+                    }
+                    else
+                    {
+                        argument.LiteralValue = propValue;
+                    }
+
+                    arguments.Add(argument);
+                }
+
+                scenario.ChatItems.Last().FunctionCalls.Add(new FunctionCall()
+                {
+                    FunctionName = function,
+                    Arguments = arguments
+                });// = contentText;
+            }
             else if (currentBlock == "CHECK")
             {
                 var chatItem = scenario.ChatItems.Last();
@@ -131,7 +179,18 @@ namespace skUnit.Scenarios.Parsers
                     checkText = chatItem.Content;
                 }
 
-                chatItem.Assertions.Add(KernelAssertionParser.Parse(checkText, checkType));
+                var lastFunctionCall = chatItem.FunctionCalls.LastOrDefault();
+
+                var assertion = KernelAssertionParser.Parse(checkText, checkType);
+
+                if (lastFunctionCall != null)
+                {
+                    lastFunctionCall.Assertions.Add(assertion);
+                }
+                else
+                {
+                    chatItem.Assertions.Add(assertion);
+                }
             }
 
             currentBlock = newBlock;

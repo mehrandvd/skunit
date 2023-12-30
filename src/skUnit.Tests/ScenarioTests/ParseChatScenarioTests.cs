@@ -98,4 +98,55 @@ public class ParseChatScenarioTests
 
         Assert.Equal(6, first.ChatItems.Count);
     }
+
+    [Fact]
+    public void ParseScenario_FunctionCall_MustWork()
+    {
+        var scenarioText = """
+                # SCENARIO Height Discussion
+
+                ### [USER]
+                Is Eiffel tall?
+
+                ## [AGENT]
+                Yes it is
+
+                ### CHECK SemanticCondition
+                Approves that eiffel tower is tall or is positive about it.
+
+                ### CHECK SemanticCondition
+                Approves that eiffel tower is tall or is positive about it.
+
+                ## CALL GetIntent
+                ```json
+                {
+                    "input": "$input",
+                    "options": "Order,Question"
+                }
+                ```
+
+                ### CHECK SemanticCondition
+                It is order
+
+                ### CHECK SemanticCondition
+                It is food
+
+                ### CHECK SemanticCondition
+                It is Json
+                
+                """;
+
+        var scenarios = ChatScenario.LoadFromText(scenarioText, "");
+
+        Assert.NotEmpty(scenarios);
+
+        var first = scenarios.First();
+
+        Assert.Equal(2, first.ChatItems.Count);
+
+        var agentChatItem = first.ChatItems.ElementAt(1);
+
+        Assert.Equal(2, agentChatItem.Assertions.Count);
+        Assert.Equal(3, agentChatItem.FunctionCalls.First().Assertions.Count);
+    }
 }

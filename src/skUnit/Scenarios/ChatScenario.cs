@@ -1,4 +1,5 @@
-﻿using Microsoft.SemanticKernel.ChatCompletion;
+﻿using Markdig.Helpers;
+using Microsoft.SemanticKernel.ChatCompletion;
 using skUnit.Scenarios.Parsers;
 using skUnit.Scenarios.Parsers.Assertions;
 
@@ -37,8 +38,37 @@ public class ChatItem
     /// </summary>
     public List<IKernelAssertion> Assertions { get; set; } = new();
 
+    /// <summary>
+    /// The function calls that should be asserted too.
+    /// </summary>
+    public List<FunctionCall> FunctionCalls { get; set; } = new();
+
     public override string ToString()
     {
         return $"{Role}: {Content}";
     }
+}
+
+public class FunctionCall
+{
+    public required string FunctionName { get; set; }
+    public List<FunctionCallArgument> Arguments { get; set; } = new();
+
+    /// <summary>
+    /// All the assertions that should be checked after the result of InvokeAsync is ready.
+    /// </summary>
+    public List<IKernelAssertion> Assertions { get; set; } = new();
+
+    public override string ToString() => $"FunctionName({string.Join(",", Arguments.Select(a => a.Name))})";
+}
+
+public class FunctionCallArgument
+{
+    public required string Name { get; set; }
+    public string? LiteralValue { get; set; }
+    public string? InputVariable { get; set; }
+
+    public override string ToString() =>
+        InputVariable != null ? $"{Name}=${InputVariable}"
+            : $"{Name}=\"{LiteralValue}\"";
 }
