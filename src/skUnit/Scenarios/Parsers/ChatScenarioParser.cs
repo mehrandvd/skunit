@@ -172,13 +172,11 @@ namespace skUnit.Scenarios.Parsers
                     }
                 }
 
-                
-
                 scenario.ChatItems.Last().FunctionCalls.Add(new FunctionCall()
                 {
                     FunctionName = function,
                     Arguments = arguments
-                });// = contentText;
+                });
             }
             else if (currentBlock == "CHECK")
             {
