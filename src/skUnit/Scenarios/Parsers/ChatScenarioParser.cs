@@ -139,6 +139,11 @@ namespace skUnit.Scenarios.Parsers
 
                 var function = key;
 
+                if (string.IsNullOrWhiteSpace(function))
+                {
+                    throw new InvalidOperationException($"CALL function name is null");
+                }
+
                 var arguments = new List<FunctionCallArgument>();
 
                 if (!string.IsNullOrWhiteSpace(contentText))
