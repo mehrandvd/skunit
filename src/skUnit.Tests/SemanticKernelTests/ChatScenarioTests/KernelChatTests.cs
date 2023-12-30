@@ -9,7 +9,16 @@ namespace skUnit.Tests.SemanticKernelTests.ChatScenarioTests
     {
         public KernelChatTests(ITestOutputHelper output) : base(output)
         {
-            
+            var func = Kernel.CreateFunctionFromPrompt("""
+                [[INPUT]]
+                {{$input}}
+                [[END OF INPUT]]
+                
+                Get intent of input. Intent should be one of these options: {{$options}}.
+
+                INTENT:
+                """, new PromptExecutionSettings(), "GetIntent");
+            Kernel.Plugins.AddFromFunctions("MyPlugin", "", new[] { func });
         }
 
         [Fact]

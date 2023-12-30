@@ -3,6 +3,7 @@ using Microsoft.SemanticKernel.ChatCompletion;
 using Microsoft.SemanticKernel.Connectors.OpenAI;
 using skUnit.Exceptions;
 using skUnit.Scenarios;
+using skUnit.Scenarios.Parsers.Assertions;
 
 namespace skUnit;
 
@@ -99,24 +100,80 @@ public partial class SemanticKernelAssert
 
             foreach (var assertion in chatItem.Assertions)
             {
-                Log($"### CHECK {assertion.AssertionType}");
-                Log($"{assertion.Description}");
-                
-                try
+                await CheckAssertionAsync(assertion, answer);
+            }
+
+            foreach (var functionCall in chatItem.FunctionCalls)
+            {
+                Log($"## CALL {functionCall.FunctionName}");
+                Log(functionCall.ArgumentsText);
+                Log();
+
+                var function = kernel.Plugins[functionCall.PluginName][functionCall.FunctionName];
+
+                var arguments = new KernelArguments();
+
+                var history = new ChatHistory(chatHistory.Take(chatHistory.Count - 1));
+                var historyText = string.Join(
+                    Environment.NewLine,
+                    history.Select(c => $"[{c.Role}]: {c.Content}"));
+
+                var input = chatHistory.Last().Content;
+
+                arguments.Add("input", input);
+                arguments.Add("history", historyText);
+
+                foreach (var functionCallArgument in functionCall.Arguments)
                 {
-                    await assertion.Assert(Semantic, answer);
-                    Log($"✅ OK");
-                    Log("");
+                    if (functionCallArgument.LiteralValue is not null)
+                    {
+                        arguments.Add(functionCallArgument.Name, functionCallArgument.LiteralValue);
+                    }
+                    else if (functionCallArgument.InputVariable is not null)
+                    {
+
+                    }
+                    else
+                    {
+                        throw new InvalidOperationException($"""
+                                    Invalid function arguments:
+                                    { functionCallArgument} 
+                                    """ );
+                    }
                 }
-                catch (SemanticAssertException exception)
+
+                var result = await function.InvokeAsync<string>(kernel, arguments);
+
+                Log($"## CALL RESULT {functionCall.FunctionName}");
+                Log(result);
+                Log();
+
+                foreach (var assertion in functionCall.Assertions)
                 {
-                    Log("❌ FAIL");
-                    Log("Reason:");
-                    Log(exception.Message);
-                    Log();
-                    throw;
+                    await CheckAssertionAsync(assertion, result ?? "");
                 }
             }
+        }
+    }
+
+    private async Task CheckAssertionAsync(IKernelAssertion assertion, string answer)
+    {
+        Log($"### CHECK {assertion.AssertionType}");
+        Log($"{assertion.Description}");
+
+        try
+        {
+            await assertion.Assert(Semantic, answer);
+            Log($"✅ OK");
+            Log("");
+        }
+        catch (SemanticAssertException exception)
+        {
+            Log("❌ FAIL");
+            Log("Reason:");
+            Log(exception.Message);
+            Log();
+            throw;
         }
     }
 

@@ -9,6 +9,15 @@ Yes it is
 ### CHECK SemanticCondition
 Approves that eiffel tower is tall or is positive about it.
 
+## CALL MyPlugin.GetIntent
+```json
+{
+	"options": "Positive,Negative,Neutral"
+}
+```
+## CHECK ContainsAny
+Neutral,Positive
+
 ## [USER]
 What about everest mountain?
 

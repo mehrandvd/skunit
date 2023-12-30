@@ -137,12 +137,24 @@ namespace skUnit.Scenarios.Parsers
                 //if (!match.Success)
                 //    throw new InvalidOperationException($"Call is not valid: {key}");
 
-                var function = key;
+                var functionText = key;
 
-                if (string.IsNullOrWhiteSpace(function))
+                if (string.IsNullOrWhiteSpace(functionText))
                 {
                     throw new InvalidOperationException($"CALL function name is null");
                 }
+
+                var callParts = functionText.Split('.');
+                if (callParts.Length != 2)
+                {
+                    throw new InvalidOperationException($"""
+                        Invalid function call. It should be in Plugin.Function format:
+                        { functionText} 
+                        """ );
+                }
+
+                var plugin = callParts[0];
+                var function = callParts[1];
 
                 var arguments = new List<FunctionCallArgument>();
 
@@ -179,8 +191,10 @@ namespace skUnit.Scenarios.Parsers
 
                 scenario.ChatItems.Last().FunctionCalls.Add(new FunctionCall()
                 {
+                    PluginName = plugin,
                     FunctionName = function,
-                    Arguments = arguments
+                    Arguments = arguments,
+                    ArgumentsText = contentText
                 });
             }
             else if (currentBlock == "CHECK")

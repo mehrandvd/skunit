@@ -117,7 +117,7 @@ public class ParseChatScenarioTests
                 ### CHECK SemanticCondition
                 Approves that eiffel tower is tall or is positive about it.
 
-                ## CALL GetIntent
+                ## CALL Content.GetIntent
                 ```json
                 {
                     "input": "$input",
@@ -147,6 +147,8 @@ public class ParseChatScenarioTests
         var agentChatItem = first.ChatItems.ElementAt(1);
 
         Assert.Equal(2, agentChatItem.Assertions.Count);
+        Assert.Equal("Content", agentChatItem.FunctionCalls.First().PluginName);
+        Assert.Equal("GetIntent", agentChatItem.FunctionCalls.First().FunctionName);
         Assert.Equal(3, agentChatItem.FunctionCalls.First().Assertions.Count);
     }
 }

@@ -51,15 +51,17 @@ public class ChatItem
 
 public class FunctionCall
 {
+    public required string PluginName { get; set; }
     public required string FunctionName { get; set; }
     public List<FunctionCallArgument> Arguments { get; set; } = new();
+    public string? ArgumentsText { get; set; }
 
     /// <summary>
     /// All the assertions that should be checked after the result of InvokeAsync is ready.
     /// </summary>
     public List<IKernelAssertion> Assertions { get; set; } = new();
 
-    public override string ToString() => $"FunctionName({string.Join(",", Arguments.Select(a => a.Name))})";
+    public override string ToString() => $"{PluginName}{FunctionName}({string.Join(",", Arguments.Select(a => a.Name))})";
 }
 
 public class FunctionCallArgument
