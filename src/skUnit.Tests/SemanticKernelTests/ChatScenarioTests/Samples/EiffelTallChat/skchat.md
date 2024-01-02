@@ -3,6 +3,16 @@
 ## [USER]
 Is Eiffel tall?
 
+## CALL MyPlugin.GetIntent
+```json
+{
+	"options": "Happy,Question,Sarcastic"
+}
+```
+
+## CHECK ContainsAny
+Question
+
 ## [AGENT]
 Yes it is
 

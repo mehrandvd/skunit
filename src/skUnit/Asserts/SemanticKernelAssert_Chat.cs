@@ -4,6 +4,7 @@ using Microsoft.SemanticKernel.Connectors.OpenAI;
 using skUnit.Exceptions;
 using skUnit.Scenarios;
 using skUnit.Scenarios.Parsers.Assertions;
+using System.Linq;
 
 namespace skUnit;
 
@@ -52,55 +53,35 @@ public partial class SemanticKernelAssert
             if (chatItem.Role == AuthorRole.User)
             {
                 chatHistory.AddUserMessage(chatItem.Content);
-            }
-            else
-            {
-                throw new InvalidOperationException($"""
-                    Expected [USER] message but it is not: 
-                    [{chatItem.Role.ToString().ToUpper()}]: 
-                    {chatItem.Content}
-                    """);
-            }
-
-            getAnswerFunc ??= async (history) =>
-            {
-                var chatService = kernel.GetRequiredService<IChatCompletionService>();
-                var result = await chatService.GetChatMessageContentsAsync(history);
-
-                return result.First().Content ?? "";
-            };
-
-            chatItem = queue.Dequeue();
-
-            if (chatItem.Role == AuthorRole.Assistant)
+            } 
+            else if (chatItem.Role == AuthorRole.Assistant)
             {
                 Log($"## [EXPECTED ANSWER]");
                 Log(chatItem.Content);
                 Log();
-            }
-            else
-            {
-                throw new InvalidOperationException($"""
-                    Expected [AGENT] message but it is not: 
-                    [{chatItem.Role.ToString().ToUpper()}]: 
-                    {chatItem.Content}
-                    """);
-            }
+
+                getAnswerFunc ??= async (history) =>
+                {
+                    var chatService = kernel.GetRequiredService<IChatCompletionService>();
+                    var result = await chatService.GetChatMessageContentsAsync(history);
+
+                    return result.First().Content ?? "";
+                };
+
+                var answer = await getAnswerFunc(chatHistory);
+
+                // To let chatHistory stay clean for getting the answer
+                chatHistory.AddAssistantMessage(chatItem.Content);
 
 
-            var answer = await getAnswerFunc(chatHistory);
+                Log($"### [ACTUAL ANSWER]");
+                Log(answer);
+                Log();
 
-            // To let chatHistory stay clean for gettig the answer
-            chatHistory.AddAssistantMessage(chatItem.Content);
-
-
-            Log($"### [ACTUAL ANSWER]");
-            Log(answer);
-            Log();
-
-            foreach (var assertion in chatItem.Assertions)
-            {
-                await CheckAssertionAsync(assertion, answer);
+                foreach (var assertion in chatItem.Assertions)
+                {
+                    await CheckAssertionAsync(assertion, answer);
+                }
             }
 
             foreach (var functionCall in chatItem.FunctionCalls)
@@ -113,18 +94,22 @@ public partial class SemanticKernelAssert
 
                 var arguments = new KernelArguments();
 
-                var history = new ChatHistory(chatHistory.Take(chatHistory.Count - 1));
+
+                var lastUserIndex = chatHistory.IndexOf(chatHistory.Last(c => c.Role == AuthorRole.User));
+
+                var history = new ChatHistory(chatHistory.Take(chatHistory.Count - lastUserIndex - 2));
                 var historyText = string.Join(
                     Environment.NewLine,
                     history.Select(c => $"[{c.Role}]: {c.Content}"));
 
-                var input = chatHistory.Last().Content;
+                var input = chatHistory.ElementAt(lastUserIndex).Content;
 
                 arguments.Add("input", input);
                 arguments.Add("history", historyText);
 
                 foreach (var functionCallArgument in functionCall.Arguments)
                 {
+
                     if (functionCallArgument.LiteralValue is not null)
                     {
                         arguments.Add(functionCallArgument.Name, functionCallArgument.LiteralValue);
@@ -137,9 +122,16 @@ public partial class SemanticKernelAssert
                     {
                         throw new InvalidOperationException($"""
                                     Invalid function arguments:
-                                    { functionCallArgument} 
-                                    """ );
+                                    {functionCallArgument} 
+                                    """);
                     }
+                }
+
+                foreach (var argument in arguments)
+                {
+                    Log($"### ARGUMENT {argument.Key}");
+                    Log(argument.Value?.ToString());
+                    Log();
                 }
 
                 var result = await function.InvokeAsync<string>(kernel, arguments);

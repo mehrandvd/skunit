@@ -105,8 +105,22 @@ public class ParseChatScenarioTests
         var scenarioText = """
                 # SCENARIO Height Discussion
 
-                ### [USER]
+                ## [USER]
                 Is Eiffel tall?
+
+                ## CALL Content.GetIntent
+                ```json
+                {
+                    "input": "$input",
+                    "options": "Order,Question"
+                }
+                ```
+                
+                ### CHECK SemanticCondition
+                It is order
+
+                ### CHECK SemanticCondition
+                It is food
 
                 ## [AGENT]
                 Yes it is
@@ -144,8 +158,11 @@ public class ParseChatScenarioTests
 
         Assert.Equal(2, first.ChatItems.Count);
 
-        var agentChatItem = first.ChatItems.ElementAt(1);
+        var userChatItem = first.ChatItems.ElementAt(0);
+        Assert.Single(userChatItem.FunctionCalls);
+        Assert.Equal(2, userChatItem.FunctionCalls.First().Assertions.Count);
 
+        var agentChatItem = first.ChatItems.ElementAt(1);
         Assert.Equal(2, agentChatItem.Assertions.Count);
         Assert.Equal("Content", agentChatItem.FunctionCalls.First().PluginName);
         Assert.Equal("GetIntent", agentChatItem.FunctionCalls.First().FunctionName);
