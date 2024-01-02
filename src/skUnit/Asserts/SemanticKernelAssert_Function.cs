@@ -43,23 +43,7 @@ public partial class SemanticKernelAssert
 
         foreach (var assertion in scenario.Assertions)
         {
-            Log($"## ANSWER {assertion.AssertionType}");
-            Log($"{assertion.Description}");
-
-            try
-            {
-                await assertion.Assert(Semantic, result);
-                Log($"✅ OK");
-                Log("");
-            }
-            catch (SemanticAssertException exception)
-            {
-                Log("❌ FAIL");
-                Log("Reason:");
-                Log(exception.Message);
-                Log();
-                throw;
-            }
+            await CheckAssertionAsync(assertion, result ?? "");
         }
     }
 

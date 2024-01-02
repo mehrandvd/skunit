@@ -7,6 +7,7 @@ using Microsoft.SemanticKernel;
 using SemanticValidation;
 using skUnit.Exceptions;
 using skUnit.Scenarios;
+using skUnit.Scenarios.Parsers.Assertions;
 
 namespace skUnit
 {
@@ -51,6 +52,27 @@ namespace skUnit
             if (OnLog is not null)
             {
                 OnLog(message);
+            }
+        }
+
+        private async Task CheckAssertionAsync(IKernelAssertion assertion, string answer)
+        {
+            Log($"### CHECK {assertion.AssertionType}");
+            Log($"{assertion.Description}");
+
+            try
+            {
+                await assertion.Assert(Semantic, answer);
+                Log($"✅ OK");
+                Log("");
+            }
+            catch (SemanticAssertException exception)
+            {
+                Log("❌ FAIL");
+                Log("Reason:");
+                Log(exception.Message);
+                Log();
+                throw;
             }
         }
     }

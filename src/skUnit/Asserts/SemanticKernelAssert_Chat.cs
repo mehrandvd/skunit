@@ -118,7 +118,19 @@ public partial class SemanticKernelAssert
                     }
                     else if (functionCallArgument.InputVariable is not null)
                     {
+                        var fullChat = string.Join(
+                            Environment.NewLine,
+                            chatHistory.Select(c => $"[{c.Role}]: {c.Content}"));
 
+                        var value = functionCallArgument.InputVariable switch
+                        {
+                            "input" => input,
+                            "history" => historyText,
+                            "chat" => fullChat,
+                            _ => throw new InvalidOperationException($"Unknown parameter: {functionCallArgument.InputVariable} in calling {functionCall.FunctionName}")
+                        };
+
+                        arguments.Add(functionCallArgument.Name, value);
                     }
                     else
                     {
@@ -147,27 +159,6 @@ public partial class SemanticKernelAssert
                     await CheckAssertionAsync(assertion, result ?? "");
                 }
             }
-        }
-    }
-
-    private async Task CheckAssertionAsync(IKernelAssertion assertion, string answer)
-    {
-        Log($"### CHECK {assertion.AssertionType}");
-        Log($"{assertion.Description}");
-
-        try
-        {
-            await assertion.Assert(Semantic, answer);
-            Log($"✅ OK");
-            Log("");
-        }
-        catch (SemanticAssertException exception)
-        {
-            Log("❌ FAIL");
-            Log("Reason:");
-            Log(exception.Message);
-            Log();
-            throw;
         }
     }
 
