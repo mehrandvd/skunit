@@ -40,19 +40,21 @@ public partial class SemanticKernelAssert
         while (queue.Count > 0)
         {
             var chatItem = queue.Dequeue();
-            Log($"## [{chatItem.Role.ToString().ToUpper()}]");
-            Log(chatItem.Content);
-            Log();
+            
 
             if (chatItem.Role == AuthorRole.System)
             {
                 chatHistory.AddSystemMessage(chatItem.Content);
-                continue;
-            }
-
-            if (chatItem.Role == AuthorRole.User)
+                Log($"## [{chatItem.Role.ToString().ToUpper()}]");
+                Log(chatItem.Content);
+                Log();
+            } 
+            else if (chatItem.Role == AuthorRole.User)
             {
                 chatHistory.AddUserMessage(chatItem.Content);
+                Log($"## [{chatItem.Role.ToString().ToUpper()}]");
+                Log(chatItem.Content);
+                Log();
             } 
             else if (chatItem.Role == AuthorRole.Assistant)
             {
