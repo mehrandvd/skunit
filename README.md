@@ -18,15 +18,15 @@ Happy
 
 This scenario verifies that the function returns _"Happy"_ when the input is _"Such a beautiful day it is"_.
 
-This is an **Invocation Scenario**, which tests a single function call. You can also write **Chat Scenarios**, which test a sequence of interactions between the user and the SemanticKernel.
+This is an [**Invocation Scenario**](https://github.com/mehrandvd/skunit/blob/main/docs/invocation-scenario-spec.md), which tests a single function call. You can also write [**Chat Scenarios**](https://github.com/mehrandvd/skunit/blob/main/docs/chat-scenario-spec.md), which test a sequence of interactions between the user and the SemanticKernel.
 
 skUnit offers many features to help you write more complex and flexible scenarios. In this section, we will show you some of them with an example.
 
 Suppose you have a function called `GetSentiment` that takes two parameters and returns a sentence describing the sentiment of the text:
 
 **Parameters**:
-  - _input_: the text to analyze
-  - _options_: the possible sentiment values, such as _happy_, _angry_, or _sad_
+  - **input**: the text to analyze
+  - **options**: the possible sentiment values, such as _happy_, _angry_, or _sad_
   
 **Returns**: a sentence like _"The sentiment is happy"_ or _"The sentiment of this text is sad"_.
 
@@ -121,12 +121,15 @@ Here's another example of an executing The [Chatting about Eiffel height](https:
 
 ![image](https://github.com/mehrandvd/skunit/assets/5070766/56bc08fe-0955-4ed4-9b4c-5d4ff416b3d3)
 
+## Documents
+To better understand skUnit, Check these documents:
+ - [Invocation Scenario Spec](https://github.com/mehrandvd/skunit/blob/main/docs/invocation-scenario-spec.md): The details of writing an InvocationScenario.
+ - [Chat Scenario Spec](https://github.com/mehrandvd/skunit/blob/main/docs/chat-scenario-spec.md): The details of writing an ChatScenario.
+ - [CHECK Statement Spec](https://github.com/mehrandvd/skunit/blob/main/docs/check-statements-spec.md): The various `CHECK` statements that you can use for assertion.
+
 ## Requirements
 - .NET 7.0 or higher
 - An OpenAI API key
-
-
-Here's a refined version of the text:
 
 ## Installation
 You can easily add **skUnit** to your project as it is available as a [NuGet](https://www.nuget.org/packages/skUnit) package. To install it, execute the following command in your terminal:
