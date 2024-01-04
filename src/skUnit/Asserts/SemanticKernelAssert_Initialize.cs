@@ -29,7 +29,15 @@ namespace skUnit
         /// <param name="deploymentName"></param>
         /// <param name="endpoint"></param>
         /// <param name="apiKey"></param>
-        public SemanticKernelAssert(string deploymentName, string endpoint, string apiKey, Action<string>? onLog = null)
+        /// <param name="onLog">If you're using xUnit, do this in the constructor:
+        /// <code>
+        /// MyTest(ITestOutputHelper output)
+        /// {
+        ///    SemanticKernelAssert = new SemanticKernelAssert(_deploymentName, _endpoint, _apiKey, output.WriteLine);
+        /// }
+        /// </code>
+        /// </param>
+        public SemanticKernelAssert(string deploymentName, string endpoint, string apiKey, Action<string> onLog)
         {
             Semantic = new Semantic(deploymentName, endpoint, apiKey);
             OnLog = onLog;
