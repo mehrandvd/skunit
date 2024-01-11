@@ -105,3 +105,38 @@ However, `SemanticSimilar` is not the only assertion method. There are many more
 
 You can see the full list of CHECK statements here: [CHECK Statement spec](https://github.com/mehrandvd/skunit/blob/main/docs/check-statements-spec.md).
 
+## Advanced Scenario Features
+
+### Flexible Use of Hashtags
+When defining skUnit statements such as `# SCENARIO`, `# PARAMETER`, and so on, you have the freedom to use as many hashtags as you wish. There's no strict rule that mandates a specific count of hashtags for each statement. This flexibility allows you to format your markdown in a way that enhances readability for you. However, as a best practice, we suggest adhering to the recommended usage to maintain a clear and comprehensible hierarchy.
+
+### Unique Identifiers
+In certain uncommon instances, the data may contain skUnit expressions that could disrupt the parsing of the scenario. For instance, let's consider a scenario with two parameters: `input` and `options`. If the first parameter contains a markdown value that disrupts parsing, it could pose a problem:
+
+```md
+# SCENARIO
+
+## PARAMETER input
+This block is a markdown itself that includes this exact section:
+## PARAMETER hello
+This could lead skUnit to mistakenly identify it as a `parameter`, which it isn't.
+
+## PARAMETER options
+happy, angry
+```
+
+To handle these exceptional cases, you can employ an identifier in your statements, like so:
+
+```md
+# sk SCENARIO
+
+## sk PARAMETER input
+This block is a markdown itself that includes this exact section:
+## PARAMETER hello
+This could lead skUnit to mistakenly identify it as a `parameter`, which it isn't.
+
+## sk PARAMETER options
+happy, angry
+```
+
+In this example, we used `sk` as the identifier. However, you can use any identifier of your choice, such as `~`, `*`, etc. The parser will recognize whatever you use in the first statement as the unique identifier for the statements.
