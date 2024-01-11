@@ -200,7 +200,7 @@ This output is generated line by line as the test is executed:
 ## Advanced Scenario Features
 
 ### Flexible Use of Hashtags
-When defining skUnit statements such as `# SCENARIO`, `# PARAMETER`, and so on, you have the freedom to use as many hashtags as you wish. There's no strict rule that mandates a specific count of hashtags for each statement. This flexibility allows you to format your markdown in a way that enhances readability for you. However, as a best practice, we suggest adhering to the recommended usage to maintain a clear and comprehensible hierarchy.
+When defining skUnit statements such as `# SCENARIO`, `## [USER]`, and so on, you have the freedom to use as many hashtags as you wish. There's no strict rule that mandates a specific count of hashtags for each statement. This flexibility allows you to format your markdown in a way that enhances readability for you. However, as a best practice, we suggest adhering to the recommended usage to maintain a clear and comprehensible hierarchy.
 
 ### Unique Identifiers
 In certain uncommon instances, the data may contain skUnit expressions that could disrupt the parsing of the scenario. For instance, let's consider a scenario with two chat items. If the first chat item contains a markdown value that disrupts parsing, it could pose a problem:
