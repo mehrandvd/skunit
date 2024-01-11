@@ -196,3 +196,44 @@ This output is generated line by line as the test is executed:
 
 ![image](https://github.com/mehrandvd/skunit/assets/5070766/f3ef8a37-ceab-444f-b6f4-098557b61bfa)
 
+
+## Advanced Scenario Features
+
+### Flexible Use of Hashtags
+When defining skUnit statements such as `# SCENARIO`, `# PARAMETER`, and so on, you have the freedom to use as many hashtags as you wish. There's no strict rule that mandates a specific count of hashtags for each statement. This flexibility allows you to format your markdown in a way that enhances readability for you. However, as a best practice, we suggest adhering to the recommended usage to maintain a clear and comprehensible hierarchy.
+
+### Unique Identifiers
+In certain uncommon instances, the data may contain skUnit expressions that could disrupt the parsing of the scenario. For instance, let's consider a scenario with two chat items. If the first chat item contains a markdown value that disrupts parsing, it could pose a problem:
+
+```md
+# SCENARIO
+
+## [USER]
+This block itself contains a chat:
+	## [USER]
+	Hello
+	## [AGENT]
+	Hi, How can I help you?
+
+## [AGENT]
+Wow, this is a chat.
+```
+
+To handle these exceptional cases, you can employ an identifier in your statements, like so:
+
+```md
+# sk SCENARIO
+
+## sk [USER]
+This block itself contains a chat:
+	## [USER]
+	Hello
+	## [AGENT]
+	Hi, How can I help you?
+
+## sk [AGENT]
+Wow, this is a chat.
+```
+
+In this example, we used `sk` as the identifier. However, you can use any identifier of your choice, such as `~`, `*`, etc. The parser will recognize whatever you use in the first statement as the unique identifier for the statements.
+
