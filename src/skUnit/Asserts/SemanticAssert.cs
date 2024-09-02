@@ -42,6 +42,18 @@ namespace skUnit
         }
 
         /// <summary>
+        /// This class needs a SemanticKernel kernel to work.
+        /// Using this constructor you can use an OpenAI subscription to configure it.
+        /// </summary>
+        /// <param name="apiKey"></param>
+        public SemanticAssert(string apiKey)
+        {
+            var kernel = Kernel.Builder.Build();
+            kernel.Config.AddOpenAITextCompletionService("text-davinci-003", apiKey);
+            Semantic = new Semantic(kernel);
+        }
+
+        /// <summary>
         /// Checks whether <paramref name="first"/> and <paramref name="second"/> string are semantically similar.
         /// It uses the kernel and OpenAI to check this semantically.
         /// <example>

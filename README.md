@@ -129,7 +129,7 @@ To better understand skUnit, Check these documents:
 
 ## Requirements
 - .NET 7.0 or higher
-- An OpenAI API key
+- An OpenAI API key or an AzureOpenAI API key
 
 ## Installation
 You can easily add **skUnit** to your project as it is available as a [NuGet](https://www.nuget.org/packages/skUnit) package. To install it, execute the following command in your terminal:
@@ -137,14 +137,18 @@ You can easily add **skUnit** to your project as it is available as a [NuGet](ht
 dotnet add package skUnit
 ```
 
-Afterwards, you'll need to instantiate the `SemanticKernelAssert` class in your test constructor. This requires passing your OpenAI subscription details as parameters:
+Afterwards, you'll need to instantiate the `SemanticKernelAssert` class in your test constructor. This requires passing your OpenAI or AzureOpenAI subscription details as parameters:
 ```csharp
 public class MyTest
 {
   SemanticKernelAssert SemanticKernelAssert { get; set; }
   MyTest(ITestOutputHelper output)
   {
+    // For AzureOpenAI
     SemanticKernelAssert = new SemanticKernelAssert(_deploymentName, _endpoint, _apiKey, message => output.WriteLine(message));
+    
+    // For OpenAI
+    SemanticKernelAssert = new SemanticKernelAssert(_apiKey, message => output.WriteLine(message));
   }
 
   [Fact]
