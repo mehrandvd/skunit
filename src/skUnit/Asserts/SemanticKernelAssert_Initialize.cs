@@ -1,4 +1,4 @@
-﻿using System;
+using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Text;
@@ -53,6 +53,27 @@ namespace skUnit
             Semantic = new Semantic(kernel);
             OnLog = onLog;
 
+        }
+
+        /// <summary>
+        /// This class needs a SemanticKernel kernel to work.
+        /// Using this constructor you can use an OpenAI subscription to configure it.
+        /// </summary>
+        /// <param name="apiKey"></param>
+        /// <param name="onLog">If you're using xUnit, do this in the constructor:
+        /// <code>
+        /// MyTest(ITestOutputHelper output)
+        /// {
+        ///    SemanticKernelAssert = new SemanticKernelAssert(_apiKey, output.WriteLine);
+        /// }
+        /// </code>
+        /// </param>
+        public SemanticKernelAssert(string apiKey, Action<string> onLog)
+        {
+            var kernel = Kernel.Builder.Build();
+            kernel.Config.AddOpenAITextCompletionService("text-davinci-003", apiKey);
+            Semantic = new Semantic(kernel);
+            OnLog = onLog;
         }
 
         private void Log(string? message = "")

@@ -25,6 +25,31 @@ namespace skUnit.Tests.SemanticAssertTests
             SemanticAssert = new SemanticAssert(deploymentName, endpoint, apiKey);
         }
 
+        public SemanticAssertTests(ITestOutputHelper output, bool useOpenAI)
+        {
+            Output = output;
+
+            var apiKey =
+                Environment.GetEnvironmentVariable("openai-api-key", EnvironmentVariableTarget.User) ??
+                throw new Exception("No ApiKey in environment variables.");
+
+            if (useOpenAI)
+            {
+                SemanticAssert = new SemanticAssert(apiKey);
+            }
+            else
+            {
+                var endpoint =
+                    Environment.GetEnvironmentVariable("openai-endpoint", EnvironmentVariableTarget.User) ??
+                    throw new Exception("No Endpoint in environment variables.");
+                var deploymentName =
+                    Environment.GetEnvironmentVariable("openai-deployment-name", EnvironmentVariableTarget.User) ??
+                    throw new Exception("No DeploymentName in environment variables.");
+
+                SemanticAssert = new SemanticAssert(deploymentName, endpoint, apiKey);
+            }
+        }
+
         [Theory]
         [MemberData(nameof(GetSimilarData))]
         public void Similar_True_MustWork(string first, string second)
