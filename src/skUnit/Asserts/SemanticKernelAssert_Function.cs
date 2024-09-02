@@ -178,4 +178,40 @@ public partial class SemanticKernelAssert
             Log("");
         }
     }
+
+    /// <summary>
+    /// Checks whether the <paramref name="pluginUrl"/> can pass the <paramref name="scenario"/>.
+    /// </summary>
+    /// <remarks>
+    /// It runs the scenario using:
+    /// <code>kernel.InvokeAsync</code>
+    /// and checks all the assertions specified within the scenario.
+    /// </remarks>
+    /// <param name="pluginUrl"></param>
+    /// <param name="scenario"></param>
+    /// <returns></returns>
+    public async Task CheckPluginByUrlAsync(string pluginUrl, InvocationScenario scenario)
+    {
+        var kernel = new KernelBuilder().WithOpenAIChatCompletionService(pluginUrl).Build();
+        var function = kernel.GetFunction("pluginFunctionName"); // Replace with actual function name
+        await CheckScenarioAsync(kernel, function, scenario);
+    }
+
+    /// <summary>
+    /// Checks whether the <paramref name="pluginUrl"/> can pass all the <paramref name="scenarios"/>.
+    /// </summary>
+    /// <remarks>
+    /// It runs the scenario using:
+    /// <code>kernel.InvokeAsync</code>
+    /// and checks all the assertions specified within the scenario.
+    /// </remarks>
+    /// <param name="pluginUrl"></param>
+    /// <param name="scenarios"></param>
+    /// <returns></returns>
+    public async Task CheckPluginByUrlAsync(string pluginUrl, List<InvocationScenario> scenarios)
+    {
+        var kernel = new KernelBuilder().WithOpenAIChatCompletionService(pluginUrl).Build();
+        var function = kernel.GetFunction("pluginFunctionName"); // Replace with actual function name
+        await CheckScenarioAsync(kernel, function, scenarios);
+    }
 }
