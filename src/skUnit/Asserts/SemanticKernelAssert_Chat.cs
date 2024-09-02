@@ -190,4 +190,32 @@ public partial class SemanticKernelAssert
             Log();
         }
     }
+
+    /// <summary>
+    /// Checks whether the <paramref name="scenario"/> passes on the given plugin URL
+    /// using its ChatCompletionService.
+    /// </summary>
+    /// <param name="pluginUrl"></param>
+    /// <param name="scenario"></param>
+    /// <returns></returns>
+    /// <exception cref="InvalidOperationException">If the OpenAI was unable to generate a valid response.</exception>
+    public async Task CheckPluginByUrlAsync(string pluginUrl, ChatScenario scenario)
+    {
+        var kernel = new KernelBuilder().WithOpenAIChatCompletionService(pluginUrl).Build();
+        await CheckChatScenarioAsync(kernel, scenario);
+    }
+
+    /// <summary>
+    /// Checks whether all of the <paramref name="scenarios"/> passes on the given plugin URL
+    /// using its ChatCompletionService.
+    /// </summary>
+    /// <param name="pluginUrl"></param>
+    /// <param name="scenarios"></param>
+    /// <returns></returns>
+    /// <exception cref="InvalidOperationException">If the OpenAI was unable to generate a valid response.</exception>
+    public async Task CheckPluginByUrlAsync(string pluginUrl, List<ChatScenario> scenarios)
+    {
+        var kernel = new KernelBuilder().WithOpenAIChatCompletionService(pluginUrl).Build();
+        await CheckChatScenarioAsync(kernel, scenarios);
+    }
 }

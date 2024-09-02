@@ -1,7 +1,7 @@
 # skUnit
 [![Build and Deploy](https://github.com/mehrandvd/skUnit/actions/workflows/build.yml/badge.svg)](https://github.com/mehrandvd/skUnit/actions/workflows/build.yml)
 [![NuGet version (skUnit)](https://img.shields.io/nuget/v/skUnit.svg?style=flat)](https://www.nuget.org/packages/skUnit/)
-[![NuGet downloads](https://img.shields.io/nuget/dt/skUnit.svg?style=flat)](https://www.nuget.org/packages/skUnit)
+[![NuGet downloads](https://img.shields.io/nuget/dt/skUnit.svg?style=flat)](https://www.nuget.org/packages/skUnit/)
 
 **skUnit** is a testing tool for [SemanticKernel](https://github.com/microsoft/semantic-kernel) units, such as _plugin functions_ and _kernels_.
 
@@ -120,6 +120,35 @@ The two texts are not semantically equivalent. The first text expresses anger, w
 Here's another example of an executing The [Chatting about Eiffel height](https://github.com/mehrandvd/skunit/blob/main/src/skUnit.Tests/SemanticKernelTests/ChatScenarioTests/Samples/EiffelTallChat/skchat.md) test:
 
 ![image](https://github.com/mehrandvd/skunit/assets/5070766/56bc08fe-0955-4ed4-9b4c-5d4ff416b3d3)
+
+## Testing OpenAI Plugins Using URL
+
+skUnit now supports testing OpenAI plugins directly using their URL. This feature allows you to load and test plugins without needing to pre-configure them in your kernel.
+
+### Example
+
+Here is an example of how to test an OpenAI plugin using its URL:
+
+```csharp
+public class MyTest
+{
+  SemanticKernelAssert SemanticKernelAssert { get; set; }
+  MyTest(ITestOutputHelper output)
+  {
+    var pluginUrl = "https://example.com/openai-plugin";
+    SemanticKernelAssert = new SemanticKernelAssert(pluginUrl, message => output.WriteLine(message));
+  }
+
+  [Fact]
+  public async Task MyPluginShouldWork()
+  {
+    var scenarios = await ChatScenario.LoadFromResourceAsync("MyPluginScenario.md", Assembly.GetExecutingAssembly());
+    await SemanticKernelAssert.CheckPluginByUrlAsync(scenarios);
+  }
+}
+```
+
+In this example, the `SemanticKernelAssert` class is initialized with the URL of the OpenAI plugin. The `CheckPluginByUrlAsync` method is then used to test the plugin with the provided scenarios.
 
 ## Documents
 To better understand skUnit, Check these documents:

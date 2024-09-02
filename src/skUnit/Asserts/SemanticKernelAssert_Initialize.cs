@@ -55,6 +55,26 @@ namespace skUnit
 
         }
 
+        /// <summary>
+        /// This class needs a SemanticKernel kernel to work.
+        /// Using this constructor you can use a plugin URL to configure it.
+        /// </summary>
+        /// <param name="pluginUrl"></param>
+        /// <param name="onLog">If you're using xUnit, do this in the constructor:
+        /// <code>
+        /// MyTest(ITestOutputHelper output)
+        /// {
+        ///    SemanticKernelAssert = new SemanticKernelAssert(_pluginUrl, output.WriteLine);
+        /// }
+        /// </code>
+        /// </param>
+        public SemanticKernelAssert(string pluginUrl, Action<string> onLog)
+        {
+            var kernel = new KernelBuilder().WithOpenAIChatCompletionService(pluginUrl).Build();
+            Semantic = new Semantic(kernel);
+            OnLog = onLog;
+        }
+
         private void Log(string? message = "")
         {
             if (OnLog is not null)
