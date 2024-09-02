@@ -104,7 +104,7 @@ You are such a bastard, Fuck off!
 happy, angry
 
 ## EXPECTED ANSWER
-The sentiment is happy
+The sentiment is happy.
 
 ## ACTUAL ANSWER
 angry
