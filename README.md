@@ -3,7 +3,7 @@
 [![NuGet version (skUnit)](https://img.shields.io/nuget/v/skUnit.svg?style=flat)](https://www.nuget.org/packages/skUnit/)
 [![NuGet downloads](https://img.shields.io/nuget/dt/skUnit.svg?style=flat)](https://www.nuget.org/packages/skUnit)
 
-**skUnit** is a testing tool for [SemanticKernel](https://github.com/microsoft/semantic-kernel) units, such as _plugin functions_ and _kernels_.
+**skUnit** is a testing tool for [SemanticKernel](https://github.com/microsoft/semantic-kernel) units, such as _plugin functions_, _kernels_, _chat services_ and ...
 
 For example, you can use skUnit to test a `GetSentiment` function that analyzes a text and returns its sentiment, such as _"Happy"_ or _"Sad"_.
 You can write different scenarios to check how the function behaves with various inputs, such as:
@@ -20,55 +20,58 @@ This scenario verifies that the function returns _"Happy"_ when the input is _"S
 
 This is an [**Invocation Scenario**](https://github.com/mehrandvd/skunit/blob/main/docs/invocation-scenario-spec.md), which tests a single function call. You can also write [**Chat Scenarios**](https://github.com/mehrandvd/skunit/blob/main/docs/chat-scenario-spec.md), which test a sequence of interactions between the user and the SemanticKernel.
 
-skUnit offers many features to help you write more complex and flexible scenarios. In this section, we will show you some of them with an example.
+# Chat Scenarios
 
-Suppose you have a function called `GetSentiment` that takes two parameters and returns a sentence describing the sentiment of the text:
+A chat scenario is a way of testing how SemanticKernel units, such as plugin functions and kernels, respond to user inputs in skUnit. 
+A chat scenario consists of one or more sub-scenarios, each representing a dialogue turn between the user and the agent.
 
-**Parameters**:
-  - **input**: the text to analyze
-  - **options**: the possible sentiment values, such as _happy_, _angry_, or _sad_
-  
-**Returns**: a sentence like _"The sentiment is happy"_ or _"The sentiment of this text is sad"_.
-
-Here is a scenario that tests this function:
+## Example
+This is an example of a chat scenario with two sub-scenarios:
 
 ```md
-# SCENARIO GetSentimentHappy
+# SCENARIO Height Discussion
 
-## PARAMETER input
-Such a beautiful day it is
+## [USER]
+Is Eiffel tall?
 
-## PARAMETER options
-happy, angry
+## [AGENT]
+Yes it is
 
-## ANSWER SemanticSimilar
-The sentiment is happy
+### CHECK SemanticCondition
+It agrees that the Eiffel Tower is tall or expresses a positive sentiment.
+
+## [USER]
+What about Everest Mountain?
+
+## [AGENT]
+Yes it is tall too
+
+### CHECK SemanticCondition
+It agrees that Everest mountain is tall or expresses a positive sentiment.
 ```
 
-The most interesting part of this scenario is:
+![image](https://github.com/mehrandvd/skunit/assets/5070766/156b0831-e4f3-4e4b-b1b0-e2ec868efb5f)
 
-```md
-## ANSWER SemanticSimilar
-The sentiment is happy
-```
-This line specifies the expected output of the function and how to compare it with the actual output. 
-In this case, the output should be **semantically similar** to _"The sentiment is happy"_.
-This means that the output can have different words or syntax, but the meaning should be the same.
+### Sub-scenario 1
+The first sub-scenario tests how the agent responds to the question `Is Eiffel tall?`. 
+The expected answer is something like `Yes it is`, but this is not an exact match. It is just a guideline for the desired response.
 
-> This is a powerful feature of skUnit scenarios, as **it allows you to use OpenAI itself to perform semantic comparisons**.
+When the scenario is executed, the OpenAI generates an actual answer, such as `Yes it is quite tall.`. 
+The next statement `CHECK SemanticCondition` is an assertion that verifies if the actual answer meets the specified condition: 
+`It agrees that the Eiffel Tower is tall or expresses a positive sentiment.`
 
-You can also write this assertion in another way:
+### Sub-scenario 2
+The second sub-scenario tests how the agent responds to the follow-up question `What about Everest mountain?`. 
+The expected answer is something like `Yes it is tall too`, but again, this is not an exact match. It is just a guideline for the desired response.
 
-```md
-## ANSWER
-The sentiment of the sentence is happy
+When the scenario is executed, the OpenAI generates an actual answer, such as `Yes it is very tall indeed.`. 
+The next statement `CHECK SemanticCondition` is an assertion that verifies if the actual answer meets the specified condition: 
+`It agrees that Everest mountain is tall or expresses a positive sentiment.`
 
-## CHECK SemanticSimilar
-The sentiment is happy
-```
-
-In this style, the expected answer is just a reminder and not used for comparison; 
-and then a `## CHECK SemanticSimilar` is used to explicitly perform the assertion.
+As you can see, this sub-scenario does not depend on the exact wording of the previous answer. 
+It assumes that the agent responded in the expected way and continues the test. 
+This makes writing long tests easier, as you can rely on the agent's answers to design your test. 
+Otherwise, you would have to account for different variations of the intermediate answers every time you run the test.
 
 However, `SemanticSimilar` is not the only assertion method. There are many more assertion checks available (like **SemanticCondition**, **Equals**). 
 
@@ -88,38 +91,93 @@ For example, you can see how clear and simple this scenario is: [Chatting about 
 Executing tests is a straightforward process. You have the flexibility to utilize any preferred test frameworks such as xUnit, nUnit, or MSTest. With just two lines of code, you can load and run a test:
 
 ```csharp
-var scenarios = InvocationScenario.LoadFromText(scenario);
-await SemanticKernelAssert.CheckScenarioAsync(Kernel, scenarios);
+var markdown = // Load it from .md file
+var scenarios = await ChatScenario.LoadFromText(markdown);
+await SemanticKernelAssert.CheckChatScenarioAsync(scenarios, async history =>
+            {
+                var result = // your logic to be tested;
+                return result;
+            });
 ```
 
-The standout feature of skUnit is its detailed test output. Here's an example:
+The test output will be generated incrementally, line by line:
 
 ```md
-# SCENARIO GetSentimentHappy_Fail
+# SCENARIO Height Discussion
 
-## PARAMETER input
-You are such a bastard, Fuck off!
+## [USER]
+Is Eiffel tall?
 
-## PARAMETER options
-happy, angry
+## [EXPECTED ANSWER]
+Yes it is
 
-## EXPECTED ANSWER
-The sentiment is happy.
+### [ACTUAL ANSWER]
+Yes, the Eiffel Tower in Paris, France, is tall at 330 meters (1,083 feet) in height.
 
-## ACTUAL ANSWER
-angry
+### CHECK Condition
+Confirms that the Eiffel Tower is tall or expresses positivity.
+✅ OK
 
-## ANSWER SemanticSimilar
-The sentiment is happy
-Exception as EXPECTED:
-The two texts are not semantically equivalent. The first text expresses anger, while the second text expresses happiness.
+## [USER]
+What about Everest Mountain?
+
+## [EXPECTED ANSWER]
+Yes it is tall too
+
+### [ACTUAL ANSWER]
+Yes, Mount Everest is the tallest mountain in the world, with a peak that reaches 29,032 feet (8,849 meters) above sea level.
+
+### CHECK Condition
+The sentence is positive.
+✅ OK
+
+## [USER]
+What about a mouse?
+
+## [EXPECTED ANSWER]
+No, it is not tall.
+
+### [ACTUAL ANSWER]
+No, a mouse is not tall.
+
+### CHECK Condition
+The sentence is negative.
+✅ OK
+
+## [USER]
+Give me a JSON containing the Eiffel height.
+Example: 
+{
+	"height": "330 meters"
+}
+
+## [EXPECTED ANSWER]
+{
+	"height": "330 meters"
+}
+
+### [ACTUAL ANSWER]
+{
+	"height": "330 meters"
+}
+
+### CHECK JsonCheck
+{
+	"height": ["NotEmpty", ""]
+}
+✅ OK
+
+### CHECK JsonCheck
+{
+	"height": ["Contain", "meters"]
+}
+✅ OK
 ```
 
-> As demonstrated, when a `SemanticSimilar` check fails, it provides a semantic explanation for the failure. This feature proves to be incredibly useful during debugging.
+This output is generated line by line as the test is executed:
 
-Here's another example of an executing The [Chatting about Eiffel height](https://github.com/mehrandvd/skunit/blob/main/src/skUnit.Tests/SemanticKernelTests/ChatScenarioTests/Samples/EiffelTallChat/skchat.md) test:
+![image](https://github.com/mehrandvd/skunit/assets/5070766/f3ef8a37-ceab-444f-b6f4-098557b61bfa)
 
-![image](https://github.com/mehrandvd/skunit/assets/5070766/56bc08fe-0955-4ed4-9b4c-5d4ff416b3d3)
 
 ## Documents
 To better understand skUnit, Check these documents:
