@@ -202,14 +202,19 @@ public class MyTest
   SemanticKernelAssert SemanticKernelAssert { get; set; }
   MyTest(ITestOutputHelper output)
   {
-    SemanticKernelAssert = new SemanticKernelAssert(_deploymentName, _endpoint, _apiKey, message => output.WriteLine(message));
+    SemanticKernelAssert = new SemanticKernelAssert(_deploymentName, _endpoint, _apiKey, output.WriteLine);
   }
 
   [Fact]
-  MyFunctionShouldWork()
+  TestChat()
   {
-    var scenarios = await InvocationScenario.LoadFromResourceAsync(scenario);
-    await SemanticKernelAssert.CheckScenarioAsync(Kernel, scenarios);
+    var scenario = // Load your markdown.
+    var scenarios = await ChatScenario.LoadFromTest(scenario);
+    await SemanticKernelAssert.CheckChatScenarioAsync(scenarios, async history =>
+      {
+        var result = // your logic to be tested;
+        return result;
+      });
   }
 }
 ```
