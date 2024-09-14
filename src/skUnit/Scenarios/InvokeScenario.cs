@@ -1,5 +1,4 @@
-﻿using Humanizer;
-using skUnit.Scenarios.Parsers;
+﻿using skUnit.Scenarios.Parsers;
 using skUnit.Scenarios.Parsers.Assertions;
 
 namespace skUnit.Scenarios;
