@@ -4,26 +4,29 @@ using skUnit.Scenarios;
 
 namespace skUnit;
 
-public partial class SemanticKernelAssert
+public partial class ScenarioAssert
 {
     /// <summary>
-    /// Checks whether the <paramref name="function"/> and <paramref name="kernel"/> can pass the <paramref name="scenario"/>.
+    /// Checks whether the <paramref name="kernel"/> can pass the <paramref name="scenario"/>.
     /// </summary>
     /// <remarks>
     /// It runs the scenario using:
-    /// <code>function.InvokeAsync</code>
+    /// <code>kernel.InvokeAsync</code>
     /// and checks all the assertions specified within the scenario.
     /// </remarks>
-    /// <param name="kernel"></param>
-    /// <param name="function"></param>
     /// <param name="scenario"></param>
+    /// <param name="kernel"></param>
     /// <returns></returns>
-    [Obsolete]
-    public async Task CheckScenarioAsync(Kernel kernel, KernelFunction function, InvocationScenario scenario)
+    public async Task PassAsync(InvocationScenario scenario, Kernel kernel)
     {
-        var arguments = new KernelArguments();
         Log($"# SCENARIO {scenario.Description}");
         Log("");
+
+        Log($"# PROMPT");
+        Log($"{scenario.Prompt}");
+        Log("");
+
+        var arguments = new KernelArguments();
         foreach (var parameter in scenario.Parameters)
         {
             arguments.Add(parameter.Key, parameter.Value);
@@ -36,39 +39,62 @@ public partial class SemanticKernelAssert
         Log(scenario.ExpectedAnswer ?? "");
         Log("");
 
-        var result = await function.InvokeAsync<string>(kernel, arguments);
+        var prompt = scenario.Prompt;
+        if (string.IsNullOrWhiteSpace(prompt))
+        {
+            scenario.Parameters.TryGetValue("input", out prompt);
+        }
 
-        Log($"## ACTUAL ANSWER");
+        if (prompt is null)
+            throw new InvalidOperationException($"""
+                    Prompt is null for scenario: 
+                    {scenario.RawText}
+                    """);
+
+        var result = await kernel.InvokePromptAsync<string>(prompt, arguments);
+
+        Log($"## ACTUAL ANSWER:");
         Log(result ?? "");
         Log("");
 
         foreach (var assertion in scenario.Assertions)
         {
-            await CheckAssertionAsync(assertion, result ?? "");
+            Log($"## CHECK {assertion.AssertionType}");
+            Log($"{assertion.Description}");
+
+            try
+            {
+                await assertion.Assert(Semantic, result);
+                Log($"✅ OK");
+                Log("");
+            }
+            catch (SemanticAssertException exception)
+            {
+                Log("❌ FAIL");
+                Log("Reason:");
+                Log(exception.Message);
+                Log();
+                throw;
+            }
+            
         }
     }
 
     /// <summary>
-    /// Checks whether the <paramref name="function"/> and <paramref name="kernel"/> can pass all the <paramref name="scenarios"/>.
+    /// Checks whether the <paramref name="kernel"/> can pass all the <paramref name="scenarios"/>.
     /// </summary>
     /// <remarks>
     /// It runs the scenario using:
-    /// <code>function.InvokeAsync</code>
+    /// <code>kernel.InvokeAsync</code>
     /// and checks all the assertions specified within the scenario.
     /// </remarks>
-    /// <param name="kernel"></param>
-    /// <param name="function"></param>
     /// <param name="scenarios"></param>
-    /// <returns></returns>
-    [Obsolete]
-    public async Task CheckScenarioAsync(
-        Kernel kernel, 
-        KernelFunction function,
-        List<InvocationScenario> scenarios)
+    /// <param name="kernel"></param>
+    public async Task PassAsync(List<InvocationScenario> scenarios, Kernel kernel)
     {
         foreach (var scenario in scenarios)
         {
-            await CheckScenarioAsync(kernel, function, scenario);
+            await PassAsync(scenario, kernel);
             Log("");
             Log("----------------------------------");
             Log("");
@@ -76,24 +102,18 @@ public partial class SemanticKernelAssert
     }
 
     /// <summary>
-    /// Checks whether the <paramref name="function"/> and <paramref name="kernel"/>
+    /// Checks whether the <paramref name="kernel"/>
     /// throws <typeparamref name="TSemanticAssertException"/> while trying to pass the <paramref name="scenario"/>.
     /// </summary>
     /// <remarks>
     /// It runs the scenario using:
-    /// <code>function.InvokeAsync</code>
+    /// <code>kernel.InvokeAsync</code>
     /// and checks all the assertions specified within the scenario.
     /// </remarks>
-    /// <param name="kernel"></param>
-    /// <param name="function"></param>
     /// <param name="scenario"></param>
+    /// <param name="kernel"></param>
     /// <returns></returns>
-    [Obsolete]
-    public async Task ScenarioThrowsAsync<TSemanticAssertException>(
-        Kernel kernel, 
-        KernelFunction function,
-        InvocationScenario scenario
-        ) where TSemanticAssertException : SemanticAssertException
+    public async Task ThrowsAsync<TSemanticAssertException>(InvocationScenario scenario, Kernel kernel) where TSemanticAssertException : SemanticAssertException
     {
         var isThrown = false;
         try
@@ -101,6 +121,11 @@ public partial class SemanticKernelAssert
             var arguments = new KernelArguments();
             Log($"# SCENARIO {scenario.Description}");
             Log("");
+
+            Log($"# PROMPT");
+            Log($"{scenario.Prompt}");
+            Log("");
+
             foreach (var parameters in scenario.Parameters)
             {
                 arguments.Add(parameters.Key, parameters.Value);
@@ -113,7 +138,19 @@ public partial class SemanticKernelAssert
             Log(scenario.ExpectedAnswer ?? "");
             Log("");
 
-            var result = await function.InvokeAsync<string>(kernel, arguments);
+            var prompt = scenario.Prompt;
+            if (string.IsNullOrWhiteSpace(prompt))
+            {
+                scenario.Parameters.TryGetValue("input", out prompt);
+            }
+
+            if (prompt is null)
+                throw new InvalidOperationException($"""
+                    Prompt is null for scenario: 
+                    {scenario.RawText}
+                    """);
+
+            var result = await kernel.InvokePromptAsync<string>(prompt, arguments);
 
             Log($"## ACTUAL ANSWER");
             Log(result ?? "");
@@ -121,7 +158,7 @@ public partial class SemanticKernelAssert
 
             foreach (var assertion in scenario.Assertions)
             {
-                Log($"## ANSWER {assertion.AssertionType}");
+                Log($"## CHECK {assertion.AssertionType}");
                 Log($"{assertion.Description}");
 
                 try
@@ -155,28 +192,22 @@ public partial class SemanticKernelAssert
     }
 
     /// <summary>
-    /// Checks whether the <paramref name="function"/> and <paramref name="kernel"/>
+    /// Checks whether the <paramref name="kernel"/>
     /// throws <typeparamref name="TSemanticAssertException"/> while trying to pass each of the <paramref name="scenarios"/>.
     /// </summary>
     /// <remarks>
     /// It runs the scenario using:
-    /// <code>function.InvokeAsync</code>
+    /// <code>kernel.InvokeAsync</code>
     /// and checks all the assertions specified within the scenario.
     /// </remarks>
-    /// <param name="kernel"></param>
-    /// <param name="function"></param>
     /// <param name="scenarios"></param>
+    /// <param name="kernel"></param>
     /// <returns></returns>
-    [Obsolete]
-    public async Task ScenarioThrowsAsync<TSemanticAssertException>(
-        Kernel kernel, 
-        KernelFunction function,
-        List<InvocationScenario> scenarios
-        ) where TSemanticAssertException : SemanticAssertException
+    public async Task ThrowsAsync<TSemanticAssertException>(List<InvocationScenario> scenarios, Kernel kernel) where TSemanticAssertException : SemanticAssertException
     {
         foreach (var scenario in scenarios)
         {
-            await ScenarioThrowsAsync<TSemanticAssertException>(kernel, function, scenario);
+            await ThrowsAsync<TSemanticAssertException>(scenario, kernel);
             Log("");
             Log("----------------------------------");
             Log("");

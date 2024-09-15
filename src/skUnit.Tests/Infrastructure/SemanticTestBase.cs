@@ -7,7 +7,7 @@ using skUnit.Scenarios;
 using skUnit.Scenarios.Parsers;
 using Xunit.Abstractions;
 
-namespace skUnit.Tests.SemanticKernelTests.InvokeScenarioTests;
+namespace skUnit.Tests.Infrastructure;
 
 public class SemanticTestBase
 {
@@ -49,11 +49,11 @@ public class SemanticTestBase
 
     protected async Task<List<InvocationScenario>> LoadInvokeScenarioAsync(string scenario)
     {
-        return await InvocationScenario.LoadFromResourceAsync($"skUnit.Tests.SemanticKernelTests.InvokeScenarioTests.Samples.{scenario}.sktest.md", Assembly.GetExecutingAssembly());
+        return await InvocationScenario.LoadFromResourceAsync($"skUnit.Tests.ScenarioAssertTests.InvokeScenarioTests.Samples.{scenario}.sktest.md", Assembly.GetExecutingAssembly());
     }
 
     protected async Task<List<ChatScenario>> LoadChatScenarioAsync(string scenario)
     {
-        return await ChatScenario.LoadFromResourceAsync($"skUnit.Tests.SemanticKernelTests.ChatScenarioTests.Samples.{scenario}.skchat.md", Assembly.GetExecutingAssembly());
+        return await ChatScenario.LoadFromResourceAsync($"skUnit.Tests.ScenarioAssertTests.ChatScenarioTests.Samples.{scenario}.skchat.md", Assembly.GetExecutingAssembly());
     }
 }

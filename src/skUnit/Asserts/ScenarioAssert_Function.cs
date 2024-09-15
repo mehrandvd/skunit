@@ -4,7 +4,7 @@ using skUnit.Scenarios;
 
 namespace skUnit;
 
-public partial class SemanticKernelAssert
+public partial class ScenarioAssert
 {
     /// <summary>
     /// Checks whether the <paramref name="function"/> and <paramref name="kernel"/> can pass the <paramref name="scenario"/>.
@@ -14,12 +14,11 @@ public partial class SemanticKernelAssert
     /// <code>function.InvokeAsync</code>
     /// and checks all the assertions specified within the scenario.
     /// </remarks>
+    /// <param name="scenario"></param>
     /// <param name="kernel"></param>
     /// <param name="function"></param>
-    /// <param name="scenario"></param>
     /// <returns></returns>
-    [Obsolete]
-    public async Task CheckScenarioAsync(Kernel kernel, KernelFunction function, InvocationScenario scenario)
+    public async Task PassAsync(InvocationScenario scenario, Kernel kernel, KernelFunction function)
     {
         var arguments = new KernelArguments();
         Log($"# SCENARIO {scenario.Description}");
@@ -56,19 +55,15 @@ public partial class SemanticKernelAssert
     /// <code>function.InvokeAsync</code>
     /// and checks all the assertions specified within the scenario.
     /// </remarks>
+    /// <param name="scenarios"></param>
     /// <param name="kernel"></param>
     /// <param name="function"></param>
-    /// <param name="scenarios"></param>
     /// <returns></returns>
-    [Obsolete]
-    public async Task CheckScenarioAsync(
-        Kernel kernel, 
-        KernelFunction function,
-        List<InvocationScenario> scenarios)
+    public async Task PassAsync(List<InvocationScenario> scenarios, Kernel kernel, KernelFunction function)
     {
         foreach (var scenario in scenarios)
         {
-            await CheckScenarioAsync(kernel, function, scenario);
+            await PassAsync(scenario, kernel, function);
             Log("");
             Log("----------------------------------");
             Log("");
@@ -84,16 +79,11 @@ public partial class SemanticKernelAssert
     /// <code>function.InvokeAsync</code>
     /// and checks all the assertions specified within the scenario.
     /// </remarks>
+    /// <param name="scenario"></param>
     /// <param name="kernel"></param>
     /// <param name="function"></param>
-    /// <param name="scenario"></param>
     /// <returns></returns>
-    [Obsolete]
-    public async Task ScenarioThrowsAsync<TSemanticAssertException>(
-        Kernel kernel, 
-        KernelFunction function,
-        InvocationScenario scenario
-        ) where TSemanticAssertException : SemanticAssertException
+    public async Task ThrowsAsync<TSemanticAssertException>(InvocationScenario scenario, Kernel kernel, KernelFunction function) where TSemanticAssertException : SemanticAssertException
     {
         var isThrown = false;
         try
@@ -163,20 +153,15 @@ public partial class SemanticKernelAssert
     /// <code>function.InvokeAsync</code>
     /// and checks all the assertions specified within the scenario.
     /// </remarks>
+    /// <param name="scenarios"></param>
     /// <param name="kernel"></param>
     /// <param name="function"></param>
-    /// <param name="scenarios"></param>
     /// <returns></returns>
-    [Obsolete]
-    public async Task ScenarioThrowsAsync<TSemanticAssertException>(
-        Kernel kernel, 
-        KernelFunction function,
-        List<InvocationScenario> scenarios
-        ) where TSemanticAssertException : SemanticAssertException
+    public async Task ThrowsAsync<TSemanticAssertException>(List<InvocationScenario> scenarios, Kernel kernel, KernelFunction function) where TSemanticAssertException : SemanticAssertException
     {
         foreach (var scenario in scenarios)
         {
-            await ScenarioThrowsAsync<TSemanticAssertException>(kernel, function, scenario);
+            await ThrowsAsync<TSemanticAssertException>(scenario, kernel, function);
             Log("");
             Log("----------------------------------");
             Log("");

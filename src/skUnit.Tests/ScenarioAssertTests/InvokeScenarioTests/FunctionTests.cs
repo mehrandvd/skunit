@@ -3,7 +3,7 @@ using skUnit.Exceptions;
 using skUnit.Tests.Infrastructure;
 using Xunit.Abstractions;
 
-namespace skUnit.Tests.SemanticKernelTests.InvokeScenarioTests
+namespace skUnit.Tests.ScenarioAssertTests.InvokeScenarioTests
 {
     public class FunctionTests : SemanticTestBase
     {

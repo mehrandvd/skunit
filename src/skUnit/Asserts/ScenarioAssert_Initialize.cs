@@ -12,11 +12,10 @@ using skUnit.Scenarios.Parsers.Assertions;
 namespace skUnit
 {
     /// <summary>
-    /// This class is for testing SemanticKernel kernels and functions semantically. It contains various methods
+    /// This class is for testing skUnit scenarios semantically. It contains various methods
     /// that you can test kernels and functions with scenarios. Scenarios are some markdown files with a specific format.
     /// </summary>
-    [Obsolete]
-    public partial class SemanticKernelAssert
+    public partial class ScenarioAssert
     {
         private Action<string>? OnLog { get; set; }
         private Semantic Semantic { get; set; }
@@ -38,8 +37,7 @@ namespace skUnit
         /// }
         /// </code>
         /// </param>
-        [Obsolete]
-        public SemanticKernelAssert(string deploymentName, string endpoint, string apiKey, Action<string> onLog)
+        public ScenarioAssert(string deploymentName, string endpoint, string apiKey, Action<string> onLog)
         {
             Semantic = new Semantic(deploymentName, endpoint, apiKey);
             OnLog = onLog;
@@ -50,8 +48,7 @@ namespace skUnit
         /// Pass your pre-configured kernel to this constructor.
         /// </summary>
         /// <param name="kernel"></param>
-        [Obsolete]
-        public SemanticKernelAssert(Kernel kernel, Action<string>? onLog = null)
+        public ScenarioAssert(Kernel kernel, Action<string>? onLog = null)
         {
             Semantic = new Semantic(kernel);
             OnLog = onLog;

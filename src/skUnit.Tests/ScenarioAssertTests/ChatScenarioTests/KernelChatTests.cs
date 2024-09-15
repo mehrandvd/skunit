@@ -4,11 +4,11 @@ using skUnit.Tests.SemanticKernelTests.ChatScenarioTests.Plugins;
 using skUnit.Tests.SemanticKernelTests.InvokeScenarioTests;
 using Xunit.Abstractions;
 
-namespace skUnit.Tests.SemanticKernelTests.ChatScenarioTests
+namespace skUnit.Tests.ScenarioAssertTests.ChatScenarioTests
 {
-    public class KernelChatTests : SemanticTestBase
+    public class ScenarioAssertTests : SemanticTestBase
     {
-        public KernelChatTests(ITestOutputHelper output) : base(output)
+        public ScenarioAssertTests(ITestOutputHelper output) : base(output)
         {
             var func = Kernel.CreateFunctionFromPrompt("""
                 [[INPUT]]

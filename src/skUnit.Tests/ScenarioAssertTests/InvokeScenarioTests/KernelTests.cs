@@ -2,11 +2,11 @@
 using skUnit.Tests.Infrastructure;
 using Xunit.Abstractions;
 
-namespace skUnit.Tests.SemanticKernelTests.InvokeScenarioTests
+namespace skUnit.Tests.ScenarioAssertTests.InvokeScenarioTests
 {
-    public class KernelTests : SemanticTestBase
+    public class ScenarioAssertInvokeTests : SemanticTestBase
     {
-        public KernelTests(ITestOutputHelper output) : base(output)
+        public ScenarioAssertInvokeTests(ITestOutputHelper output) : base(output)
         {
             
         }

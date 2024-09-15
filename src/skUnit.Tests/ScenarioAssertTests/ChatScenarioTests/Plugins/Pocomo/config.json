@@ -1,0 +1,17 @@
+{
+  "schema": 1,
+  "type": "completion",
+  "description": "Gets the best car.",
+  "completion": {
+    "max_tokens": 500,
+    "temperature": 0.0,
+    "top_p": 0.0,
+    "presence_penalty": 0.0,
+    "frequency_penalty": 0.0
+  },
+  "input": {
+    "parameters": [
+
+    ]
+  }
+}

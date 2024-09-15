@@ -17,6 +17,7 @@ public partial class SemanticKernelAssert
     /// <param name="kernel"></param>
     /// <param name="scenario"></param>
     /// <returns></returns>
+    [Obsolete]
     public async Task CheckScenarioAsync(Kernel kernel, InvocationScenario scenario)
     {
         Log($"# SCENARIO {scenario.Description}");
@@ -90,6 +91,7 @@ public partial class SemanticKernelAssert
     /// </remarks>
     /// <param name="kernel"></param>
     /// <param name="scenarios"></param>
+    [Obsolete]
     public async Task CheckScenarioAsync(Kernel kernel, List<InvocationScenario> scenarios)
     {
         foreach (var scenario in scenarios)
@@ -113,6 +115,7 @@ public partial class SemanticKernelAssert
     /// <param name="kernel"></param>
     /// <param name="scenario"></param>
     /// <returns></returns>
+    [Obsolete]
     public async Task ScenarioThrowsAsync<TSemanticAssertException>(Kernel kernel, InvocationScenario scenario) where TSemanticAssertException : SemanticAssertException
     {
         var isThrown = false;
@@ -203,6 +206,7 @@ public partial class SemanticKernelAssert
     /// <param name="kernel"></param>
     /// <param name="scenarios"></param>
     /// <returns></returns>
+    [Obsolete]
     public async Task ScenarioThrowsAsync<TSemanticAssertException>(Kernel kernel, List<InvocationScenario> scenarios) where TSemanticAssertException : SemanticAssertException
     {
         foreach (var scenario in scenarios)
