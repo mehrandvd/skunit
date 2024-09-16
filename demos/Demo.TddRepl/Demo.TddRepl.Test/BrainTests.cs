@@ -7,14 +7,14 @@ namespace Demo.TddRepl.Test
 {
     public class BrainTests
     {
-        protected SemanticKernelAssert SemanticAssert { get; set; }
+        protected ScenarioAssert ScenarioAssert { get; set; }
         public BrainTests(ITestOutputHelper output)
         {
             var endPoint = Environment.GetEnvironmentVariable("openai-endpoint") ?? throw new InvalidOperationException("No key provided.");
             var apiKey = Environment.GetEnvironmentVariable("openai-api-key") ?? throw new InvalidOperationException("No key provided.");
             var deploymentName = Environment.GetEnvironmentVariable("openai-deployment-name") ?? throw new InvalidOperationException("No key provided.");
 
-            SemanticAssert = new SemanticKernelAssert(deploymentName, endPoint, apiKey, output.WriteLine);
+            ScenarioAssert = new ScenarioAssert(deploymentName, endPoint, apiKey, output.WriteLine);
         }
 
         [Fact]
@@ -23,12 +23,13 @@ namespace Demo.TddRepl.Test
             var brain = new Brain();
 
             var scenarios = await ChatScenario.LoadFromResourceAsync(@"Demo.TddRepl.Test.Scenarios.01-Greeting.md", GetType().Assembly);
-            await SemanticAssert.CheckChatScenarioAsync(scenarios, async history =>
-            {
-                var result = await brain.GetChatAnswerAsync(history);
+            await ScenarioAssert.PassAsync(scenarios,
+                getAnswerFunc: async history =>
+                {
+                    var result = await brain.GetChatAnswerAsync(history);
 
-                return result?.ToString() ?? string.Empty;
-            });
+                    return result?.ToString() ?? string.Empty;
+                });
         }
 
         [Fact]
@@ -37,12 +38,13 @@ namespace Demo.TddRepl.Test
             var brain = new Brain();
 
             var scenarios = await ChatScenario.LoadFromResourceAsync(@"Demo.TddRepl.Test.Scenarios.02-WhoIsMehran-Normal.md", GetType().Assembly);
-            await SemanticAssert.CheckChatScenarioAsync(scenarios, async history =>
-            {
-                var result = await brain.GetChatAnswerAsync(history);
+            await ScenarioAssert.PassAsync(scenarios, 
+                getAnswerFunc: async history =>
+                {
+                    var result = await brain.GetChatAnswerAsync(history);
 
-                return result?.ToString() ?? string.Empty;
-            });
+                    return result?.ToString() ?? string.Empty;
+                });
         }
 
         [Fact]
@@ -51,12 +53,13 @@ namespace Demo.TddRepl.Test
             var brain = new Brain();
             
             var scenarios = await ChatScenario.LoadFromResourceAsync(@"Demo.TddRepl.Test.Scenarios.03-WhoIsMehran-Angry.md", GetType().Assembly);
-            await SemanticAssert.CheckChatScenarioAsync(scenarios, async history =>
-            {
-                var result = await brain.GetChatAnswerAsync(history);
+            await ScenarioAssert.PassAsync(scenarios, 
+                getAnswerFunc: async history =>
+                {
+                    var result = await brain.GetChatAnswerAsync(history);
 
-                return result?.ToString() ?? string.Empty;
-            });
+                    return result?.ToString() ?? string.Empty;
+                });
         }
 
         [Fact]
@@ -65,12 +68,13 @@ namespace Demo.TddRepl.Test
             var brain = new Brain();
             
             var scenarios = await ChatScenario.LoadFromResourceAsync(@"Demo.TddRepl.Test.Scenarios.04-WhoIsMehran-AngryNormal.md", GetType().Assembly);
-            await SemanticAssert.CheckChatScenarioAsync(scenarios, async history =>
-            {
-                var result = await brain.GetChatAnswerAsync(history);
+            await ScenarioAssert.PassAsync(scenarios, 
+                getAnswerFunc: async history =>
+                {
+                    var result = await brain.GetChatAnswerAsync(history);
 
-                return result?.ToString() ?? string.Empty;
-            });
+                    return result?.ToString() ?? string.Empty;
+                });
         }
     }
 }
