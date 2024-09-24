@@ -21,7 +21,6 @@ namespace Demo.TddRepl
             var endpoint = Environment.GetEnvironmentVariable("openai-endpoint") ?? throw new InvalidOperationException("No key provided.");
             var apiKey = Environment.GetEnvironmentVariable("openai-api-key") ?? throw new InvalidOperationException("No key provided.");
 
-            // Create a kernel with Azure OpenAI chat completion
             var builder = Kernel.CreateBuilder();
 
             builder.Services.AddAzureOpenAIChatCompletion(deploymentName, endpoint, apiKey);
@@ -29,11 +28,7 @@ namespace Demo.TddRepl
             //builder.Plugins.AddFromPromptDirectory("Plugins");
             builder.Plugins.AddFromType<PeoplePlugin>("PeoplePlugin");
 
-
-            // Build the kernel
             Kernel = builder.Build();
-
-
         }
 
         public async Task<ChatMessageContent> GetChatAnswerAsync(ChatHistory history)
