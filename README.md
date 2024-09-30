@@ -93,7 +93,8 @@ Executing tests is a straightforward process. You have the flexibility to utiliz
 ```csharp
 var markdown = // Load it from .md file
 var scenarios = await ChatScenario.LoadFromText(markdown);
-await SemanticKernelAssert.CheckChatScenarioAsync(scenarios, async history =>
+await ScenarioAssert.PassAsync(scenarios,
+  getAnswerFunc: async history =>
             {
                 var result = // your logic to be tested;
                 return result;
@@ -199,10 +200,10 @@ Afterwards, you'll need to instantiate the `SemanticKernelAssert` class in your 
 ```csharp
 public class MyTest
 {
-  SemanticKernelAssert SemanticKernelAssert { get; set; }
+  SemanticAssert SemanticAssert { get; set; }
   MyTest(ITestOutputHelper output)
   {
-    SemanticKernelAssert = new SemanticKernelAssert(_deploymentName, _endpoint, _apiKey, output.WriteLine);
+    SemanticAssert = new SemanticAssert(_deploymentName, _endpoint, _apiKey, output.WriteLine);
   }
 
   [Fact]
@@ -210,7 +211,7 @@ public class MyTest
   {
     var scenario = // Load your markdown.
     var scenarios = await ChatScenario.LoadFromTest(scenario);
-    await SemanticKernelAssert.CheckChatScenarioAsync(scenarios, async history =>
+    await SemanticAssert.PassAsync(scenarios, async history =>
       {
         var result = // your logic to be tested;
         return result;
