@@ -1,4 +1,4 @@
-# SCENARIO Who is Mehran? Normal
+# SCENARIO Greeting
 
 ## [USER]
 Hi

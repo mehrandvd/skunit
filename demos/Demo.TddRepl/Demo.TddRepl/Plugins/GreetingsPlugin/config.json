@@ -1,7 +1,7 @@
 {
   "schema": 1,
   "type": "completion",
-  "description": "Returns some information about travels.",
+  "description": "Returns answer for greetings like when users says hi or hello.",
   "completion": {
     "max_tokens": 500,
     "temperature": 0.0,

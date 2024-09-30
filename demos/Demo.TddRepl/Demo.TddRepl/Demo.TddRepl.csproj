@@ -12,6 +12,12 @@
   </ItemGroup>
 
   <ItemGroup>
+    <None Update="Plugins\GreetingsPlugin\config.json">
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+    </None>
+    <None Update="Plugins\GreetingsPlugin\skprompt.txt">
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+    </None>
     <None Update="Plugins\PeoplePlugin\config.json">
       <CopyToOutputDirectory>Always</CopyToOutputDirectory>
     </None>
