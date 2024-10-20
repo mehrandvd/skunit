@@ -26,14 +26,21 @@ public partial class ScenarioAssert
     /// <param name="scenario"></param>
     /// <param name="kernel"></param>
     /// <param name="getAnswerFunc"></param>
+    /// <param name="chatHistory"></param>
     /// <returns></returns>
     /// <exception cref="InvalidOperationException">If the OpenAI was unable to generate a valid response.</exception>
-    public async Task PassAsync(ChatScenario scenario, Kernel? kernel = null, Func<ChatHistory, Task<string>>? getAnswerFunc = null)
+    public async Task PassAsync(
+        ChatScenario scenario, 
+        Kernel? kernel = null, Func<ChatHistory, 
+        Task<string>>? getAnswerFunc = null,
+        ChatHistory? chatHistory = null
+
+        )
     {
         if (kernel is null && getAnswerFunc is null)
             throw new InvalidOperationException("Both kernel and getAnswerFunc can not be null. One of them should be specified");
 
-        var chatHistory = new ChatHistory();
+        chatHistory ??= new ChatHistory();
 
         Log($"# SCENARIO {scenario.Description}");
         Log("");
@@ -187,13 +194,14 @@ public partial class ScenarioAssert
     /// <param name="scenarios"></param>
     /// <param name="kernel"></param>
     /// <param name="getAnswerFunc"></param>
+    /// <param name="chatHistory"></param>
     /// <returns></returns>
     /// <exception cref="InvalidOperationException">If the OpenAI was unable to generate a valid response.</exception>
-    public async Task PassAsync(List<ChatScenario> scenarios, Kernel? kernel = null, Func<ChatHistory, Task<string>>? getAnswerFunc = null)
+    public async Task PassAsync(List<ChatScenario> scenarios, Kernel? kernel = null, Func<ChatHistory, Task<string>>? getAnswerFunc = null, ChatHistory? chatHistory = null)
     {
         foreach (var scenario in scenarios)
         {
-            await PassAsync(scenario, kernel, getAnswerFunc);
+            await PassAsync(scenario, kernel, getAnswerFunc, chatHistory);
             Log();
             Log("----------------------------------");
             Log();
