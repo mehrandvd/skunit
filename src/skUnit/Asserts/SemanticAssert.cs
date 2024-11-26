@@ -1,7 +1,6 @@
 ﻿using System.Text.Json;
 using System.Text.Json.Nodes;
-using Microsoft.SemanticKernel;
-using Microsoft.SemanticKernel.Connectors.OpenAI;
+using Microsoft.Extensions.AI;
 using SemanticValidation;
 using skUnit.Exceptions;
 
@@ -16,27 +15,13 @@ namespace skUnit
         private Semantic Semantic { get; set; }
 
         /// <summary>
-        /// This class needs a SemanticKernel kernel to work.
-        /// Using this constructor you can use an AzureOpenAI subscription to configure it.
-        /// If you want to connect using an OpenAI client, you can configure your kernel
-        /// as you like and pass your pre-configured kernel using the other constructor.
+        /// This class needs a SemanticKernel chatClient to work.
+        /// Pass your pre-configured chatClient to this constructor.
         /// </summary>
-        /// <param name="deploymentName"></param>
-        /// <param name="endpoint"></param>
-        /// <param name="apiKey"></param>
-        public SemanticAssert(string deploymentName, string endpoint, string apiKey)
+        /// <param name="chatClient"></param>
+        public SemanticAssert(IChatClient chatClient)
         {
-            Semantic = new Semantic(deploymentName,endpoint, apiKey);
-        }
-
-        /// <summary>
-        /// This class needs a SemanticKernel kernel to work.
-        /// Pass your pre-configured kernel to this constructor.
-        /// </summary>
-        /// <param name="kernel"></param>
-        public SemanticAssert(Kernel kernel)
-        {
-            Semantic = new Semantic(kernel);
+            Semantic = new Semantic(chatClient);
 
         }
 

@@ -14,22 +14,6 @@
     <None Remove="ScenarioAssertTests\ChatScenarioTests\Samples\EiffelTallChat\skchat.md" />
     <None Remove="ScenarioAssertTests\ChatScenarioTests\Samples\PocomoPriceChat\config.json" />
     <None Remove="ScenarioAssertTests\ChatScenarioTests\Samples\PocomoPriceChat\skchat.md" />
-    <None Remove="ScenarioAssertTests\InvokeScenarioTests\Samples\SentimentAngry_Complex\config.json" />
-    <None Remove="ScenarioAssertTests\InvokeScenarioTests\Samples\SentimentAngry_Complex\sktest.md" />
-    <None Remove="ScenarioAssertTests\InvokeScenarioTests\Samples\SentimentAngry_Light\config.json" />
-    <None Remove="ScenarioAssertTests\InvokeScenarioTests\Samples\SentimentAngry_Light\sktest.md" />
-    <None Remove="ScenarioAssertTests\InvokeScenarioTests\Samples\SentimentHappy\config.json" />
-    <None Remove="ScenarioAssertTests\InvokeScenarioTests\Samples\SentimentHappy\sktest.md" />
-    <None Remove="SemanticKernelTests\ChatScenarioTests\Samples\EiffelTallChat\skchat.md" />
-    <None Remove="SemanticKernelTests\ChatScenarioTests\Samples\PocomoPriceChat\config.json" />
-    <None Remove="SemanticKernelTests\ChatScenarioTests\Samples\PocomoPriceChat\skchat.md" />
-    <None Remove="SemanticKernelTests\ChatScenarioTests\Samples\EiffelTallChat\config.json" />
-    <None Remove="SemanticKernelTests\InvokeScenarioTests\Samples\SentimentAngry_Complex\config.json" />
-    <None Remove="SemanticKernelTests\InvokeScenarioTests\Samples\SentimentAngry_Complex\sktest.md" />
-    <None Remove="SemanticKernelTests\InvokeScenarioTests\Samples\SentimentAngry_Light\config.json" />
-    <None Remove="SemanticKernelTests\InvokeScenarioTests\Samples\SentimentAngry_Light\sktest.md" />
-    <None Remove="SemanticKernelTests\InvokeScenarioTests\Samples\SentimentHappy\config.json" />
-    <None Remove="SemanticKernelTests\InvokeScenarioTests\Samples\SentimentHappy\sktest.md" />
   </ItemGroup>
 
   <ItemGroup>
@@ -37,22 +21,6 @@
     <EmbeddedResource Include="ScenarioAssertTests\ChatScenarioTests\Samples\EiffelTallChat\skchat.md" />
     <EmbeddedResource Include="ScenarioAssertTests\ChatScenarioTests\Samples\PocomoPriceChat\config.json" />
     <EmbeddedResource Include="ScenarioAssertTests\ChatScenarioTests\Samples\PocomoPriceChat\skchat.md" />
-    <EmbeddedResource Include="ScenarioAssertTests\InvokeScenarioTests\Samples\SentimentAngry_Complex\config.json" />
-    <EmbeddedResource Include="ScenarioAssertTests\InvokeScenarioTests\Samples\SentimentAngry_Complex\sktest.md" />
-    <EmbeddedResource Include="ScenarioAssertTests\InvokeScenarioTests\Samples\SentimentAngry_Light\config.json" />
-    <EmbeddedResource Include="ScenarioAssertTests\InvokeScenarioTests\Samples\SentimentAngry_Light\sktest.md" />
-    <EmbeddedResource Include="ScenarioAssertTests\InvokeScenarioTests\Samples\SentimentHappy\config.json" />
-    <EmbeddedResource Include="ScenarioAssertTests\InvokeScenarioTests\Samples\SentimentHappy\sktest.md" />
-    <EmbeddedResource Include="SemanticKernelTests\ChatScenarioTests\Samples\PocomoPriceChat\config.json" />
-    <EmbeddedResource Include="SemanticKernelTests\ChatScenarioTests\Samples\PocomoPriceChat\skchat.md" />
-    <EmbeddedResource Include="SemanticKernelTests\ChatScenarioTests\Samples\EiffelTallChat\config.json" />
-    <EmbeddedResource Include="SemanticKernelTests\ChatScenarioTests\Samples\EiffelTallChat\skchat.md" />
-    <EmbeddedResource Include="SemanticKernelTests\InvokeScenarioTests\Samples\SentimentAngry_Complex\config.json" />
-    <EmbeddedResource Include="SemanticKernelTests\InvokeScenarioTests\Samples\SentimentAngry_Complex\sktest.md" />
-    <EmbeddedResource Include="SemanticKernelTests\InvokeScenarioTests\Samples\SentimentAngry_Light\config.json" />
-    <EmbeddedResource Include="SemanticKernelTests\InvokeScenarioTests\Samples\SentimentAngry_Light\sktest.md" />
-    <EmbeddedResource Include="SemanticKernelTests\InvokeScenarioTests\Samples\SentimentHappy\config.json" />
-    <EmbeddedResource Include="SemanticKernelTests\InvokeScenarioTests\Samples\SentimentHappy\sktest.md" />
   </ItemGroup>
 
   <ItemGroup>
@@ -79,12 +47,6 @@
       <CopyToOutputDirectory>Always</CopyToOutputDirectory>
     </None>
     <None Update="ScenarioAssertTests\ChatScenarioTests\Plugins\Pocomo\skprompt.txt">
-      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
-    </None>
-    <None Update="SemanticKernelTests\ChatScenarioTests\Plugins\Pocomo\config.json">
-      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
-    </None>
-    <None Update="SemanticKernelTests\ChatScenarioTests\Plugins\Pocomo\skprompt.txt">
       <CopyToOutputDirectory>Always</CopyToOutputDirectory>
     </None>
   </ItemGroup>

@@ -44,7 +44,7 @@ What about a mouse?
 No it is not tall.
 
 ### CHECK SemanticCondition
-The sentence is negative.
+The sentence is negative or mentions that mouse is not tall.
 
 ## [USER]
 Give me a json containing the Eiffel height.

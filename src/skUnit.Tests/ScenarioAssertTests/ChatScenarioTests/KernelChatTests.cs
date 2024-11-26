@@ -1,14 +1,12 @@
 ﻿using Microsoft.SemanticKernel;
 using skUnit.Tests.Infrastructure;
-using skUnit.Tests.SemanticKernelTests.ChatScenarioTests.Plugins;
-using skUnit.Tests.SemanticKernelTests.InvokeScenarioTests;
 using Xunit.Abstractions;
 
 namespace skUnit.Tests.ScenarioAssertTests.ChatScenarioTests
 {
-    public class ScenarioAssertTests : SemanticTestBase
+    public class KernelChatTests : SemanticTestBase
     {
-        public ScenarioAssertTests(ITestOutputHelper output) : base(output)
+        public KernelChatTests(ITestOutputHelper output) : base(output)
         {
             var func = Kernel.CreateFunctionFromPrompt("""
                 [[INPUT]]
@@ -26,19 +24,7 @@ namespace skUnit.Tests.ScenarioAssertTests.ChatScenarioTests
         public async Task EiffelTallChat_MustWork()
         {
             var scenarios = await LoadChatScenarioAsync("EiffelTallChat");
-            await SemanticKernelAssert.CheckChatScenarioAsync(Kernel, scenarios);
-        }
-
-        [Fact(Skip = "It doesn't work functions yet.")]
-        public async Task PocomoPriceChat_MustWork()
-        {
-            //var dir = Path.Combine(Environment.CurrentDirectory, "SemanticKernel", "ChatScenarioTests", "Plugins");
-            //Kernel.ImportPluginFromPromptDirectory(dir);
-
-            Kernel.ImportPluginFromType<PocomoPlugin>();
-
-            var scenarios = await LoadChatScenarioAsync("PocomoPriceChat");
-            await SemanticKernelAssert.CheckChatScenarioAsync(Kernel, scenarios);
+            await ScenarioAssert.PassAsync(scenarios, Kernel);
         }
     }
 

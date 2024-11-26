@@ -3,7 +3,8 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
-using Microsoft.SemanticKernel;
+using Azure.AI.OpenAI;
+using Microsoft.Extensions.AI;
 using SemanticValidation;
 using skUnit.Exceptions;
 using skUnit.Scenarios;
@@ -21,38 +22,13 @@ namespace skUnit
         private Semantic Semantic { get; set; }
 
         /// <summary>
-        /// This class needs a SemanticKernel kernel to work.
-        /// Using this constructor you can use an AzureOpenAI subscription to configure it.
-        /// If you want to connect using an OpenAI client, you can configure your kernel
-        /// as you like and pass your pre-configured kernel using the other constructor.
+        /// This class needs a ChatClient to work.
+        /// Pass your pre-configured ChatClient to this constructor.
         /// </summary>
-        /// <param name="deploymentName"></param>
-        /// <param name="endpoint"></param>
-        /// <param name="apiKey"></param>
-        /// <param name="onLog">If you're using xUnit, do this in the constructor:
-        /// <code>
-        /// MyTest(ITestOutputHelper output)
-        /// {
-        ///    SemanticKernelAssert = new SemanticKernelAssert(_deploymentName, _endpoint, _apiKey, output.WriteLine);
-        /// }
-        /// </code>
-        /// </param>
-        public ScenarioAssert(string deploymentName, string endpoint, string apiKey, Action<string> onLog)
+        public ScenarioAssert(IChatClient chatClient, Action<string>? onLog = null)
         {
-            Semantic = new Semantic(deploymentName, endpoint, apiKey);
+            Semantic = new Semantic(chatClient);
             OnLog = onLog;
-        }
-
-        /// <summary>
-        /// This class needs a SemanticKernel kernel to work.
-        /// Pass your pre-configured kernel to this constructor.
-        /// </summary>
-        /// <param name="kernel"></param>
-        public ScenarioAssert(Kernel kernel, Action<string>? onLog = null)
-        {
-            Semantic = new Semantic(kernel);
-            OnLog = onLog;
-
         }
 
         private void Log(string? message = "")

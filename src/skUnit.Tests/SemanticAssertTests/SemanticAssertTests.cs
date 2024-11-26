@@ -1,3 +1,5 @@
+using Azure.AI.OpenAI;
+using Microsoft.Extensions.AI;
 using skUnit.Exceptions;
 using Xunit.Abstractions;
 
@@ -22,7 +24,12 @@ namespace skUnit.Tests.SemanticAssertTests
                 Environment.GetEnvironmentVariable("openai-deployment-name", EnvironmentVariableTarget.User) ??
                 throw new Exception("No DeploymentName in environment variables.");
 
-            SemanticAssert = new SemanticAssert(deploymentName, endpoint, apiKey);
+            SemanticAssert = new SemanticAssert(
+                new AzureOpenAIClient(
+                    new Uri(endpoint), 
+                    new System.ClientModel.ApiKeyCredential(apiKey)
+                    ).AsChatClient(deploymentName)
+                );
         }
 
         [Theory]

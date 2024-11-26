@@ -1,5 +1,7 @@
 ﻿using System.Reflection;
+using Azure.AI.OpenAI;
 using Markdig.Helpers;
+using Microsoft.Extensions.AI;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Logging;
 using Microsoft.SemanticKernel;
@@ -15,7 +17,8 @@ public class SemanticTestBase
     private readonly string _endpoint;
     private readonly string _deploymentName;
     protected Kernel Kernel { get; set; }
-    protected SemanticKernelAssert SemanticKernelAssert { get; set; }
+    protected IChatClient ChatClient { get; set; }
+    protected ScenarioAssert ScenarioAssert { get; set; }
     protected ITestOutputHelper Output { get; set; }
 
     public SemanticTestBase(ITestOutputHelper output)
@@ -29,8 +32,18 @@ public class SemanticTestBase
             Environment.GetEnvironmentVariable("openai-deployment-name", EnvironmentVariableTarget.User) ??
             throw new Exception("No DeploymentName in environment variables.");
 
-        SemanticKernelAssert = new SemanticKernelAssert(_deploymentName, _endpoint, _apiKey, message => Output.WriteLine(message));
+        ScenarioAssert = new ScenarioAssert(
+            new AzureOpenAIClient(
+                new Uri(_endpoint),
+                new System.ClientModel.ApiKeyCredential(_apiKey)
+                ).AsChatClient(_deploymentName)
+            , message => Output.WriteLine(message));
         Kernel = CreateKernel();
+
+        ChatClient = new AzureOpenAIClient(
+            new Uri(_endpoint),
+            new System.ClientModel.ApiKeyCredential(_apiKey)
+        ).AsChatClient(_deploymentName);
     }
 
     Kernel CreateKernel()
