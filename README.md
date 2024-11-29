@@ -203,7 +203,8 @@ public class MyTest
   SemanticAssert SemanticAssert { get; set; }
   MyTest(ITestOutputHelper output)
   {
-    SemanticAssert = new SemanticAssert(_deploymentName, _endpoint, _apiKey, output.WriteLine);
+    var chatClient = new AzureOpenAIClient(...);
+    SemanticAssert = new SemanticAssert(chatClient);
   }
 
   [Fact]
