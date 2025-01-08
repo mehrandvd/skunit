@@ -54,7 +54,7 @@ public class SemanticTestBase
     Kernel CreateKernel()
     {
         var builder = Kernel.CreateBuilder();
-        builder.AddAzureOpenAIChatCompletion(_deploymentName, _endpoint, _apiKey);
+        builder.AddAzureOpenAIChatCompletion(_deploymentName, new AzureOpenAIClient(new Uri(_endpoint), new System.ClientModel.ApiKeyCredential(_apiKey)));
         builder.Services.AddLogging(loggerBuilder =>
         {
             loggerBuilder.SetMinimumLevel(LogLevel.Trace).AddDebug();
