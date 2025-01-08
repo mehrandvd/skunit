@@ -202,7 +202,13 @@ public class MyTest
   {
     var scenario = // Load your markdown.
     var scenarios = await ChatScenario.LoadFromTest(scenario);
-    await SemanticAssert.PassAsync(scenarios, chatClient);
+    await ScenarioAssert.PassAsync(
+      scenarios,
+      getAnswerFunc: async history =>
+            {
+                var result = // your logic to be tested;
+                return result;
+            });
   }
 }
 ```
