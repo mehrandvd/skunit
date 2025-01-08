@@ -80,6 +80,10 @@ Executing tests is a straightforward process. You have the flexibility to utiliz
 ```csharp
 var markdown = // Load it from .md file
 var scenarios = await ChatScenario.LoadFromText(markdown);
+var chatClient = CreateChatClient();
+await ScenarioAssert.PassAsync(scenarios, chatClient);
+
+// Or configure your way of processing the chat.
 await ScenarioAssert.PassAsync(scenarios,
   getAnswerFunc: async history =>
             {
@@ -169,7 +173,6 @@ This output is generated line by line as the test is executed:
 
 ## Documents
 To better understand skUnit, Check these documents:
- - [Invocation Scenario Spec](https://github.com/mehrandvd/skunit/blob/main/docs/invocation-scenario-spec.md): The details of writing an InvocationScenario.
  - [Chat Scenario Spec](https://github.com/mehrandvd/skunit/blob/main/docs/chat-scenario-spec.md): The details of writing an ChatScenario.
  - [CHECK Statement Spec](https://github.com/mehrandvd/skunit/blob/main/docs/check-statements-spec.md): The various `CHECK` statements that you can use for assertion.
 
