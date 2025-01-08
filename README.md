@@ -3,26 +3,13 @@
 [![NuGet version (skUnit)](https://img.shields.io/nuget/v/skUnit.svg?style=flat)](https://www.nuget.org/packages/skUnit/)
 [![NuGet downloads](https://img.shields.io/nuget/dt/skUnit.svg?style=flat)](https://www.nuget.org/packages/skUnit)
 
-**skUnit** is a testing tool for [SemanticKernel](https://github.com/microsoft/semantic-kernel) units, such as _plugin functions_, _kernels_, _chat services_ and ...
+**skUnit** is a testing tool for any `IChatClient` and [SemanticKernel](https://github.com/microsoft/semantic-kernel) units, such as _kernels_, _chat services_ and ...
 
-For example, you can use skUnit to test a `GetSentiment` function that analyzes a text and returns its sentiment, such as _"Happy"_ or _"Sad"_.
-You can write different scenarios to check how the function behaves with various inputs, such as:
-
-```md
-## PARAMETER input
-Such a beautiful day it is
-
-## ANSWER Equals
-Happy
-```
-
-This scenario verifies that the function returns _"Happy"_ when the input is _"Such a beautiful day it is"_.
-
-This is an [**Invocation Scenario**](https://github.com/mehrandvd/skunit/blob/main/docs/invocation-scenario-spec.md), which tests a single function call. You can also write [**Chat Scenarios**](https://github.com/mehrandvd/skunit/blob/main/docs/chat-scenario-spec.md), which test a sequence of interactions between the user and the SemanticKernel.
+You can write [**Chat Scenarios**](https://github.com/mehrandvd/skunit/blob/main/docs/chat-scenario-spec.md), which test a sequence of interactions between the user and an `IChatClient` or a SemanticKernel.
 
 # Chat Scenarios
 
-A chat scenario is a way of testing how SemanticKernel units, such as plugin functions and kernels, respond to user inputs in skUnit. 
+A chat scenario is a way of testing how an `IChatClient`, responds to user inputs in skUnit. 
 A chat scenario consists of one or more sub-scenarios, each representing a dialogue turn between the user and the agent.
 
 ## Example
