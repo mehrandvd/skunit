@@ -168,4 +168,43 @@ public class ParseChatScenarioTests
         Assert.Equal("GetIntent", agentChatItem.FunctionCalls.First().FunctionName);
         Assert.Equal(3, agentChatItem.FunctionCalls.First().Assertions.Count);
     }
+
+    [Fact]
+    public void ParseScenario_CheckFunctionCall_MustWork()
+    {
+        var scenarioText = """
+                           # SCENARIO Time Discussion
+
+                           ### [USER]
+                           What time is it?
+
+                           ## [AGENT]
+                           It's 10:00 AM
+
+                           ### CHECK FunctionCall
+                           ```json
+                           {
+                            "function_name": "GetCurrentTime",
+                           }
+                           ```
+                           """;
+
+        var scenarios = ChatScenario.LoadFromText(scenarioText, "");
+
+        Assert.NotEmpty(scenarios);
+
+        var first = scenarios.First();
+
+        Assert.Equal(2, first.ChatItems.Count);
+
+        var lastChatItem = first.ChatItems.Last();    
+        Assert.Equal(
+            "GetCurrentTime", 
+            lastChatItem.Assertions
+                    .OfType<FunctionCallAssertion>()
+                    .FirstOrDefault()?
+                    .FunctionName
+        );
+
+    }
 }

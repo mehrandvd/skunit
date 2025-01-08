@@ -1,6 +1,8 @@
-﻿using SemanticValidation;
+﻿using Microsoft.Extensions.AI;
+using SemanticValidation;
 using skUnit.Exceptions;
 using System;
+using System.Collections;
 using System.Collections.Generic;
 using System.Linq;
 using System.Text;
@@ -23,9 +25,10 @@ namespace skUnit.Scenarios.Parsers.Assertions
         /// </summary>
         /// <param name="semantic"></param>
         /// <param name="input"></param>
+        /// <param name="historytory"></param>
         /// <returns></returns>
         /// <exception cref="SemanticAssertException"></exception>
-        public async Task Assert(Semantic semantic, string input)
+        public async Task Assert(Semantic semantic, string input, IEnumerable<object>? history)
         {
             if (input.Trim() != ExpectedAnswer.Trim())
                 throw new SemanticAssertException($"Expected input is: '{ExpectedAnswer}' while actual is : '{input}'");

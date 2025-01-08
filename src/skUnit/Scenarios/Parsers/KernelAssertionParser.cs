@@ -35,6 +35,8 @@ namespace skUnit.Scenarios.Parsers
                     => new EqualsAssertion() { ExpectedAnswer = text },
                 "jsoncheck" 
                     => new JsonCheckAssertion().SetJsonAssertText(text),
+                "functioncall"
+                    => new FunctionCallAssertion().SetJsonAssertText(text),
                 "empty"
                     => new EmptyAssertion(),
                 "notempty"

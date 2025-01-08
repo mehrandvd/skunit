@@ -1,4 +1,6 @@
-﻿using SemanticValidation;
+﻿using System.Collections;
+using Microsoft.Extensions.AI;
+using SemanticValidation;
 using skUnit.Exceptions;
 
 namespace skUnit.Scenarios.Parsers.Assertions;
@@ -12,10 +14,12 @@ public class NotEmptyAssertion : IKernelAssertion
     /// Checks if the <paramref name="answer"/> is not empty/>.
     /// </summary>
     /// <param name="semantic"></param>
+    /// <param name="input"></param>
+    /// <param name="historytory"></param>
     /// <param name="answer"></param>
     /// <returns></returns>
     /// <exception cref="SemanticAssertException"></exception>
-    public async Task Assert(Semantic semantic, string input)
+    public async Task Assert(Semantic semantic, string input, IEnumerable<object>? history = null)
     {
         if (string.IsNullOrWhiteSpace(input))
         {

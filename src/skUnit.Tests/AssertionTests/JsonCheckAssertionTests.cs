@@ -25,11 +25,11 @@ namespace skUnit.Tests.AssertionTests
             Assert.NotNull(assertion.JsonCheck);
 
             await assertion.Assert(null, """
-                {
-                    "name": "Mehran",
-                    "address": "The address is in Vanak area of Tehran"
-                }
-                """);
+                                         {
+                                             "name": "Mehran",
+                                             "address": "The address is in Vanak area of Tehran"
+                                         }
+                                         """);
         }
 
         [Fact]
@@ -49,11 +49,11 @@ namespace skUnit.Tests.AssertionTests
             Assert.NotNull(assertion.JsonCheck);
 
             await assertion.Assert(null, """
-                {
-                    "name": "Mehran",
-                    "address": "The address is in Vanak area of Tehran"
-                }
-                """);
+                                         {
+                                             "name": "Mehran",
+                                             "address": "The address is in Vanak area of Tehran"
+                                         }
+                                         """);
         }
 
         [Fact]

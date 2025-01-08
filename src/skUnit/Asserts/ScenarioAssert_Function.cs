@@ -43,7 +43,7 @@ public partial class ScenarioAssert
 
         foreach (var assertion in scenario.Assertions)
         {
-            await CheckAssertionAsync(assertion, result ?? "");
+            await CheckAssertionAsync(assertion, result ?? "", []);
         }
     }
 
@@ -116,7 +116,7 @@ public partial class ScenarioAssert
 
                 try
                 {
-                    await assertion.Assert(Semantic, result);
+                    await assertion.Assert(Semantic, result, []);
                     Log($"✅ OK");
                     Log("");
                 }

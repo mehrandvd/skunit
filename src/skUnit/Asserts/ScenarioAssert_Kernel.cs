@@ -64,7 +64,7 @@ public partial class ScenarioAssert
 
             try
             {
-                await assertion.Assert(Semantic, result);
+                await assertion.Assert(Semantic, result, []);
                 Log($"✅ OK");
                 Log("");
             }
@@ -163,7 +163,7 @@ public partial class ScenarioAssert
 
                 try
                 {
-                    await assertion.Assert(Semantic, result);
+                    await assertion.Assert(Semantic, result, []);
                     Log($"✅ OK");
                     Log("");
                 }

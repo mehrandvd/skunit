@@ -100,7 +100,7 @@ namespace skUnit
 
                     foreach (var assertion in chatItem.Assertions)
                     {
-                        await CheckAssertionAsync(assertion, answer);
+                        await CheckAssertionAsync(assertion, answer, chatHistory);
                     }
                 }
             }
