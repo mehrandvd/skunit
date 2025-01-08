@@ -1,4 +1,5 @@
 ﻿using Microsoft.SemanticKernel;
+using Microsoft.SemanticKernel.ChatCompletion;
 using skUnit.Tests.Infrastructure;
 using Xunit.Abstractions;
 
@@ -25,6 +26,25 @@ namespace skUnit.Tests.ScenarioAssertTests.ChatScenarioTests
         {
             var scenarios = await LoadChatScenarioAsync("EiffelTallChat");
             await ScenarioAssert.PassAsync(scenarios, Kernel);
+        }
+
+        [Fact]
+        public async Task TimeFunctionCall_MustWork()
+        {
+            var scenarios = await LoadChatScenarioAsync("GetCurrentTimeChat");
+            await ScenarioAssert.PassAsync(scenarios, Kernel, getAnswerFunc: async chatHistory =>
+            {
+                var chatService = Kernel.GetRequiredService<IChatCompletionService>();
+                var result = await chatService.GetChatMessageContentsAsync(
+                    chatHistory,
+                    new PromptExecutionSettings { FunctionChoiceBehavior = FunctionChoiceBehavior.Auto() },
+                    kernel: Kernel
+                    );
+
+                var answer = "";
+
+                return answer;
+            });
         }
     }
 

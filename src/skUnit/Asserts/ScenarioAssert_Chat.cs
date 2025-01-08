@@ -95,7 +95,8 @@ public partial class ScenarioAssert
 
                 foreach (var assertion in chatItem.Assertions)
                 {
-                    await CheckAssertionAsync(assertion, answer);
+                    // ToDo: After supporting IChatClient the chat history should be passed here:
+                    await CheckAssertionAsync(assertion, answer, chatHistory);
                 }
             }
 
@@ -172,7 +173,7 @@ public partial class ScenarioAssert
 
                 foreach (var assertion in functionCall.Assertions)
                 {
-                    await CheckAssertionAsync(assertion, result ?? "");
+                    await CheckAssertionAsync(assertion, result ?? "", chatHistory);
                 }
             }
         }

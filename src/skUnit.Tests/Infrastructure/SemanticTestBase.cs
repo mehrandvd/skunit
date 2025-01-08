@@ -7,6 +7,7 @@ using Microsoft.Extensions.Logging;
 using Microsoft.SemanticKernel;
 using skUnit.Scenarios;
 using skUnit.Scenarios.Parsers;
+using skUnit.Tests.ScenarioAssertTests.ChatScenarioTests.Plugins;
 using Xunit.Abstractions;
 
 namespace skUnit.Tests.Infrastructure;
@@ -40,10 +41,14 @@ public class SemanticTestBase
             , message => Output.WriteLine(message));
         Kernel = CreateKernel();
 
-        ChatClient = new AzureOpenAIClient(
+        var openAI = new AzureOpenAIClient(
             new Uri(_endpoint),
             new System.ClientModel.ApiKeyCredential(_apiKey)
         ).AsChatClient(_deploymentName);
+
+        ChatClient = new ChatClientBuilder(openAI)
+            .UseFunctionInvocation()
+            .Build();
     }
 
     Kernel CreateKernel()
@@ -56,6 +61,8 @@ public class SemanticTestBase
             loggerBuilder.ClearProviders();
             loggerBuilder.AddConsole();
         });
+
+        builder.Plugins.AddFromType<TimePlugin>();
         var kernel = builder.Build();
         return kernel;
     }
@@ -67,6 +74,6 @@ public class SemanticTestBase
 
     protected async Task<List<ChatScenario>> LoadChatScenarioAsync(string scenario)
     {
-        return await ChatScenario.LoadFromResourceAsync($"skUnit.Tests.ScenarioAssertTests.ChatScenarioTests.Samples.{scenario}.skchat.md", Assembly.GetExecutingAssembly());
+        return await ChatScenario.LoadFromResourceAsync($"skUnit.Tests.ScenarioAssertTests.ChatScenarioTests.Samples.{scenario}.md", Assembly.GetExecutingAssembly());
     }
 }

@@ -1,6 +1,7 @@
 ﻿using SemanticValidation;
 using skUnit.Exceptions;
 using System;
+using System.Collections;
 using System.Collections.Generic;
 using System.Linq;
 using System.Text;
@@ -8,6 +9,7 @@ using System.Text.Json;
 using System.Text.Json.Nodes;
 using System.Threading.Tasks;
 using SemanticValidation.Utils;
+using Microsoft.Extensions.AI;
 
 namespace skUnit.Scenarios.Parsers.Assertions
 {
@@ -39,10 +41,12 @@ namespace skUnit.Scenarios.Parsers.Assertions
         /// Checks if <paramref name="answer"/> is meets the conditions in JsonCheck <paramref name="semantic"/>
         /// </summary>
         /// <param name="semantic"></param>
+        /// <param name="input"></param>
+        /// <param name="historytory"></param>
         /// <param name="answer"></param>
         /// <returns></returns>
         /// <exception cref="SemanticAssertException"></exception>
-        public async Task Assert(Semantic semantic, string input)
+        public async Task Assert(Semantic semantic, string input, IEnumerable<object>? history = null)
         {
             var answerJson = SemanticUtils.PowerParseJson<JsonObject>(input)
                              ?? throw new InvalidOperationException($"""
@@ -76,7 +80,7 @@ namespace skUnit.Scenarios.Parsers.Assertions
                     var answerValue = answerJson[prop.Key]?.GetValue<string>() ?? "";
                     try
                     {
-                        await assertion.Assert(semantic, answerValue);
+                        await assertion.Assert(semantic, answerValue, history);
                     }
                     catch (SemanticAssertException semanticAssertException)
                     {

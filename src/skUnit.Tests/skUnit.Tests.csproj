@@ -10,17 +10,9 @@
   </PropertyGroup>
 
   <ItemGroup>
-    <None Remove="ScenarioAssertTests\ChatScenarioTests\Samples\EiffelTallChat\config.json" />
-    <None Remove="ScenarioAssertTests\ChatScenarioTests\Samples\EiffelTallChat\skchat.md" />
-    <None Remove="ScenarioAssertTests\ChatScenarioTests\Samples\PocomoPriceChat\config.json" />
-    <None Remove="ScenarioAssertTests\ChatScenarioTests\Samples\PocomoPriceChat\skchat.md" />
-  </ItemGroup>
-
-  <ItemGroup>
-    <EmbeddedResource Include="ScenarioAssertTests\ChatScenarioTests\Samples\EiffelTallChat\config.json" />
-    <EmbeddedResource Include="ScenarioAssertTests\ChatScenarioTests\Samples\EiffelTallChat\skchat.md" />
-    <EmbeddedResource Include="ScenarioAssertTests\ChatScenarioTests\Samples\PocomoPriceChat\config.json" />
-    <EmbeddedResource Include="ScenarioAssertTests\ChatScenarioTests\Samples\PocomoPriceChat\skchat.md" />
+    <EmbeddedResource Include="ScenarioAssertTests\ChatScenarioTests\Samples\EiffelTallChat.md" />
+    <EmbeddedResource Include="ScenarioAssertTests\ChatScenarioTests\Samples\GetCurrentTimeChatJson.md" />
+    <EmbeddedResource Include="ScenarioAssertTests\ChatScenarioTests\Samples\GetCurrentTimeChat.md" />
   </ItemGroup>
 
   <ItemGroup>
@@ -40,15 +32,6 @@
 
   <ItemGroup>
     <ProjectReference Include="..\skUnit\skUnit.csproj" />
-  </ItemGroup>
-
-  <ItemGroup>
-    <None Update="ScenarioAssertTests\ChatScenarioTests\Plugins\Pocomo\config.json">
-      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
-    </None>
-    <None Update="ScenarioAssertTests\ChatScenarioTests\Plugins\Pocomo\skprompt.txt">
-      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
-    </None>
   </ItemGroup>
 
 </Project>
