@@ -123,3 +123,25 @@ It ensures that the answer is not empty.
 ### CHECK NotEmpty
 ```
 This statement checks if the output is empty.
+
+## CHECK FunctionCall
+It ensures that a function call happens during answer generation.
+
+``````md
+### CHECK FunctionCall
+```json
+{
+  "function_name": "GetCurrentTime"
+}
+```
+``````
+
+This statement checks if `GetCurrentTime` function has been called during the answer generation.
+Also, the following syntax can be used as a sugar syntactic.
+
+```md
+### CHECK FunctionCall
+GetCurrentTime
+```
+
+
