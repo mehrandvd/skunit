@@ -190,11 +190,11 @@ Afterwards, you'll need to instantiate the `SemanticKernelAssert` class in your 
 ```csharp
 public class MyTest
 {
-  SemanticAssert SemanticAssert { get; set; }
+  ScenarioAssert ScenarioAssert { get; set; }
   MyTest(ITestOutputHelper output)
   {
     var chatClient = new AzureOpenAIClient(...);
-    SemanticAssert = new SemanticAssert(chatClient);
+    ScenarioAssert = new ScenarioAssert(chatClient, output.WriteLine);
   }
 
   [Fact]
