@@ -131,17 +131,30 @@ It ensures that a function call happens during answer generation.
 ### CHECK FunctionCall
 ```json
 {
-  "function_name": "GetCurrentTime"
+  "function_name": "GetFoodMenu"
 }
 ```
 ``````
 
-This statement checks if `GetCurrentTime` function has been called during the answer generation.
+This statement checks if `GetFoodMenu` function has been called during the answer generation.
 Also, the following syntax can be used as a sugar syntactic.
 
 ```md
 ### CHECK FunctionCall
-GetCurrentTime
+GetFoodMenu
+```
+
+Also you can us some more advanced assertions by checking the called arguments:
+
+``````md
+### CHECK FunctionCall
+```json
+{
+  "function_name": "GetFoodMenu",
+  "arguments": {
+    "mood": "Happy"
+  }
+}
 ```
 
 
