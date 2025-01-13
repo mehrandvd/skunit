@@ -1,5 +1,5 @@
 ## [USER]
-Hi there, What do you have to eat?
+Hi there, What do you have on menu?
 
 ## [AGENT]
 Pizza

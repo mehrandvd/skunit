@@ -1,5 +1,5 @@
 ## [USER]
-What a bad day. I feel so blue. What do you have to eat?
+What a boring day, I feel so blue. What do you have on your menu?
 
 ## [AGENT]
 Ice cream

@@ -1,5 +1,5 @@
 ## [USER]
-What the fuck do you have for eating, huh?
+What the fuck do you have on your menu, huh?
 
 ## [AGENT]
 Nothing
