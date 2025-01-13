@@ -36,10 +36,10 @@ namespace Demo.TddShop
         [Description("Returns the food menu based on the attitude of the user")]
         private string GetFoodMenu(
             [Description("User's mood based on its chat.")]
-            UserMood userMood
+            UserMood mood
             )
         {
-            return userMood switch
+            return mood switch
             {
                 UserMood.NormalOrHappy => "Pizza, Pasta, Salad",
                 UserMood.Sad => "Ice Cream, Chocolate, Cake",

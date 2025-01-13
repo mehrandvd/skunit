@@ -9,7 +9,14 @@ It mentions the ice cream
 It does not mention the pizza
 
 ### CHECK FunctionCall
-GetFoodMenu
+```json
+{
+  "function_name": "GetFoodMenu",
+  "arguments": {
+	"mood": "Sad"
+  }
+}
+```
 
 ## [USER]
 Greaaat, thank you, I'm happy now. What do we have for food now?
@@ -19,3 +26,13 @@ Pizza
 
 ### CHECK SemanticCondition
 It mentions the pizza
+
+### CHECK FunctionCall
+```json
+{
+  "function_name": "GetFoodMenu",
+  "arguments": {
+	"mood": "NormalOrHappy"
+  }
+}
+```
