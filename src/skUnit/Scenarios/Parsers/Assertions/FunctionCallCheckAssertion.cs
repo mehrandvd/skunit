@@ -70,7 +70,7 @@ namespace skUnit.Scenarios.Parsers.Assertions
         /// </summary>
         /// <param name="semantic"></param>
         /// <param name="input"></param>
-        /// <param name="historytory"></param>
+        /// <param name="history"></param>
         /// <returns></returns>
         /// <exception cref="SemanticAssertException"></exception>
         public async Task Assert(Semantic semantic, string input, IEnumerable<object>? history = null)
