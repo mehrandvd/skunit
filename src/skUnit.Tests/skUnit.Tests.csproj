@@ -11,8 +11,8 @@
 
   <ItemGroup>
     <EmbeddedResource Include="ScenarioAssertTests\ChatScenarioTests\Samples\EiffelTallChat.md" />
-    <EmbeddedResource Include="ScenarioAssertTests\ChatScenarioTests\Samples\GetCurrentTimeChatJson.md" />
-    <EmbeddedResource Include="ScenarioAssertTests\ChatScenarioTests\Samples\GetCurrentTimeChat.md" />
+    <EmbeddedResource Include="ScenarioAssertTests\ChatScenarioTests\Samples\GetFoodMenuChatJson.md" />
+    <EmbeddedResource Include="ScenarioAssertTests\ChatScenarioTests\Samples\GetFoodMenuChat.md" />
   </ItemGroup>
 
   <ItemGroup>

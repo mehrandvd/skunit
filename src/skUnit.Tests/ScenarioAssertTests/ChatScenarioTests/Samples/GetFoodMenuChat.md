@@ -1,10 +1,10 @@
 # SCENARIO Time Discussion
 
 ## [USER]
-What time is it?
+What a beautiful day. What food do your menu?
 
 ## [AGENT]
-It is 10:00
+Pizza
 
 ### CHECK FunctionCall
-GetCurrentTime
+GetFoodMenu

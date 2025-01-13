@@ -1,6 +1,7 @@
 ﻿using Microsoft.Extensions.AI;
 using Microsoft.SemanticKernel;
 using skUnit.Tests.Infrastructure;
+using System.ComponentModel;
 using Xunit.Abstractions;
 
 namespace skUnit.Tests.ScenarioAssertTests.ChatScenarioTests
@@ -23,16 +24,16 @@ namespace skUnit.Tests.ScenarioAssertTests.ChatScenarioTests
         [Fact]
         public async Task FunctionCall_MustWork()
         {
-            var scenarios = await LoadChatScenarioAsync("GetCurrentTimeChat");
+            var scenarios = await LoadChatScenarioAsync("GetFoodMenuChat");
             await ScenarioAssert.PassAsync(scenarios, ChatClient, getAnswerFunc: async history =>
             {
-                AIFunction getCurrentTime = AIFunctionFactory.Create(GetCurrentTime);
+                AIFunction getFoodMenu = AIFunctionFactory.Create(GetFoodMenu);
 
                 var result = await ChatClient.CompleteAsync(
                     history,
                     options: new ChatOptions
                     {
-                        Tools = [getCurrentTime]
+                        Tools = [getFoodMenu]
                     });
 
                 var answer =  result.Choices.First().Text ?? "";
@@ -43,16 +44,16 @@ namespace skUnit.Tests.ScenarioAssertTests.ChatScenarioTests
         [Fact]
         public async Task FunctionCallJson_MustWork()
         {
-            var scenarios = await LoadChatScenarioAsync("GetCurrentTimeChatJson");
+            var scenarios = await LoadChatScenarioAsync("GetFoodMenuChatJson");
             await ScenarioAssert.PassAsync(scenarios, ChatClient, getAnswerFunc: async history =>
             {
-                AIFunction getCurrentTime = AIFunctionFactory.Create(GetCurrentTime);
+                AIFunction getFoodMenu = AIFunctionFactory.Create(GetFoodMenu);
 
                 var result = await ChatClient.CompleteAsync(
                     history,
                     options: new ChatOptions
                     {
-                        Tools = [getCurrentTime]
+                        Tools = [getFoodMenu]
                     });
 
                 var answer = result.Choices.First().Text ?? "";
@@ -61,9 +62,26 @@ namespace skUnit.Tests.ScenarioAssertTests.ChatScenarioTests
         }
 
 
-        private static string GetCurrentTime()
+        [Description("Gets a food menu based on the user's mood")]
+        private static string GetFoodMenu(
+            [Description("User's mood based on its chat hsitory.")]
+            UserMood mood
+            )
         {
-            return DateTime.Now.ToString("HH:mm:ss");
+            return mood switch
+            {
+                UserMood.Happy => "Pizza",
+                UserMood.Sad => "Ice Cream",
+                UserMood.Angry => "Hot Dog",
+                _ => "Nothing"
+            };
+        }
+
+        enum UserMood
+        {
+            Happy,
+            Sad,
+            Angry
         }
     }
 

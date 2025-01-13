@@ -25,12 +25,12 @@ public class SemanticTestBase
     public SemanticTestBase(ITestOutputHelper output)
     {
         Output = output;
-        _apiKey = Environment.GetEnvironmentVariable("openai-api-key", EnvironmentVariableTarget.User) ??
+        _apiKey = Environment.GetEnvironmentVariable("openai-gpt4-key", EnvironmentVariableTarget.User) ??
                   throw new Exception("No ApiKey in environment variables.");
         _endpoint = Environment.GetEnvironmentVariable("openai-endpoint", EnvironmentVariableTarget.User) ??
                     throw new Exception("No Endpoint in environment variables.");
         _deploymentName =
-            Environment.GetEnvironmentVariable("openai-deployment-name", EnvironmentVariableTarget.User) ??
+            Environment.GetEnvironmentVariable("openai-gpt4-deployment", EnvironmentVariableTarget.User) ??
             throw new Exception("No DeploymentName in environment variables.");
 
         ScenarioAssert = new ScenarioAssert(

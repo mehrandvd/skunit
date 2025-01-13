@@ -12,6 +12,7 @@ using SemanticValidation.Utils;
 using Microsoft.Extensions.AI;
 using Microsoft.SemanticKernel.ChatCompletion;
 using Microsoft.SemanticKernel;
+using FunctionCallContent = Microsoft.Extensions.AI.FunctionCallContent;
 using FunctionResultContent = Microsoft.Extensions.AI.FunctionResultContent;
 
 namespace skUnit.Scenarios.Parsers.Assertions
@@ -24,6 +25,7 @@ namespace skUnit.Scenarios.Parsers.Assertions
         private string FunctionCallText { get; set; } = default!;
         public JsonObject? FunctionCallJson { get; set; }
         public string? FunctionName { get; set; }
+        public Dictionary<string, string> FunctionArguments { get; set; } = new();
 
         public FunctionCallAssertion SetJsonAssertText(string jsonAssertText)
         {
@@ -42,9 +44,23 @@ namespace skUnit.Scenarios.Parsers.Assertions
                 // So it's a raw function name.
             }
 
-            FunctionName = FunctionCallJson is not null 
-                ? FunctionCallJson["function_name"]?.GetValue<string>() 
-                : FunctionCallText;
+
+            if (FunctionCallJson is not null)
+            {
+                FunctionName = FunctionCallJson["function_name"]?.GetValue<string>();
+
+                if (FunctionCallJson["arguments"] is JsonObject argumentsJson)
+                {
+                    foreach (var kv in argumentsJson)
+                    {
+                        FunctionArguments[kv.Key] = kv.Value?.ToString() ?? "";
+                    }
+                }
+            }
+            else
+            {
+                FunctionName = FunctionCallText;
+            }
 
             return this;
         }
@@ -83,6 +99,47 @@ namespace skUnit.Scenarios.Parsers.Assertions
                          No function call found with name: {FunctionName}
                          Current calls: {string.Join(", ", functionCalls.Select(fc => fc.Name))}
                          """);
+
+
+                if (FunctionArguments.Any())
+                {
+                    var lastFunctionCall = thisFunctionCalls.Last();
+
+                    var relatedCall = (
+                        from call in chatMessageHistory.SelectMany(c => c.Contents).OfType<FunctionCallContent>()
+                        where call.CallId == lastFunctionCall.CallId
+                        select call
+                    ).FirstOrDefault();
+
+                    if (relatedCall is null)
+                        throw new SemanticAssertException(
+                            $"""
+                             No function call found with name: {FunctionName}
+                             Current calls: {string.Join(", ", functionCalls.Select(fc => fc.Name))}
+                             """);
+
+                    foreach (var argument in FunctionArguments)
+                    {
+                        var arguments = relatedCall.Arguments ?? new Dictionary<string, object?>();
+
+                        if (arguments.TryGetValue(argument.Key, out var value))
+                        {
+                            if (value?.ToString() != argument.Value)
+                                throw new SemanticAssertException(
+                                    $"""
+                                     Argument `{argument.Key}` is expected to equal to `{argument.Value}`, but it is not.
+                                     Actual value: `{value}`
+                                     """);
+                        }
+                        else
+                        {
+                            throw new SemanticAssertException(
+                                $"""
+                                 Argument {argument.Key} is not found in the function call.
+                                 """);
+                        }
+                    }
+                }
             }
             else if(history is IList<ChatMessageContent> chatHistory)
             {
