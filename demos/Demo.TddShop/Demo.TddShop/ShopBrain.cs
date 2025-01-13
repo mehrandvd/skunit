@@ -22,11 +22,14 @@ namespace Demo.TddShop
                 new System.ClientModel.ApiKeyCredential(azureKey)
                 ).AsChatClient(deployment);
 
-            var builder = 
+            var builder =
                 new ChatClientBuilder(azureChatClient)
-                .UseTools([
-                    AIFunctionFactory.Create(GetFoodMenu)
-                    ]);
+                .ConfigureOptions(options =>
+                {
+                    options.Tools ??= [];
+                    options.Tools.Add(AIFunctionFactory.Create(GetFoodMenu));
+                })
+                .UseFunctionInvocation();
 
             var client = builder.Build();
 
