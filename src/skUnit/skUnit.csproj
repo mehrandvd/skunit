@@ -3,7 +3,7 @@
   <PropertyGroup>
     <TargetFramework>net8.0</TargetFramework>
     <ImplicitUsings>enable</ImplicitUsings>
-    <Nullable>enable</Nullable>
+    <Nullable>disable</Nullable>
     <Title>skUnit</Title>
     <Version>0.1.0-beta</Version>
     <Authors>Mehran Davoudi</Authors>
