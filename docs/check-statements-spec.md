@@ -144,7 +144,7 @@ Also, the following syntax can be used as a sugar syntactic.
 GetFoodMenu
 ```
 
-Also you can us some more advanced assertions by checking the called arguments:
+Also you can us some more advanced assertions by checking the called arguments using arguments conditions. Argument condition is an array that contains the name of the condition as the first item, followed by the values:
 
 ``````md
 ### CHECK FunctionCall
@@ -152,9 +152,79 @@ Also you can us some more advanced assertions by checking the called arguments:
 {
   "function_name": "GetFoodMenu",
   "arguments": {
-    "mood": "Happy"
+    "mood": ["Equals", "Happy"]
   }
 }
 ```
+``````
 
+There are several condtions supported.
+### Equals
+It checks if the argument is equal to the specified value:
+``````md
+### CHECK FunctionCall
+```json
+{
+  "function_name": "GetFoodMenu",
+  "arguments": {
+    "mood": ["Equals", "Happy"]
+  }
+}
+```
+``````
 
+### NotEmpty
+It checks if the argument is not null or empty:
+``````md
+### CHECK FunctionCall
+```json
+{
+  "function_name": "GetFoodMenu",
+  "arguments": {
+    "mood": ["NotEmpty"]
+  }
+}
+```
+``````
+
+### IsAnyOf
+It checks whether the argument value is equal to any of the specified values:
+``````md
+### CHECK FunctionCall
+```json
+{
+  "function_name": "GetFoodMenu",
+  "arguments": {
+    "mood": ["IsAnyOf", "Happy", "Sad", "Angry"]
+  }
+}
+```
+``````
+
+### ContainsAny
+It checks if the argument value contains any of the specified items:
+``````md
+### CHECK FunctionCall
+```json
+{
+  "function_name": "GetFoodMenu",
+  "arguments": {
+    "mood": ["ContainsAny", "Happy", "Sad", "Angry"]
+  }
+}
+```
+``````
+
+### SemanticSimilar
+It checks if the argument value is similar in meaning to the given text:
+``````md
+### CHECK FunctionCall
+```json
+{
+  "function_name": "GetFoodMenu",
+  "arguments": {
+    "mood": ["SemanticSimilar", "Is happy"]
+  }
+}
+```
+``````
