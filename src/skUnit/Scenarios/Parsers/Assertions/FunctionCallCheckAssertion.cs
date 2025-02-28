@@ -1,38 +1,38 @@
 ﻿using SemanticValidation;
 using skUnit.Exceptions;
-using System;
-using System.Collections;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Text.Json;
 using System.Text.Json.Nodes;
-using System.Threading.Tasks;
 using SemanticValidation.Utils;
 using Microsoft.Extensions.AI;
 using Microsoft.SemanticKernel.ChatCompletion;
 using Microsoft.SemanticKernel;
 using FunctionCallContent = Microsoft.Extensions.AI.FunctionCallContent;
 using FunctionResultContent = Microsoft.Extensions.AI.FunctionResultContent;
+using skUnit.Scenarios.Parsers.Assertions.FunctionArgumentConditions;
 
 namespace skUnit.Scenarios.Parsers.Assertions
 {
     public class FunctionCallAssertion : IKernelAssertion
     {
+        private readonly ArgumentConditionFactory factory = new();
+
         /// <summary>
         /// The expected conditions for a json answer.
         /// </summary>
+        /// 
         private string FunctionCallText { get; set; } = default!;
+
         public JsonObject? FunctionCallJson { get; set; }
+
         public string? FunctionName { get; set; }
-        public Dictionary<string, string> FunctionArguments { get; set; } = new();
+
+        public Dictionary<string, IArgumentCondition> FunctionArguments { get; set; } = new();
 
         public FunctionCallAssertion SetJsonAssertText(string jsonAssertText)
         {
             if (string.IsNullOrWhiteSpace(jsonAssertText))
                 throw new InvalidOperationException("The FunctionCallCheck is empty.");
 
-            FunctionCallText = (jsonAssertText ?? "");
+            FunctionCallText = jsonAssertText ?? "";
 
             try
             {
@@ -44,7 +44,6 @@ namespace skUnit.Scenarios.Parsers.Assertions
                 // So it's a raw function name.
             }
 
-
             if (FunctionCallJson is not null)
             {
                 FunctionName = FunctionCallJson["function_name"]?.GetValue<string>();
@@ -53,7 +52,7 @@ namespace skUnit.Scenarios.Parsers.Assertions
                 {
                     foreach (var kv in argumentsJson)
                     {
-                        FunctionArguments[kv.Key] = kv.Value?.ToString() ?? "";
+                        FunctionArguments[kv.Key] = factory.Create(kv.Value);
                     }
                 }
             }
@@ -120,14 +119,18 @@ namespace skUnit.Scenarios.Parsers.Assertions
 
                     foreach (var argument in FunctionArguments)
                     {
-                        var arguments = relatedCall.Arguments ?? new Dictionary<string, object?>();
+                        var realCallArguments = relatedCall.Arguments ?? new Dictionary<string, object?>();
 
-                        if (arguments.TryGetValue(argument.Key, out var value))
+                        if (realCallArguments.TryGetValue(argument.Key, out var value))
                         {
-                            if (value?.ToString() != argument.Value)
+                            var condition = argument.Value;
+                            if (condition is ISemanticArgumentCondition semanticCondition)
+                                semanticCondition.Semantic = semantic;
+
+                            if (!condition.IsMatch(value?.ToString()))
                                 throw new SemanticAssertException(
                                     $"""
-                                     Argument `{argument.Key}` is expected to equal to `{argument.Value}`, but it is not.
+                                     Argument `{argument.Key}` is expected to satisfy condition {condition.Name}, but it does not.
                                      Actual value: `{value}`
                                      """);
                         }
@@ -165,6 +168,7 @@ namespace skUnit.Scenarios.Parsers.Assertions
         }
 
         public string AssertionType => "FunctionCall";
+
         public string Description => FunctionCallText;
 
         public override string ToString() => $"{AssertionType}: {FunctionCallText}";
