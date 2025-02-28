@@ -4,20 +4,20 @@ namespace skUnit.Scenarios.Parsers.Assertions.FunctionArgumentConditions;
 
 public class SemanticSimilarArgumentCondition : ISemanticArgumentCondition
 {
-    private readonly string conditionValue;
-
     public SemanticSimilarArgumentCondition(string conditionValue)
     {
-        this.conditionValue = conditionValue;
+        ConditionValues = [conditionValue];
     }
 
     public string Name => Conditions.SemanticSimilar;
+
+    public string[] ConditionValues { get; }
 
     public Semantic Semantic { get; set; }
 
     public bool IsMatch(string value)
     {
-        var result = Semantic.AreSimilar(value, conditionValue);
+        var result = Semantic.AreSimilar(value, ConditionValues[0]);
         return result.IsValid;
     }
 }

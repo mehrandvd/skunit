@@ -2,17 +2,17 @@
 
 public class ContainsAnyArgumentCondition : IArgumentCondition
 {
-    private string[] conditionValues;
-
     public ContainsAnyArgumentCondition(string[] conditionValues)
     {
-        this.conditionValues = conditionValues;
+        ConditionValues = conditionValues;
     }
 
     public string Name => Conditions.ContainsAny;
 
+    public string[] ConditionValues { get; }
+
     public bool IsMatch(string value)
     {
-        return conditionValues.Any(value.Contains);
+        return ConditionValues.Any(value.Contains);
     }
 }

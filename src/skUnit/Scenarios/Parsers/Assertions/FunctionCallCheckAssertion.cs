@@ -127,12 +127,9 @@ namespace skUnit.Scenarios.Parsers.Assertions
                             if (condition is ISemanticArgumentCondition semanticCondition)
                                 semanticCondition.Semantic = semantic;
 
-                            if (!condition.IsMatch(value?.ToString()))
-                                throw new SemanticAssertException(
-                                    $"""
-                                     Argument `{argument.Key}` is expected to satisfy condition `{condition.Name}`, but it does not.
-                                     Actual value: `{value}`
-                                     """);
+                            string actualValue = value?.ToString();
+                            if (!condition.IsMatch(actualValue))
+                                throw CreateArgumentException(condition, argument.Key, actualValue);
                         }
                         else
                         {
@@ -165,6 +162,22 @@ namespace skUnit.Scenarios.Parsers.Assertions
                          Current calls: {string.Join(", ", functionCalls.Select(fc => $"{fc.PluginName}-{fc.FunctionName}"))}
                          """);
             }
+        }
+
+        private SemanticAssertException CreateArgumentException(IArgumentCondition condition, string key, string value)
+        {
+            if (condition.Name == Conditions.NotEmpty)
+                return new SemanticAssertException(
+                    $"""
+                    Argument `{key}` is expected to satisfy condition `{condition.Name}`, but it does not.
+                    Actual value: `{value}`.
+                    """);
+
+            return new SemanticAssertException(
+                $"""
+                Argument `{key}` is expected to satisfy condition `{condition.Name}` with values: [{string.Join(", ", condition.ConditionValues.Select(value => $"`{value}`"))}], but it does not.
+                Actual value: `{value}`.
+                """);
         }
 
         public string AssertionType => "FunctionCall";

@@ -8,7 +8,7 @@ namespace skUnit.Tests.AssertionTests
     public class FunctionCallAssertionTests
     {
         [Fact]
-        public async Task FunctionCall_MustWork()
+        public void FunctionCall_MustWork()
         {
             var assertion = new FunctionCallAssertion();
 
@@ -24,7 +24,7 @@ namespace skUnit.Tests.AssertionTests
         }
 
         [Fact]
-        public async Task FunctionCall_BackQuote_MustWork()
+        public void FunctionCall_BackQuote_MustWork()
         {
             var assertion = new FunctionCallAssertion();
 
@@ -133,7 +133,7 @@ namespace skUnit.Tests.AssertionTests
                     {
                         new FunctionCallContent("call-id-1", "test_function", new Dictionary<string, object?>()
                         {
-                            { "arg1", "value1" }
+                            { "arg1", "value" }
                         }),
                         new FunctionResultContent("call-id-1", "test_function", "result"),
                     }
@@ -146,7 +146,7 @@ namespace skUnit.Tests.AssertionTests
                 {
                     "function_name": "test_function",
                     "arguments": {
-                        "arg1": ["Equals", "value2"]
+                        "arg1": ["IsAnyOf", "value1", "value2", "value3"]
                     }
                 }
                 ```
@@ -157,9 +157,9 @@ namespace skUnit.Tests.AssertionTests
                 return assertion.Assert(null, null, history);
             });
 
-            Assert.Equal("Argument `arg1` is expected to satisfy condition `Equals`, but it does not.\nActual value: `value1`", exception.Message);
+            Assert.Equal("Argument `arg1` is expected to satisfy condition `IsAnyOf` with values: [`value1`, `value2`, `value3`], but it does not.\nActual value: `value`.", exception.Message);
             Assert.Single(assertion.FunctionArguments);
-            Assert.Equal(typeof(EqualsArgumentCondition), assertion.FunctionArguments["arg1"].GetType());
+            Assert.Equal(typeof(IsAnyOfArgumentCondition), assertion.FunctionArguments["arg1"].GetType());
         }
     }
 }

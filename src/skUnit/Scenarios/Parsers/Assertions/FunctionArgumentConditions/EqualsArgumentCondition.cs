@@ -2,15 +2,15 @@
 
 public class EqualsArgumentCondition : IArgumentCondition
 {
-    private string conditionValue;
-
     public EqualsArgumentCondition(string conditionValue)
     {
-        this.conditionValue = conditionValue;
+        ConditionValues = [conditionValue];
     }
 
-    public string Name => Conditions.Equals;
+    public string Name => Conditions.Equal;
+
+    public string[] ConditionValues { get; }
 
     public bool IsMatch(string value)
-        => conditionValue == value;
+        => ConditionValues[0] == value;
 }

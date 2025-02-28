@@ -2,17 +2,17 @@
 
 public class IsAnyOfArgumentCondition : IArgumentCondition
 {
-    private string[] conditionValues;
-
     public IsAnyOfArgumentCondition(string[] conditionValues)
     {
-        this.conditionValues = conditionValues;
+        ConditionValues = conditionValues;
     }
 
     public string Name => Conditions.IsAnyOf;
-    
+
+    public string[] ConditionValues { get; }
+
     public bool IsMatch(string value)
     {
-        return conditionValues.Any(target => target == value);
+        return ConditionValues.Any(target => target == value);
     }
 }

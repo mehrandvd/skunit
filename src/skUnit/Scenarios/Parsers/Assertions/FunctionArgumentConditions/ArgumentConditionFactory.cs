@@ -20,7 +20,7 @@ public class ArgumentConditionFactory
 
         switch (condition.Name)
         {
-            case Conditions.Equals:
+            case Conditions.Equal:
                 return new EqualsArgumentCondition(condition.Values[0]);
             case Conditions.ContainsAny:
                 return new ContainsAnyArgumentCondition(condition.Values);
