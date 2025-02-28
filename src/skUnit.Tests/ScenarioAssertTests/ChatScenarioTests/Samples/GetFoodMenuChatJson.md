@@ -11,7 +11,7 @@ Pizza
 {
 	"function_name": "GetFoodMenu",
 	"arguments": {
-		"mood": "Happy"
+		"mood": ["Equals", "Happy"]
 	}
 }
 ```

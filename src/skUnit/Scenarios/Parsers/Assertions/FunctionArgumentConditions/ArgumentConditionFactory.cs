@@ -9,7 +9,7 @@ public class ArgumentConditionFactory
     {
         var kind = argument.GetValueKind();
         if (kind != JsonValueKind.Array)
-            throw new InvalidOperationException($"""Failed to create argument condition. The specified argument condtion format is invalid. Example of valid condition: ["Equals", "value1"].""");
+            throw new InvalidOperationException($"""Failed to create argument condition. The specified argument condition format is invalid. Example of valid condition: ["Equals", "value1"].""");
 
         return CreateArgumentCondition(argument);
     }
@@ -20,18 +20,33 @@ public class ArgumentConditionFactory
 
         switch (condition.Name)
         {
+            case Conditions.NotEmpty:
+                if (condition.Values.Length > 0)
+                    throw new InvalidOperationException("Failed to create argument condition. The `NotEmpty` condition must not have values.");
+
+                return new NotEmptyArgumentCondition();
             case Conditions.Equal:
+                if (condition.Values.Length != 1)
+                    throw new InvalidOperationException("Failed to create argument condition. The `Equal` condition must have one value.");
+
                 return new EqualsArgumentCondition(condition.Values[0]);
             case Conditions.ContainsAny:
+                if (condition.Values.Length == 0)
+                    throw new InvalidOperationException("Failed to create argument condition. The `ContainsAny` condition must have at least one value.");
+
                 return new ContainsAnyArgumentCondition(condition.Values);
             case Conditions.IsAnyOf:
+                if (condition.Values.Length == 0)
+                    throw new InvalidOperationException("Failed to create argument condition. The `IsAnyOf` condition must have at least one value.");
+
                 return new IsAnyOfArgumentCondition(condition.Values);
-            case Conditions.NotEmpty:
-                return new NotEmptyArgumentCondition();
             case Conditions.SemanticSimilar:
+                if (condition.Values.Length != 1)
+                    throw new InvalidOperationException("Failed to create argument condition. The `SemanticSimilar` condition must have one value.");
+
                 return new SemanticSimilarArgumentCondition(condition.Values[0]);
             default:
-                throw new InvalidOperationException($"Failed to create argument condition. Condition {condition.Name} is not supported.");
+                throw new InvalidOperationException($"Failed to create argument condition. Condition `{condition.Name}` is not supported.");
         }
     }
 
