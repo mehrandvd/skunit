@@ -1,6 +1,6 @@
 ﻿namespace skUnit.Scenarios.Parsers.Assertions.FunctionArgumentConditions;
 
-internal class EqualsArgumentCondition : IArgumentCondition
+public class EqualsArgumentCondition : IArgumentCondition
 {
     private string conditionValue;
 

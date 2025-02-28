@@ -1,6 +1,6 @@
 ﻿namespace skUnit.Scenarios.Parsers.Assertions.FunctionArgumentConditions;
 
-internal class ContainsAnyArgumentCondition : IArgumentCondition
+public class ContainsAnyArgumentCondition : IArgumentCondition
 {
     private string[] conditionValues;
 

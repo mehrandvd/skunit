@@ -3,7 +3,7 @@ using System.Text.Json;
 
 namespace skUnit.Scenarios.Parsers.Assertions.FunctionArgumentConditions;
 
-internal class ArgumentConditionFactory
+public class ArgumentConditionFactory
 {
     public IArgumentCondition Create(JsonNode argument)
     {

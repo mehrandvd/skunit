@@ -130,7 +130,7 @@ namespace skUnit.Scenarios.Parsers.Assertions
                             if (!condition.IsMatch(value?.ToString()))
                                 throw new SemanticAssertException(
                                     $"""
-                                     Argument `{argument.Key}` is expected to satisfy condition {condition.Name}, but it does not.
+                                     Argument `{argument.Key}` is expected to satisfy condition `{condition.Name}`, but it does not.
                                      Actual value: `{value}`
                                      """);
                         }

@@ -1,6 +1,6 @@
 ﻿namespace skUnit.Scenarios.Parsers.Assertions.FunctionArgumentConditions;
 
-internal class NotEmptyArgumentCondition : IArgumentCondition
+public class NotEmptyArgumentCondition : IArgumentCondition
 {
     public string Name => Conditions.NotEmpty;
 

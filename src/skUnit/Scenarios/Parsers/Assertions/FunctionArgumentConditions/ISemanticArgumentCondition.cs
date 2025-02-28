@@ -2,7 +2,7 @@
 
 namespace skUnit.Scenarios.Parsers.Assertions.FunctionArgumentConditions;
 
-internal interface ISemanticArgumentCondition : IArgumentCondition
+public interface ISemanticArgumentCondition : IArgumentCondition
 {
     Semantic Semantic { get; set; }
 }

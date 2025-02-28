@@ -2,7 +2,7 @@
 
 namespace skUnit.Scenarios.Parsers.Assertions.FunctionArgumentConditions;
 
-internal class SemanticSimilarArgumentCondition : ISemanticArgumentCondition
+public class SemanticSimilarArgumentCondition : ISemanticArgumentCondition
 {
     private readonly string conditionValue;
 
