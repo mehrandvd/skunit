@@ -13,9 +13,9 @@ namespace Demo.TddShop
     {
         public IChatClient CreateChatClient()
         {
-            var deployment = Environment.GetEnvironmentVariable("openai-gpt4-deployment")!;
-            var azureKey = Environment.GetEnvironmentVariable("openai-gpt4-key")!;
-            var endpoint = Environment.GetEnvironmentVariable("openai-endpoint")!;
+            var deployment = Environment.GetEnvironmentVariable("AzureOpenAI_Gpt4_Deployment")!;
+            var azureKey = Environment.GetEnvironmentVariable("AzureOpenAI_Gpt4_ApiKey")!;
+            var endpoint = Environment.GetEnvironmentVariable("AzureOpenAI_Gpt4_Endpoint")!;
 
             var azureChatClient = new AzureOpenAIClient(
                 new Uri(endpoint), 

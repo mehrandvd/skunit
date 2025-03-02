@@ -12,9 +12,9 @@ namespace Demo.TddShop.Test.BrainTests.ShopBrain
 
         public ShopBrainTests(ITestOutputHelper output)
         {
-            var deployment = Environment.GetEnvironmentVariable("openai-deployment-name")!;
-            var azureKey = Environment.GetEnvironmentVariable("openai-api-key")!;
-            var endpoint = Environment.GetEnvironmentVariable("openai-endpoint")!;
+            var deployment = Environment.GetEnvironmentVariable("AzureOpenAI_Gpt4_Deployment")!;
+            var azureKey = Environment.GetEnvironmentVariable("AzureOpenAI_Gpt4_ApiKey")!;
+            var endpoint = Environment.GetEnvironmentVariable("AzureOpenAI_Gpt4_Endpoint")!;
 
             var chatClient = new AzureOpenAIClient(
                 new Uri(endpoint),
