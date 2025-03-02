@@ -29,7 +29,7 @@ namespace skUnit.Tests.ScenarioAssertTests.ChatScenarioTests
             {
                 AIFunction getFoodMenu = AIFunctionFactory.Create(GetFoodMenu);
 
-                var result = await ChatClient.CompleteAsync(
+                var result = await ChatClient.GetResponseAsync(
                     history,
                     options: new ChatOptions
                     {
@@ -49,7 +49,7 @@ namespace skUnit.Tests.ScenarioAssertTests.ChatScenarioTests
             {
                 AIFunction getFoodMenu = AIFunctionFactory.Create(GetFoodMenu);
 
-                var result = await ChatClient.CompleteAsync(
+                var result = await ChatClient.GetResponseAsync(
                     history,
                     options: new ChatOptions
                     {

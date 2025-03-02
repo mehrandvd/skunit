@@ -7,15 +7,18 @@
 
     <IsPackable>false</IsPackable>
     <IsTestProject>true</IsTestProject>
+    <UserSecretsId>8f5163d1-e8e8-4a8e-9186-b473280a19b4</UserSecretsId>
   </PropertyGroup>
 
   <ItemGroup>
     <EmbeddedResource Include="ScenarioAssertTests\ChatScenarioTests\Samples\EiffelTallChat.md" />
+    <EmbeddedResource Include="ScenarioAssertTests\ChatScenarioTests\Samples\GetCurrentTimeChat.md" />
     <EmbeddedResource Include="ScenarioAssertTests\ChatScenarioTests\Samples\GetFoodMenuChatJson.md" />
     <EmbeddedResource Include="ScenarioAssertTests\ChatScenarioTests\Samples\GetFoodMenuChat.md" />
   </ItemGroup>
 
   <ItemGroup>
+    <PackageReference Include="Microsoft.Extensions.Configuration.UserSecrets" Version="9.0.2" />
     <PackageReference Include="Microsoft.Extensions.Logging.Console" Version="9.0.0" />
     <PackageReference Include="Microsoft.Extensions.Logging.Debug" Version="9.0.0" />
     <PackageReference Include="Microsoft.NET.Test.Sdk" Version="17.12.0" />
