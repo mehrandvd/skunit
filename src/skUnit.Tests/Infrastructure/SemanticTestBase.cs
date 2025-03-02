@@ -2,6 +2,7 @@
 using Azure.AI.OpenAI;
 using Markdig.Helpers;
 using Microsoft.Extensions.AI;
+using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Logging;
 using Microsoft.SemanticKernel;
@@ -25,13 +26,20 @@ public class SemanticTestBase
     public SemanticTestBase(ITestOutputHelper output)
     {
         Output = output;
-        _apiKey = Environment.GetEnvironmentVariable("openai-gpt4-key", EnvironmentVariableTarget.User) ??
-                  throw new Exception("No ApiKey in environment variables.");
-        _endpoint = Environment.GetEnvironmentVariable("openai-endpoint", EnvironmentVariableTarget.User) ??
-                    throw new Exception("No Endpoint in environment variables.");
+        var builder = new ConfigurationBuilder()
+            .AddUserSecrets<SemanticTestBase>();
+
+        IConfiguration configuration = builder.Build();
+
+        _apiKey =
+            configuration["AzureOpenAI_ApiKey"] ??
+            throw new Exception("No ApiKey is provided.");
+        _endpoint =
+            configuration["AzureOpenAI_Endpoint"] ??
+            throw new Exception("No Endpoint is provided.");
         _deploymentName =
-            Environment.GetEnvironmentVariable("openai-gpt4-deployment", EnvironmentVariableTarget.User) ??
-            throw new Exception("No DeploymentName in environment variables.");
+            configuration["AzureOpenAI_Deployment"] ??
+            throw new Exception("No Deployment is provided.");
 
         ScenarioAssert = new ScenarioAssert(
             new AzureOpenAIClient(

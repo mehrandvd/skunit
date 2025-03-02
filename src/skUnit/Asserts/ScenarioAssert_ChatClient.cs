@@ -83,7 +83,7 @@ namespace skUnit
                         if (chatClient is null)
                             throw new InvalidOperationException("Both chatClient and getAnswerFunc can not be null. One of them should be specified");
 
-                        var result = await chatClient.CompleteAsync(history);
+                        var result = await chatClient.GetResponseAsync(history);
 
                         return result.Message.Text ?? "";
                     };

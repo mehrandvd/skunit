@@ -83,10 +83,9 @@ namespace skUnit.Scenarios.Parsers.Assertions
             {
                 var functionCalls = chatMessageHistory
                                     .Where(
-                                        ch => ch.Role == ChatRole.Tool
-                                              && ch.Contents.OfType<FunctionResultContent>().Any()
+                                        ch => ch.Contents.OfType<FunctionCallContent>().Any()
                                     )
-                                    .SelectMany(ch => ch.Contents.OfType<FunctionResultContent>())
+                                    .SelectMany(ch => ch.Contents.OfType<FunctionCallContent>())
                                     .ToList();
 
                 var thisFunctionCalls = functionCalls
@@ -103,24 +102,23 @@ namespace skUnit.Scenarios.Parsers.Assertions
 
                 if (FunctionArguments.Any())
                 {
-                    var lastFunctionCall = thisFunctionCalls.Last();
+                    var thisFunctionCall = thisFunctionCalls.Last();
 
-                    var relatedCall = (
-                        from call in chatMessageHistory.SelectMany(c => c.Contents).OfType<FunctionCallContent>()
-                        where call.CallId == lastFunctionCall.CallId
-                        select call
+                    var thisCallResult = (
+                        from fr in chatMessageHistory.SelectMany(c => c.Contents).OfType<FunctionResultContent>()
+                        where fr.CallId == thisFunctionCall.CallId
+                        select fr
                     ).FirstOrDefault();
 
-                    if (relatedCall is null)
+                    if (thisCallResult is null)
                         throw new SemanticAssertException(
                             $"""
-                             No function call found with name: {FunctionName}
-                             Current calls: {string.Join(", ", functionCalls.Select(fc => fc.Name))}
+                             No function call result found with name: {FunctionName}
                              """);
 
                     foreach (var argument in FunctionArguments)
                     {
-                        var arguments = relatedCall.Arguments ?? new Dictionary<string, object?>();
+                        var arguments = thisFunctionCall.Arguments ?? new Dictionary<string, object?>();
 
                         if (arguments.TryGetValue(argument.Key, out var value))
                         {
@@ -152,7 +150,7 @@ namespace skUnit.Scenarios.Parsers.Assertions
                                     .ToList();
 
                 var thisFunctionCalls = functionCalls
-                                        .Where(fc => fc.FunctionName == FunctionName)
+                                        .Where(fc => $"{fc.PluginName}-{fc.FunctionName}".EndsWith(FunctionName))
                                         .ToList();
 
                 if (thisFunctionCalls.Count == 0)
