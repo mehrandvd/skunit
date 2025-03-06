@@ -193,22 +193,21 @@ public class MyTest
   ScenarioAssert ScenarioAssert { get; set; }
   MyTest(ITestOutputHelper output)
   {
-    var chatClient = new AzureOpenAIClient(...);
-    ScenarioAssert = new ScenarioAssert(chatClient, output.WriteLine);
+    ScenarioAssert = new ScenarioAssert(
+      new AzureOpenAIClient(...),
+      output.WriteLine);
   }
 
   [Fact]
   TestChat()
   {
-    var scenario = // Load your markdown.
-    var scenarios = await ChatScenario.LoadFromTest(scenario);
-    await ScenarioAssert.PassAsync(
-      scenarios,
-      getAnswerFunc: async history =>
-            {
-                var result = // your logic to be tested;
-                return result;
-            });
+    // Arrange
+    var chatClient = // Build your IChatClient
+    string markdown = // Load your markdown scenario from a .md file.
+    var scenarios = await ChatScenario.LoadFromTest(markdown);
+
+    // Action + Assert
+    await ScenarioAssert.PassAsync(scenarios, chatClient);
   }
 }
 ```
