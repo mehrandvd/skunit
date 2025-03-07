@@ -1,5 +1,4 @@
-﻿using SemanticValidation;
-using skUnit.Scenarios.Parsers.Assertions;
+﻿using skUnit.Scenarios.Parsers.Assertions;
 
 namespace skUnit.Scenarios.Parsers
 {
