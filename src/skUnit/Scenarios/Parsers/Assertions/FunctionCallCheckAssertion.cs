@@ -119,7 +119,7 @@ namespace skUnit.Scenarios.Parsers.Assertions
                     {
                         var arguments = thisFunctionCall.Arguments ?? new Dictionary<string, object?>();
 
-                        if (realCallArguments.TryGetValue(argument.Key, out var value))
+                        if (arguments.TryGetValue(argument.Key, out var value))
                         {
                             var condition = argument.Value;
                             if (condition is ISemanticArgumentCondition semanticCondition)
