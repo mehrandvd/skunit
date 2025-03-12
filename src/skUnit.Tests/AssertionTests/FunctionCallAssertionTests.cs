@@ -55,7 +55,7 @@ namespace skUnit.Tests.AssertionTests
                         {
                             { "arg1", "value1" }
                         }),
-                        new FunctionResultContent("call-id-1", "test_function", "result"),
+                        new FunctionResultContent("call-id-1", "result"),
                     }
                 },
             };
@@ -94,7 +94,7 @@ namespace skUnit.Tests.AssertionTests
                             { "arg2", "Actual value: value1" },
                             { "arg3", "value" }
                         }),
-                        new FunctionResultContent("call-id-1", "test_function", "result"),
+                        new FunctionResultContent("call-id-1", "result"),
                     }
                 },
             };
@@ -135,7 +135,7 @@ namespace skUnit.Tests.AssertionTests
                         {
                             { "arg1", "value" }
                         }),
-                        new FunctionResultContent("call-id-1", "test_function", "result"),
+                        new FunctionResultContent("call-id-1", "result"),
                     }
                 },
             };
