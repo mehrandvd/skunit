@@ -1,6 +1,4 @@
-﻿using System.Collections;
-using Microsoft.Extensions.AI;
-using SemanticValidation;
+﻿using SemanticValidation;
 using skUnit.Exceptions;
 
 namespace skUnit.Scenarios.Parsers.Assertions;

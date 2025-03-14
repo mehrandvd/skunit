@@ -1,13 +1,6 @@
 ﻿using SemanticValidation;
 using skUnit.Exceptions;
-using System;
-using System.Collections;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Text.Json;
 using System.Text.Json.Nodes;
-using System.Threading.Tasks;
 using SemanticValidation.Utils;
 using Microsoft.Extensions.AI;
 using Microsoft.SemanticKernel.ChatCompletion;
@@ -19,20 +12,26 @@ namespace skUnit.Scenarios.Parsers.Assertions
 {
     public class FunctionCallAssertion : IKernelAssertion
     {
+        // private readonly ArgumentConditionFactory factory = new();
+
         /// <summary>
         /// The expected conditions for a json answer.
         /// </summary>
+        /// 
         private string FunctionCallText { get; set; } = default!;
+
         public JsonObject? FunctionCallJson { get; set; }
+
         public string? FunctionName { get; set; }
-        public Dictionary<string, string> FunctionArguments { get; set; } = new();
+
+        public Dictionary<string, IKernelAssertion> FunctionArguments { get; set; } = new();
 
         public FunctionCallAssertion SetJsonAssertText(string jsonAssertText)
         {
             if (string.IsNullOrWhiteSpace(jsonAssertText))
                 throw new InvalidOperationException("The FunctionCallCheck is empty.");
 
-            FunctionCallText = (jsonAssertText ?? "");
+            FunctionCallText = jsonAssertText ?? "";
 
             try
             {
@@ -44,7 +43,6 @@ namespace skUnit.Scenarios.Parsers.Assertions
                 // So it's a raw function name.
             }
 
-
             if (FunctionCallJson is not null)
             {
                 FunctionName = FunctionCallJson["function_name"]?.GetValue<string>();
@@ -53,7 +51,16 @@ namespace skUnit.Scenarios.Parsers.Assertions
                 {
                     foreach (var kv in argumentsJson)
                     {
-                        FunctionArguments[kv.Key] = kv.Value?.ToString() ?? "";
+                        var checkArray = kv.Value.AsArray();
+                        var checkType = checkArray[0]?.GetValue<string>();
+
+                        var checkValues = checkArray
+                            .Skip(1)
+                            .Select(value => value.GetValue<string>());
+
+                        var checkValuesText = string.Join(", ", checkValues);
+
+                        FunctionArguments[kv.Key] = KernelAssertionParser.Parse(checkValuesText, checkType);
                     }
                 }
             }
@@ -116,24 +123,22 @@ namespace skUnit.Scenarios.Parsers.Assertions
                              No function call result found with name: {FunctionName}
                              """);
 
-                    foreach (var argument in FunctionArguments)
+                    foreach (var argumentAssertion in FunctionArguments)
                     {
                         var arguments = thisFunctionCall.Arguments ?? new Dictionary<string, object?>();
 
-                        if (arguments.TryGetValue(argument.Key, out var value))
+                        if (arguments.TryGetValue(argumentAssertion.Key, out var value))
                         {
-                            if (value?.ToString() != argument.Value)
-                                throw new SemanticAssertException(
-                                    $"""
-                                     Argument `{argument.Key}` is expected to equal to `{argument.Value}`, but it is not.
-                                     Actual value: `{value}`
-                                     """);
+                            var assertion = argumentAssertion.Value;
+                            var actualValue = value?.ToString();
+
+                            await assertion.Assert(semantic, actualValue);
                         }
                         else
                         {
                             throw new SemanticAssertException(
                                 $"""
-                                 Argument {argument.Key} is not found in the function call.
+                                 Argument {argumentAssertion.Key} is not found in the function call.
                                  """);
                         }
                     }
@@ -163,6 +168,7 @@ namespace skUnit.Scenarios.Parsers.Assertions
         }
 
         public string AssertionType => "FunctionCall";
+
         public string Description => FunctionCallText;
 
         public override string ToString() => $"{AssertionType}: {FunctionCallText}";
