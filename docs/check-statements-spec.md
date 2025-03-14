@@ -144,7 +144,7 @@ Also, the following syntax can be used as a sugar syntactic.
 GetFoodMenu
 ```
 
-Also you can us some more advanced assertions by checking the called arguments using arguments conditions. Argument condition is an array that contains the name of the condition as the first item, followed by the values:
+Also you can use some more advanced assertions by checking the called arguments using arguments conditions. Argument condition is an array that contains the name of the condition as the first item, followed by the values:
 
 ``````md
 ### CHECK FunctionCall
@@ -168,6 +168,20 @@ It checks if the argument is equal to the specified value:
   "function_name": "GetFoodMenu",
   "arguments": {
     "mood": ["Equals", "Happy"]
+  }
+}
+```
+``````
+
+### Empty
+It checks if the argument is null or empty:
+``````md
+### CHECK FunctionCall
+```json
+{
+  "function_name": "GetFoodMenu",
+  "arguments": {
+    "mood": ["Empty"]
   }
 }
 ```
@@ -210,6 +224,34 @@ It checks if the argument value contains any of the specified items:
   "function_name": "GetFoodMenu",
   "arguments": {
     "mood": ["ContainsAny", "Happy", "Sad", "Angry"]
+  }
+}
+```
+``````
+
+### ContainsAll
+It checks if the argument value contains all of the specified items:
+``````md
+### CHECK FunctionCall
+```json
+{
+  "function_name": "GetFoodMenu",
+  "arguments": {
+    "mood": ["ContainsAll", "Happy", "Sad", "Angry"]
+  }
+}
+```
+``````
+
+### SemanticCondition
+It checks if the argument value satisfies the condition semantically:
+``````md
+### CHECK FunctionCall
+```json
+{
+  "function_name": "GetFoodMenu",
+  "arguments": {
+    "mood": ["SemanticCondition", "Is happy"]
   }
 }
 ```
