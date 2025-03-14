@@ -1,9 +1,4 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
-using skUnit.Scenarios.Parsers.Assertions;
+﻿using skUnit.Scenarios.Parsers.Assertions;
 
 namespace skUnit.Scenarios.Parsers
 {
@@ -41,6 +36,8 @@ namespace skUnit.Scenarios.Parsers
                     => new EmptyAssertion(),
                 "notempty"
                     => new NotEmptyAssertion(),
+                "isanyof"
+                    => new IsAnyOfAssertion() { Texts = text.Split(',', '،') },
 
                 _ => throw new InvalidOperationException($"Not valid assert type: {type}")
             };
