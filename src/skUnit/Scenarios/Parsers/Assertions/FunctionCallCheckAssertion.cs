@@ -7,13 +7,12 @@ using Microsoft.SemanticKernel.ChatCompletion;
 using Microsoft.SemanticKernel;
 using FunctionCallContent = Microsoft.Extensions.AI.FunctionCallContent;
 using FunctionResultContent = Microsoft.Extensions.AI.FunctionResultContent;
-using skUnit.Scenarios.Parsers.Assertions.FunctionArgumentConditions;
 
 namespace skUnit.Scenarios.Parsers.Assertions
 {
     public class FunctionCallAssertion : IKernelAssertion
     {
-        private readonly ArgumentConditionFactory factory = new();
+        // private readonly ArgumentConditionFactory factory = new();
 
         /// <summary>
         /// The expected conditions for a json answer.
@@ -25,7 +24,7 @@ namespace skUnit.Scenarios.Parsers.Assertions
 
         public string? FunctionName { get; set; }
 
-        public Dictionary<string, IArgumentCondition> FunctionArguments { get; set; } = new();
+        public Dictionary<string, IKernelAssertion> FunctionArguments { get; set; } = new();
 
         public FunctionCallAssertion SetJsonAssertText(string jsonAssertText)
         {
@@ -52,7 +51,16 @@ namespace skUnit.Scenarios.Parsers.Assertions
                 {
                     foreach (var kv in argumentsJson)
                     {
-                        FunctionArguments[kv.Key] = factory.Create(kv.Value);
+                        var checkArray = kv.Value.AsArray();
+                        var checkType = checkArray[0]?.GetValue<string>();
+
+                        var checkValues = checkArray
+                            .Skip(1)
+                            .Select(value => value.GetValue<string>());
+
+                        var checkValuesText = string.Join(", ", checkValues);
+
+                        FunctionArguments[kv.Key] = KernelAssertionParser.Parse(checkValuesText, checkType);
                     }
                 }
             }
@@ -115,25 +123,22 @@ namespace skUnit.Scenarios.Parsers.Assertions
                              No function call result found with name: {FunctionName}
                              """);
 
-                    foreach (var argument in FunctionArguments)
+                    foreach (var argumentAssertion in FunctionArguments)
                     {
                         var arguments = thisFunctionCall.Arguments ?? new Dictionary<string, object?>();
 
-                        if (arguments.TryGetValue(argument.Key, out var value))
+                        if (arguments.TryGetValue(argumentAssertion.Key, out var value))
                         {
-                            var condition = argument.Value;
-                            if (condition is ISemanticArgumentCondition semanticCondition)
-                                semanticCondition.Semantic = semantic;
+                            var assertion = argumentAssertion.Value;
+                            var actualValue = value?.ToString();
 
-                            string actualValue = value?.ToString();
-                            if (!condition.IsMatch(actualValue))
-                                throw CreateArgumentException(condition, argument.Key, actualValue);
+                            await assertion.Assert(semantic, actualValue);
                         }
                         else
                         {
                             throw new SemanticAssertException(
                                 $"""
-                                 Argument {argument.Key} is not found in the function call.
+                                 Argument {argumentAssertion.Key} is not found in the function call.
                                  """);
                         }
                     }
@@ -160,22 +165,6 @@ namespace skUnit.Scenarios.Parsers.Assertions
                          Current calls: {string.Join(", ", functionCalls.Select(fc => $"{fc.PluginName}-{fc.FunctionName}"))}
                          """);
             }
-        }
-
-        private SemanticAssertException CreateArgumentException(IArgumentCondition condition, string key, string value)
-        {
-            if (condition.Name == Conditions.NotEmpty)
-                return new SemanticAssertException(
-                    $"""
-                    Argument `{key}` is expected to satisfy condition `{condition.Name}`, but it does not.
-                    Actual value: `{value}`.
-                    """);
-
-            return new SemanticAssertException(
-                $"""
-                Argument `{key}` is expected to satisfy condition `{condition.Name}` with values: [{string.Join(", ", condition.ConditionValues.Select(value => $"`{value}`"))}], but it does not.
-                Actual value: `{value}`.
-                """);
         }
 
         public string AssertionType => "FunctionCall";

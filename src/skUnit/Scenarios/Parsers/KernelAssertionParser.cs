@@ -36,6 +36,8 @@ namespace skUnit.Scenarios.Parsers
                     => new EmptyAssertion(),
                 "notempty"
                     => new NotEmptyAssertion(),
+                "isanyof"
+                    => new IsAnyOfAssertion() { Texts = text.Split(',', '،') },
 
                 _ => throw new InvalidOperationException($"Not valid assert type: {type}")
             };

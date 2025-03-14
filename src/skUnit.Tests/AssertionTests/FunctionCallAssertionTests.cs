@@ -1,7 +1,6 @@
 ﻿using Microsoft.Extensions.AI;
 using skUnit.Exceptions;
 using skUnit.Scenarios.Parsers.Assertions;
-using skUnit.Scenarios.Parsers.Assertions.FunctionArgumentConditions;
 
 namespace skUnit.Tests.AssertionTests
 {
@@ -42,7 +41,7 @@ namespace skUnit.Tests.AssertionTests
         }
 
         [Fact]
-        public async Task FunctionCall_ArgumentCondition_IsAnyOf()
+        public async Task FunctionCall_ArgumentAssertion_IsAnyOf()
         {
             var history = new List<ChatMessage>()
             {
@@ -75,11 +74,11 @@ namespace skUnit.Tests.AssertionTests
             await assertion.Assert(null, null, history);
 
             Assert.Single(assertion.FunctionArguments);
-            Assert.Equal(typeof(IsAnyOfArgumentCondition), assertion.FunctionArguments["arg1"].GetType());
+            Assert.Equal(typeof(IsAnyOfAssertion), assertion.FunctionArguments["arg1"].GetType());
         }
 
         [Fact]
-        public async Task FunctionCall_ArgumentCondition_SeveralArguments()
+        public async Task FunctionCall_ArgumentAssertion_SeveralArguments()
         {
             var history = new List<ChatMessage>()
             {
@@ -116,13 +115,13 @@ namespace skUnit.Tests.AssertionTests
             await assertion.Assert(null, null, history);
 
             Assert.Equal(expected: 3, assertion.FunctionArguments.Count);
-            Assert.Equal(typeof(IsAnyOfArgumentCondition), assertion.FunctionArguments["arg1"].GetType());
-            Assert.Equal(typeof(ContainsAnyArgumentCondition), assertion.FunctionArguments["arg2"].GetType());
-            Assert.Equal(typeof(NotEmptyArgumentCondition), assertion.FunctionArguments["arg3"].GetType());
+            Assert.Equal(typeof(IsAnyOfAssertion), assertion.FunctionArguments["arg1"].GetType());
+            Assert.Equal(typeof(ContainsAnyAssertion), assertion.FunctionArguments["arg2"].GetType());
+            Assert.Equal(typeof(NotEmptyAssertion), assertion.FunctionArguments["arg3"].GetType());
         }
 
         [Fact]
-        public async Task FunctionCall_ArgumentCondition_DoesNotMatch()
+        public async Task FunctionCall_ArgumentAssertion_DoesNotMatch()
         {
             var history = new List<ChatMessage>()
             {
@@ -157,9 +156,9 @@ namespace skUnit.Tests.AssertionTests
                 return assertion.Assert(null, null, history);
             });
 
-            Assert.Equal("Argument `arg1` is expected to satisfy condition `IsAnyOf` with values: [`value1`, `value2`, `value3`], but it does not.\nActual value: `value`.", exception.Message);
+            Assert.Equal("Text is not equal to any of these: 'value1, value2, value3'", exception.Message);
             Assert.Single(assertion.FunctionArguments);
-            Assert.Equal(typeof(IsAnyOfArgumentCondition), assertion.FunctionArguments["arg1"].GetType());
+            Assert.Equal(typeof(IsAnyOfAssertion), assertion.FunctionArguments["arg1"].GetType());
         }
     }
 }
