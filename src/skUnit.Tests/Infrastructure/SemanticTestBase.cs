@@ -45,14 +45,14 @@ public class SemanticTestBase
             new AzureOpenAIClient(
                 new Uri(_endpoint),
                 new System.ClientModel.ApiKeyCredential(_apiKey)
-                ).AsChatClient(_deploymentName)
+                ).GetChatClient(_deploymentName).AsIChatClient()
             , message => Output.WriteLine(message));
         Kernel = CreateKernel();
 
         var openAI = new AzureOpenAIClient(
             new Uri(_endpoint),
             new System.ClientModel.ApiKeyCredential(_apiKey)
-        ).AsChatClient(_deploymentName);
+        ).GetChatClient(_deploymentName).AsIChatClient();
 
         ChatClient = new ChatClientBuilder(openAI)
             .UseFunctionInvocation()

@@ -20,7 +20,7 @@ namespace Demo.TddShop
             var azureChatClient = new AzureOpenAIClient(
                 new Uri(endpoint), 
                 new System.ClientModel.ApiKeyCredential(azureKey)
-                ).AsChatClient(deployment);
+                ).GetChatClient(deployment).AsIChatClient();
 
             var builder =
                 new ChatClientBuilder(azureChatClient)

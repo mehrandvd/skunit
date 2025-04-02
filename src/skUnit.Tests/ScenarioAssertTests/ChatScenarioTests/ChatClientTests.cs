@@ -36,7 +36,7 @@ namespace skUnit.Tests.ScenarioAssertTests.ChatScenarioTests
                         Tools = [getFoodMenu]
                     });
 
-                var answer =  result.Choices.First().Text ?? "";
+                var answer = result.Text;
                 return answer;
             });
         }
@@ -56,7 +56,7 @@ namespace skUnit.Tests.ScenarioAssertTests.ChatScenarioTests
                         Tools = [getFoodMenu]
                     });
 
-                var answer = result.Choices.First().Text ?? "";
+                var answer = result.Text;
                 return answer;
             });
         }
