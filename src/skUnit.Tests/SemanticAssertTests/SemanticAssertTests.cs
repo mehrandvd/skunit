@@ -34,7 +34,7 @@ namespace skUnit.Tests.SemanticAssertTests
                 new AzureOpenAIClient(
                     new Uri(endpoint), 
                     new System.ClientModel.ApiKeyCredential(apiKey)
-                    ).AsChatClient(deploymentName)
+                    ).GetChatClient(deploymentName).AsIChatClient()
                 );
         }
 

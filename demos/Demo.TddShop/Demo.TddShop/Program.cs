@@ -15,7 +15,8 @@ do
     messages.Add(new ChatMessage(ChatRole.User, input));
 
     var response = await chatClient.GetResponseAsync(messages);
-    var answer = response.Choices.First().Text;
+    var answer = response.Text;
     Console.WriteLine("Copilot> "+ answer);
-    messages.Add(new ChatMessage(ChatRole.Assistant, answer));
+
+    messages.AddMessages(response);
 } while (true);

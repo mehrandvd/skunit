@@ -85,7 +85,7 @@ namespace skUnit
 
                         var result = await chatClient.GetResponseAsync(history);
 
-                        return result.Message.Text ?? "";
+                        return result.Text;
                     };
 
                     var answer = await getAnswerFunc(chatHistory);
