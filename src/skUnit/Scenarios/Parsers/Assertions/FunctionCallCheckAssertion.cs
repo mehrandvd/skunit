@@ -7,6 +7,7 @@ using Microsoft.SemanticKernel.ChatCompletion;
 using Microsoft.SemanticKernel;
 using FunctionCallContent = Microsoft.Extensions.AI.FunctionCallContent;
 using FunctionResultContent = Microsoft.Extensions.AI.FunctionResultContent;
+using Markdig.Helpers;
 
 namespace skUnit.Scenarios.Parsers.Assertions
 {
@@ -51,14 +52,33 @@ namespace skUnit.Scenarios.Parsers.Assertions
                 {
                     foreach (var kv in argumentsJson)
                     {
-                        var checkArray = kv.Value.AsArray();
-                        var checkType = checkArray[0]?.GetValue<string>();
+                        string checkValuesText;
+                        string checkType;
 
-                        var checkValues = checkArray
-                            .Skip(1)
-                            .Select(value => value.GetValue<string>());
+                        if (kv.Value is JsonValue checkValue)
+                        {
+                            checkType = "Equals";
+                            checkValuesText = checkValue.GetValue<string>();
+                        }
+                        else if (kv.Value is JsonArray checkArray)
+                        {
+                            //var checkArray = kv.Value.AsArray();
+                            checkType = checkArray[0]?.GetValue<string>();
 
-                        var checkValuesText = string.Join(", ", checkValues);
+                            var checkValues = checkArray
+                                              .Skip(1)
+                                              .Select(value => value.GetValue<string>());
+
+                            checkValuesText = string.Join(", ", checkValues);
+                        }
+                        else
+                        {
+                            throw new InvalidOperationException(
+                                $"""
+                                JsonCheck has not a proper value supported json types are string and array:
+                                {kv.ToString()}
+                                """);
+                        }
 
                         FunctionArguments[kv.Key] = KernelAssertionParser.Parse(checkValuesText, checkType);
                     }

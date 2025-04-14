@@ -41,6 +41,43 @@ namespace skUnit.Tests.AssertionTests
         }
 
         [Fact]
+        public async Task FunctionCall_ArgumentAssertion_StringLiteral()
+        {
+            var history = new List<ChatMessage>()
+            {
+                new ChatMessage()
+                {
+                    Role = ChatRole.Tool,
+                    Contents = new List<AIContent>()
+                    {
+                        new FunctionCallContent("call-id-1", "test_function", new Dictionary<string, object?>()
+                        {
+                            { "arg1", "value1" }
+                        }),
+                        new FunctionResultContent("call-id-1", "result"),
+                    }
+                },
+            };
+
+            var assertion = new FunctionCallAssertion();
+            assertion.SetJsonAssertText("""
+                                        ```json
+                                        {
+                                            "function_name": "test_function",
+                                            "arguments": {
+                                                "arg1": "value1"
+                                            }
+                                        }
+                                        ```
+                                        """);
+
+            await assertion.Assert(null, new ChatResponse(history), history);
+
+            Assert.Single(assertion.FunctionArguments);
+            Assert.Equal(typeof(EqualsAssertion), assertion.FunctionArguments["arg1"].GetType());
+        }
+
+        [Fact]
         public async Task FunctionCall_ArgumentAssertion_IsAnyOf()
         {
             var history = new List<ChatMessage>()
