@@ -1,5 +1,4 @@
 ﻿using Microsoft.Extensions.AI;
-using Microsoft.SemanticKernel;
 using skUnit.Tests.Infrastructure;
 using System.ComponentModel;
 using Xunit.Abstractions;

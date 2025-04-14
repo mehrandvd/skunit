@@ -5,10 +5,8 @@ using Microsoft.Extensions.AI;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Logging;
-using Microsoft.SemanticKernel;
 using skUnit.Scenarios;
 using skUnit.Scenarios.Parsers;
-using skUnit.Tests.ScenarioAssertTests.ChatScenarioTests.Plugins;
 using Xunit.Abstractions;
 
 namespace skUnit.Tests.Infrastructure;
@@ -18,7 +16,6 @@ public class SemanticTestBase
     private readonly string _apiKey;
     private readonly string _endpoint;
     private readonly string _deploymentName;
-    protected Kernel Kernel { get; set; }
     protected IChatClient BaseChatClient { get; set; }
     protected ScenarioAssert ScenarioAssert { get; set; }
     protected ITestOutputHelper Output { get; set; }
@@ -47,7 +44,6 @@ public class SemanticTestBase
                 new System.ClientModel.ApiKeyCredential(_apiKey)
                 ).GetChatClient(_deploymentName).AsIChatClient()
             , message => Output.WriteLine(message));
-        Kernel = CreateKernel();
 
         var openAI = new AzureOpenAIClient(
             new Uri(_endpoint),
@@ -56,22 +52,6 @@ public class SemanticTestBase
 
         BaseChatClient = new ChatClientBuilder(openAI)
             .Build();
-    }
-
-    Kernel CreateKernel()
-    {
-        var builder = Kernel.CreateBuilder();
-        builder.AddAzureOpenAIChatCompletion(_deploymentName, new AzureOpenAIClient(new Uri(_endpoint), new System.ClientModel.ApiKeyCredential(_apiKey)));
-        builder.Services.AddLogging(loggerBuilder =>
-        {
-            loggerBuilder.SetMinimumLevel(LogLevel.Trace).AddDebug();
-            loggerBuilder.ClearProviders();
-            loggerBuilder.AddConsole();
-        });
-
-        builder.Plugins.AddFromType<TimePlugin>();
-        var kernel = builder.Build();
-        return kernel;
     }
 
     protected async Task<List<InvocationScenario>> LoadInvokeScenarioAsync(string scenario)

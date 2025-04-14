@@ -1,6 +1,4 @@
-﻿using Microsoft.SemanticKernel;
-using Microsoft.SemanticKernel.ChatCompletion;
-using SemanticValidation;
+﻿using SemanticValidation;
 using skUnit.Exceptions;
 using skUnit.Scenarios;
 using System;
@@ -60,21 +58,21 @@ namespace skUnit
                 var chatItem = queue.Dequeue();
 
 
-                if (chatItem.Role == AuthorRole.System)
+                if (chatItem.Role == ChatRole.System)
                 {
                     chatHistory.Add(new ChatMessage(ChatRole.System, chatItem.Content));
                     Log($"## [{chatItem.Role.ToString().ToUpper()}]");
                     Log(chatItem.Content);
                     Log();
                 }
-                else if (chatItem.Role == AuthorRole.User)
+                else if (chatItem.Role == ChatRole.User)
                 {
                     chatHistory.Add(new ChatMessage(ChatRole.User, chatItem.Content));
                     Log($"## [{chatItem.Role.ToString().ToUpper()}]");
                     Log(chatItem.Content);
                     Log();
                 }
-                else if (chatItem.Role == AuthorRole.Assistant)
+                else if (chatItem.Role == ChatRole.Assistant)
                 {
                     Log($"## [EXPECTED ANSWER]");
                     Log(chatItem.Content);

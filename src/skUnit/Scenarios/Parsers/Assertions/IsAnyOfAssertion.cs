@@ -23,10 +23,10 @@ public class IsAnyOfAssertion : IKernelAssertion
     /// </summary>
     /// <param name="semantic"></param>
     /// <param name="response"></param>
-    /// <param name="historytory"></param>
+    /// <param name="history"></param>
     /// <returns></returns>
     /// <exception cref="SemanticAssertException"></exception>
-    public Task Assert(Semantic semantic, ChatResponse response, IEnumerable<object> history = null)
+    public Task Assert(Semantic semantic, ChatResponse response, IList<ChatMessage>? history = null)
     {
         if (Texts.Any(text => text == response.Text))
             return Task.CompletedTask;

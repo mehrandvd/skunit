@@ -23,7 +23,7 @@ public class AreSimilarAssertion : IKernelAssertion
     /// <param name="history"></param>
     /// <returns></returns>
     /// <exception cref="SemanticAssertException"></exception>
-    public async Task Assert(Semantic semantic, ChatResponse response, IEnumerable<object>? history = null)
+    public async Task Assert(Semantic semantic, ChatResponse response, IList<ChatMessage>? history = null)
     {
         var result = await semantic.AreSimilarAsync(response.Text, ExpectedAnswer);
 

@@ -3,8 +3,6 @@ using skUnit.Exceptions;
 using System.Text.Json.Nodes;
 using SemanticValidation.Utils;
 using Microsoft.Extensions.AI;
-using Microsoft.SemanticKernel.ChatCompletion;
-using Microsoft.SemanticKernel;
 using FunctionCallContent = Microsoft.Extensions.AI.FunctionCallContent;
 using FunctionResultContent = Microsoft.Extensions.AI.FunctionResultContent;
 using Markdig.Helpers;
@@ -63,7 +61,7 @@ namespace skUnit.Scenarios.Parsers.Assertions
                         else if (kv.Value is JsonArray checkArray)
                         {
                             //var checkArray = kv.Value.AsArray();
-                            checkType = checkArray[0]?.GetValue<string>();
+                            checkType = checkArray[0]?.GetValue<string>() ?? throw new InvalidOperationException("No valid array assertion.");
 
                             var checkValues = checkArray
                                               .Skip(1)
@@ -100,90 +98,66 @@ namespace skUnit.Scenarios.Parsers.Assertions
         /// <param name="history"></param>
         /// <returns></returns>
         /// <exception cref="SemanticAssertException"></exception>
-        public async Task Assert(Semantic semantic, ChatResponse response, IEnumerable<object>? history = null)
+        public async Task Assert(Semantic semantic, ChatResponse response, IList<ChatMessage>? history = null)
         {
             if (FunctionName is null)
                 throw new InvalidOperationException("FunctionCall Name is null");
 
 
-            if (history is IList<ChatMessage> chatMessageHistory)
-            {
-                var functionCalls = response.Messages
-                                    .Where(
-                                        ch => ch.Contents.OfType<FunctionCallContent>().Any()
-                                    )
-                                    .SelectMany(ch => ch.Contents.OfType<FunctionCallContent>())
-                                    .ToList();
-
-                var thisFunctionCalls = functionCalls
-                                        .Where(fc => fc.Name == FunctionName)
+            var functionCalls = response.Messages
+                                        .Where(
+                                            ch => ch.Contents.OfType<FunctionCallContent>().Any()
+                                        )
+                                        .SelectMany(ch => ch.Contents.OfType<FunctionCallContent>())
                                         .ToList();
 
-                if (thisFunctionCalls.Count == 0)
+            var thisFunctionCalls = functionCalls
+                                    .Where(fc => fc.Name == FunctionName)
+                                    .ToList();
+
+            if (thisFunctionCalls.Count == 0)
+                throw new SemanticAssertException(
+                    $"""
+                     No function call found with name: {FunctionName}
+                     Current calls: {string.Join(", ", functionCalls.Select(fc => fc.Name))}
+                     """);
+
+
+            if (FunctionArguments.Any())
+            {
+                var thisFunctionCall = thisFunctionCalls.Last();
+
+                var thisCallResult = (
+                    from fr in response.Messages.SelectMany(c => c.Contents).OfType<FunctionResultContent>()
+                    where fr.CallId == thisFunctionCall.CallId
+                    select fr
+                ).FirstOrDefault();
+
+                if (thisCallResult is null)
                     throw new SemanticAssertException(
                         $"""
-                         No function call found with name: {FunctionName}
-                         Current calls: {string.Join(", ", functionCalls.Select(fc => fc.Name))}
+                         No function call result found with name: {FunctionName}
                          """);
 
-
-                if (FunctionArguments.Any())
+                foreach (var argumentAssertion in FunctionArguments)
                 {
-                    var thisFunctionCall = thisFunctionCalls.Last();
+                    var arguments = thisFunctionCall.Arguments ?? new Dictionary<string, object?>();
 
-                    var thisCallResult = (
-                        from fr in response.Messages.SelectMany(c => c.Contents).OfType<FunctionResultContent>()
-                        where fr.CallId == thisFunctionCall.CallId
-                        select fr
-                    ).FirstOrDefault();
+                    if (arguments.TryGetValue(argumentAssertion.Key, out var value))
+                    {
+                        var assertion = argumentAssertion.Value;
+                        var actualValue = value?.ToString();
 
-                    if (thisCallResult is null)
+                        await assertion.Assert(semantic, new ChatResponse(new ChatMessage(ChatRole.Assistant, actualValue)));
+                    }
+                    else
+                    {
                         throw new SemanticAssertException(
                             $"""
-                             No function call result found with name: {FunctionName}
+                             Argument {argumentAssertion.Key} is not found in the function call.
                              """);
-
-                    foreach (var argumentAssertion in FunctionArguments)
-                    {
-                        var arguments = thisFunctionCall.Arguments ?? new Dictionary<string, object?>();
-
-                        if (arguments.TryGetValue(argumentAssertion.Key, out var value))
-                        {
-                            var assertion = argumentAssertion.Value;
-                            var actualValue = value?.ToString();
-
-                            await assertion.Assert(semantic, new ChatResponse(new ChatMessage(ChatRole.Assistant, actualValue)));
-                        }
-                        else
-                        {
-                            throw new SemanticAssertException(
-                                $"""
-                                 Argument {argumentAssertion.Key} is not found in the function call.
-                                 """);
-                        }
                     }
                 }
-            }
-            else if(history is IList<ChatMessageContent> chatHistory)
-            {
-                var functionCalls = chatHistory
-                                    .Where(
-                                        ch => ch.Role == AuthorRole.Tool
-                                        && ch.Items.OfType<Microsoft.SemanticKernel.FunctionResultContent>().Any()
-                                    )
-                                    .SelectMany(ch => ch.Items.OfType<Microsoft.SemanticKernel.FunctionResultContent>())
-                                    .ToList();
-
-                var thisFunctionCalls = functionCalls
-                                        .Where(fc => $"{fc.PluginName}-{fc.FunctionName}".EndsWith(FunctionName))
-                                        .ToList();
-
-                if (thisFunctionCalls.Count == 0)
-                    throw new SemanticAssertException(
-                        $"""
-                         No function call found with name: {FunctionName}
-                         Current calls: {string.Join(", ", functionCalls.Select(fc => $"{fc.PluginName}-{fc.FunctionName}"))}
-                         """);
             }
         }
 

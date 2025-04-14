@@ -1,5 +1,5 @@
 ﻿using Markdig.Helpers;
-using Microsoft.SemanticKernel.ChatCompletion;
+using Microsoft.Extensions.AI;
 using skUnit.Scenarios.Parsers;
 using skUnit.Scenarios.Parsers.Assertions;
 
@@ -25,12 +25,12 @@ public class ChatScenario : Scenario<ChatScenario, ChatScenarioParser>
 
 public class ChatItem
 {
-    public ChatItem(AuthorRole role, string content)
+    public ChatItem(ChatRole role, string content)
     {
         Role = role;
         Content = content;
     }
-    public AuthorRole Role { get; set; }
+    public ChatRole Role { get; set; }
     public string Content { get; set; }
 
     /// <summary>

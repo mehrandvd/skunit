@@ -3,8 +3,8 @@ using Markdig;
 using System.Text;
 using System.Text.Json.Nodes;
 using System.Text.RegularExpressions;
-using Microsoft.SemanticKernel.ChatCompletion;
 using SemanticValidation.Utils;
+using Microsoft.Extensions.AI;
 
 namespace skUnit.Scenarios.Parsers
 {
@@ -107,19 +107,19 @@ namespace skUnit.Scenarios.Parsers
 
             if (currentBlock == "USER")
             {
-                scenario.ChatItems.Add(new ChatItem(AuthorRole.User, contentText));
+                scenario.ChatItems.Add(new ChatItem(ChatRole.User, contentText));
             }
             else if (currentBlock == "AGENT")
             {
-                scenario.ChatItems.Add(new ChatItem(AuthorRole.Assistant, contentText));
+                scenario.ChatItems.Add(new ChatItem(ChatRole.Assistant, contentText));
             }
             else if (currentBlock == "SYSTEM")
             {
-                scenario.ChatItems.Add(new ChatItem(AuthorRole.System, contentText));
+                scenario.ChatItems.Add(new ChatItem(ChatRole.System, contentText));
             }
             else if (currentBlock == "TOOL")
             {
-                scenario.ChatItems.Add(new ChatItem(AuthorRole.Tool, contentText));
+                scenario.ChatItems.Add(new ChatItem(ChatRole.Tool, contentText));
             }
             else if (currentBlock == "SCENARIO")
             {

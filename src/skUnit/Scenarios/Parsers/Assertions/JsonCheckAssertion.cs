@@ -35,11 +35,11 @@ namespace skUnit.Scenarios.Parsers.Assertions
         /// </summary>
         /// <param name="semantic"></param>
         /// <param name="response"></param>
-        /// <param name="historytory"></param>
+        /// <param name="history"></param>
         /// <param name="answer"></param>
         /// <returns></returns>
         /// <exception cref="SemanticAssertException"></exception>
-        public async Task Assert(Semantic semantic, ChatResponse response, IEnumerable<object>? history = null)
+        public async Task Assert(Semantic semantic, ChatResponse response, IList<ChatMessage>? history = null)
         {
             var answerJson = SemanticUtils.PowerParseJson<JsonObject>(response.Text)
                              ?? throw new InvalidOperationException($"""
@@ -104,7 +104,7 @@ namespace skUnit.Scenarios.Parsers.Assertions
             }
         }
 
-        public async Task Assert(Semantic semantic, string answer, IEnumerable<object>? history = null)
+        public async Task Assert(Semantic semantic, string answer, IList<ChatMessage>? history = null)
         {
             await Assert(semantic, new ChatResponse(new ChatMessage(ChatRole.Assistant, answer)), history);
         }

@@ -22,7 +22,7 @@ namespace skUnit.Scenarios.Parsers.Assertions
         /// <param name="response"></param>
         /// <param name="history"></param>
         /// <returns></returns>
-        Task Assert(Semantic semantic, ChatResponse response, IEnumerable<object>? history = null);
+        Task Assert(Semantic semantic, ChatResponse response, IList<ChatMessage>? history = null);
         string AssertionType { get; }
         string Description { get; }
     }

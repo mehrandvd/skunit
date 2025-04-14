@@ -19,7 +19,7 @@ public class NotEmptyAssertion : IKernelAssertion
     /// <param name="answer"></param>
     /// <returns></returns>
     /// <exception cref="SemanticAssertException"></exception>
-    public async Task Assert(Semantic semantic, ChatResponse response, IEnumerable<object>? history = null)
+    public Task Assert(Semantic semantic, ChatResponse response, IList<ChatMessage>? history = null)
     {
         if (string.IsNullOrWhiteSpace(response.Text))
         {
@@ -28,6 +28,8 @@ public class NotEmptyAssertion : IKernelAssertion
                                     {response.Text} 
                                     """);
         }
+
+        return Task.CompletedTask;
     }
 
     public string AssertionType => "NotEmpty";

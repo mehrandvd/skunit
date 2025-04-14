@@ -3,7 +3,6 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
-using Azure.AI.OpenAI;
 using Microsoft.Extensions.AI;
 using SemanticValidation;
 using skUnit.Exceptions;
@@ -39,7 +38,7 @@ namespace skUnit
             }
         }
 
-        private async Task CheckAssertionAsync(IKernelAssertion assertion, ChatResponse response, IEnumerable<object> chatHistory)
+        private async Task CheckAssertionAsync(IKernelAssertion assertion, ChatResponse response, IList<ChatMessage> chatHistory)
         {
             Log($"### CHECK {assertion.AssertionType}");
             Log($"{assertion.Description}");

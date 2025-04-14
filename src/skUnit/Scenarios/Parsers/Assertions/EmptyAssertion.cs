@@ -23,7 +23,7 @@ namespace skUnit.Scenarios.Parsers.Assertions
         /// <param name="history"></param>
         /// <returns></returns>
         /// <exception cref="SemanticAssertException"></exception>
-        public async Task Assert(Semantic semantic, ChatResponse response, IEnumerable<object>? history = null)
+        public Task Assert(Semantic semantic, ChatResponse response, IList<ChatMessage>? history = null)
         {
             if (!string.IsNullOrWhiteSpace(response.Text))
             {
@@ -32,6 +32,8 @@ namespace skUnit.Scenarios.Parsers.Assertions
                                     {response.Text} 
                                     """ );
             }
+
+            return Task.CompletedTask;
         }
 
         public string AssertionType => "Empty";

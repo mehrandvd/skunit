@@ -19,7 +19,7 @@ public class HasConditionAssertion : IKernelAssertion
     /// <param name="response"></param>
     /// <param name="history"></param>
     /// <returns></returns>
-    public async Task Assert(Semantic semantic, ChatResponse response, IEnumerable<object>? history = null)
+    public async Task Assert(Semantic semantic, ChatResponse response, IList<ChatMessage>? history = null)
     {
         var result = await semantic.HasConditionAsync(response.Text, Condition);
 

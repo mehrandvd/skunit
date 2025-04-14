@@ -22,12 +22,14 @@ public class ContainsAnyAssertion : IKernelAssertion
     /// <param name="history"></param>
     /// <returns></returns>
     /// <exception cref="SemanticAssertException"></exception>
-    public async Task Assert(Semantic semantic, ChatResponse response, IEnumerable<object>? history = null)
+    public Task Assert(Semantic semantic, ChatResponse response, IList<ChatMessage>? history = null)
     {
         var founds = Texts.Where(t => response.Text.Contains(t.Trim())).ToList();
 
         if (!founds.Any())
             throw new SemanticAssertException($"Text does not contain any of these: '{string.Join(", ", Texts)}'");
+        
+        return Task.CompletedTask;
     }
 
     public string AssertionType => "ContainsAny";
