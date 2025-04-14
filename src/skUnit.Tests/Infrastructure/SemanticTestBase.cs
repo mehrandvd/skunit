@@ -19,7 +19,7 @@ public class SemanticTestBase
     private readonly string _endpoint;
     private readonly string _deploymentName;
     protected Kernel Kernel { get; set; }
-    protected IChatClient ChatClient { get; set; }
+    protected IChatClient BaseChatClient { get; set; }
     protected ScenarioAssert ScenarioAssert { get; set; }
     protected ITestOutputHelper Output { get; set; }
 
@@ -54,8 +54,7 @@ public class SemanticTestBase
             new System.ClientModel.ApiKeyCredential(_apiKey)
         ).GetChatClient(_deploymentName).AsIChatClient();
 
-        ChatClient = new ChatClientBuilder(openAI)
-            .UseFunctionInvocation()
+        BaseChatClient = new ChatClientBuilder(openAI)
             .Build();
     }
 

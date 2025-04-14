@@ -3,7 +3,7 @@
   <PropertyGroup>
     <TargetFramework>net8.0</TargetFramework>
     <ImplicitUsings>enable</ImplicitUsings>
-    <Nullable>disable</Nullable>
+    <Nullable>enable</Nullable>
     <Title>skUnit</Title>
     <Version>0.1.1-beta</Version>
     <Authors>Mehran Davoudi</Authors>
@@ -18,7 +18,7 @@
     <PackageReference Include="Markdig" Version="0.40.0" />
     <PackageReference Include="Microsoft.Extensions.AI" Version="9.4.0-preview.1.25207.5" />
     <PackageReference Include="Microsoft.SemanticKernel" Version="1.44.0" />
-    <PackageReference Include="SemanticValidation" Version="0.18-beta" />
+    <PackageReference Include="SemanticValidation" Version="0.19.0-beta" />
   </ItemGroup>
 
   <ItemGroup>

@@ -1,4 +1,5 @@
-﻿using SemanticValidation;
+﻿using Microsoft.Extensions.AI;
+using SemanticValidation;
 using skUnit.Exceptions;
 
 namespace skUnit.Scenarios.Parsers.Assertions;
@@ -17,13 +18,13 @@ public class ContainsAnyAssertion : IKernelAssertion
     /// Checks if the <paramref name="input"/> contains any of strings in Texts/>.
     /// </summary>
     /// <param name="semantic"></param>
-    /// <param name="input"></param>
-    /// <param name="historytory"></param>
+    /// <param name="response"></param>
+    /// <param name="history"></param>
     /// <returns></returns>
     /// <exception cref="SemanticAssertException"></exception>
-    public async Task Assert(Semantic semantic, string input, IEnumerable<object>? history = null)
+    public async Task Assert(Semantic semantic, ChatResponse response, IEnumerable<object>? history = null)
     {
-        var founds = Texts.Where(t => input.Contains(t.Trim())).ToList();
+        var founds = Texts.Where(t => response.Text.Contains(t.Trim())).ToList();
 
         if (!founds.Any())
             throw new SemanticAssertException($"Text does not contain any of these: '{string.Join(", ", Texts)}'");

@@ -16,12 +16,12 @@ public class HasConditionAssertion : IKernelAssertion
     /// Checks whether the <paramref name="input"/> has the Condition semantically using <paramref name="semantic"/>.
     /// </summary>
     /// <param name="semantic"></param>
-    /// <param name="input"></param>
-    /// <param name="historytory"></param>
+    /// <param name="response"></param>
+    /// <param name="history"></param>
     /// <returns></returns>
-    public async Task Assert(Semantic semantic, string input, IEnumerable<object>? history = null)
+    public async Task Assert(Semantic semantic, ChatResponse response, IEnumerable<object>? history = null)
     {
-        var result = await semantic.HasConditionAsync(input, Condition);
+        var result = await semantic.HasConditionAsync(response.Text, Condition);
 
         if (!result.IsValid)
             throw new SemanticAssertException(result.Reason ?? "No reason is provided.");

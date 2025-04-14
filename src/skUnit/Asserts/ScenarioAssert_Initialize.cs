@@ -39,14 +39,14 @@ namespace skUnit
             }
         }
 
-        private async Task CheckAssertionAsync(IKernelAssertion assertion, string answer, IEnumerable<object> chatHistory)
+        private async Task CheckAssertionAsync(IKernelAssertion assertion, ChatResponse response, IEnumerable<object> chatHistory)
         {
             Log($"### CHECK {assertion.AssertionType}");
             Log($"{assertion.Description}");
 
             try
             {
-                await assertion.Assert(Semantic, answer, chatHistory);
+                await assertion.Assert(Semantic, response, chatHistory);
                 Log($"✅ OK");
                 Log("");
             }

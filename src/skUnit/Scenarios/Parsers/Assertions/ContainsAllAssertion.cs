@@ -19,13 +19,13 @@ public class ContainsAllAssertion : IKernelAssertion
     /// Checks if the <paramref name="input"/> contains all strings in Texts/>.
     /// </summary>
     /// <param name="semantic"></param>
-    /// <param name="input"></param>
-    /// <param name="historytory"></param>
+    /// <param name="response"></param>
+    /// <param name="history"></param>
     /// <returns></returns>
     /// <exception cref="SemanticAssertException"></exception>
-    public async Task Assert(Semantic semantic, string input, IEnumerable<object>? history = null)
+    public async Task Assert(Semantic semantic, ChatResponse response, IEnumerable<object>? history = null)
     {
-        var notFounds = Texts.Where(t=>!input.Contains(t.Trim())).ToList();
+        var notFounds = Texts.Where(t=>!response.Text.Contains(t.Trim())).ToList();
 
         if (notFounds.Any())
             throw new SemanticAssertException($"Text does not contain these: '{string.Join(", ", notFounds)}'");

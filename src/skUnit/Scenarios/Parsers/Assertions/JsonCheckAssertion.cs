@@ -2,6 +2,7 @@
 using skUnit.Exceptions;
 using System.Text.Json.Nodes;
 using SemanticValidation.Utils;
+using Microsoft.Extensions.AI;
 
 namespace skUnit.Scenarios.Parsers.Assertions
 {
@@ -33,17 +34,17 @@ namespace skUnit.Scenarios.Parsers.Assertions
         /// Checks if <paramref name="answer"/> is meets the conditions in JsonCheck <paramref name="semantic"/>
         /// </summary>
         /// <param name="semantic"></param>
-        /// <param name="input"></param>
+        /// <param name="response"></param>
         /// <param name="historytory"></param>
         /// <param name="answer"></param>
         /// <returns></returns>
         /// <exception cref="SemanticAssertException"></exception>
-        public async Task Assert(Semantic semantic, string input, IEnumerable<object>? history = null)
+        public async Task Assert(Semantic semantic, ChatResponse response, IEnumerable<object>? history = null)
         {
-            var answerJson = SemanticUtils.PowerParseJson<JsonObject>(input)
+            var answerJson = SemanticUtils.PowerParseJson<JsonObject>(response.Text)
                              ?? throw new InvalidOperationException($"""
                     Can not parse answer to json: 
-                    {input}
+                    {response.Text}
                     """);
 
             if (JsonCheck is null)
@@ -72,7 +73,7 @@ namespace skUnit.Scenarios.Parsers.Assertions
                     var answerValue = answerJson[prop.Key]?.GetValue<string>() ?? "";
                     try
                     {
-                        await assertion.Assert(semantic, answerValue, history);
+                        await assertion.Assert(semantic, new ChatResponse(new ChatMessage(ChatRole.Assistant, answerValue)), history);
                     }
                     catch (SemanticAssertException semanticAssertException)
                     {
@@ -97,10 +98,15 @@ namespace skUnit.Scenarios.Parsers.Assertions
                 {
                     throw new SemanticAssertException($"""
                             Property '{ prop.Key}  ' not found in answer:
-                            {input} 
+                            {response} 
                             """ );
                 }
             }
+        }
+
+        public async Task Assert(Semantic semantic, string answer, IEnumerable<object>? history = null)
+        {
+            await Assert(semantic, new ChatResponse(new ChatMessage(ChatRole.Assistant, answer)), history);
         }
 
         public string AssertionType => "JsonCheck";

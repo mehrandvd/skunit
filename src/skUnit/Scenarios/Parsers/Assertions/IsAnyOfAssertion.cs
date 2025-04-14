@@ -1,4 +1,5 @@
-﻿using SemanticValidation;
+﻿using Microsoft.Extensions.AI;
+using SemanticValidation;
 using skUnit.Exceptions;
 
 namespace skUnit.Scenarios.Parsers.Assertions;
@@ -18,16 +19,16 @@ public class IsAnyOfAssertion : IKernelAssertion
     public string Description => string.Join(",", Texts);
 
     /// <summary>
-    /// Checks if the <paramref name="input"/> equals to any of strings in Texts/>.
+    /// Checks if the <paramref name="response"/> equals to any of strings in Texts/>.
     /// </summary>
     /// <param name="semantic"></param>
-    /// <param name="input"></param>
+    /// <param name="response"></param>
     /// <param name="historytory"></param>
     /// <returns></returns>
     /// <exception cref="SemanticAssertException"></exception>
-    public Task Assert(Semantic semantic, string input, IEnumerable<object> history = null)
+    public Task Assert(Semantic semantic, ChatResponse response, IEnumerable<object> history = null)
     {
-        if (Texts.Any(text => text == input))
+        if (Texts.Any(text => text == response.Text))
             return Task.CompletedTask;
 
         throw new SemanticAssertException($"Text is not equal to any of these: '{string.Join(",", Texts)}'");

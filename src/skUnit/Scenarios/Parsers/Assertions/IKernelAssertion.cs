@@ -16,13 +16,13 @@ namespace skUnit.Scenarios.Parsers.Assertions
     public interface IKernelAssertion
     {
         /// <summary>
-        /// Checks if the <paramref name="input"/> can pass the assertion using <paramref name="semantic"/>
+        /// Checks if the <paramref name="response"/> can pass the assertion using <paramref name="semantic"/>
         /// </summary>
         /// <param name="semantic"></param>
-        /// <param name="input"></param>
-        /// <param name="historytory"></param>
+        /// <param name="response"></param>
+        /// <param name="history"></param>
         /// <returns></returns>
-        Task Assert(Semantic semantic, string input, IEnumerable<object>? history = null);
+        Task Assert(Semantic semantic, ChatResponse response, IEnumerable<object>? history = null);
         string AssertionType { get; }
         string Description { get; }
     }

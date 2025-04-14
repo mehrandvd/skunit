@@ -71,7 +71,7 @@ namespace skUnit.Tests.AssertionTests
                 ```
                 """);
 
-            await assertion.Assert(null, null, history);
+            await assertion.Assert(null, new ChatResponse(history), history);
 
             Assert.Single(assertion.FunctionArguments);
             Assert.Equal(typeof(IsAnyOfAssertion), assertion.FunctionArguments["arg1"].GetType());
@@ -112,7 +112,7 @@ namespace skUnit.Tests.AssertionTests
                 ```
                 """);
 
-            await assertion.Assert(null, null, history);
+            await assertion.Assert(null, new ChatResponse(history), history);
 
             Assert.Equal(expected: 3, assertion.FunctionArguments.Count);
             Assert.Equal(typeof(IsAnyOfAssertion), assertion.FunctionArguments["arg1"].GetType());
@@ -153,7 +153,7 @@ namespace skUnit.Tests.AssertionTests
 
             var exception = await Assert.ThrowsAsync<SemanticAssertException>(() =>
             {
-                return assertion.Assert(null, null, history);
+                return assertion.Assert(null, new ChatResponse(history), history);
             });
 
             Assert.Equal("Text is not equal to any of these: 'value1, value2, value3'", exception.Message);

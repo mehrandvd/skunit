@@ -1,4 +1,5 @@
-﻿using Microsoft.SemanticKernel;
+﻿using Microsoft.Extensions.AI;
+using Microsoft.SemanticKernel;
 using skUnit.Exceptions;
 using skUnit.Scenarios;
 
@@ -43,7 +44,7 @@ public partial class ScenarioAssert
 
         foreach (var assertion in scenario.Assertions)
         {
-            await CheckAssertionAsync(assertion, result ?? "", []);
+            await CheckAssertionAsync(assertion, new ChatResponse(new ChatMessage(ChatRole.Assistant, result ?? "")), []);
         }
     }
 
@@ -116,7 +117,7 @@ public partial class ScenarioAssert
 
                 try
                 {
-                    await assertion.Assert(Semantic, result, []);
+                    await assertion.Assert(Semantic, new ChatResponse(new ChatMessage(ChatRole.Assistant, result)), []);
                     Log($"✅ OK");
                     Log("");
                 }

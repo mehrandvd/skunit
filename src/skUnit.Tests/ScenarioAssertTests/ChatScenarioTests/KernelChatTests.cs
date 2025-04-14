@@ -1,4 +1,5 @@
-﻿using Microsoft.SemanticKernel;
+﻿using Microsoft.Extensions.AI;
+using Microsoft.SemanticKernel;
 using Microsoft.SemanticKernel.ChatCompletion;
 using skUnit.Tests.Infrastructure;
 using Xunit.Abstractions;
@@ -43,7 +44,7 @@ namespace skUnit.Tests.ScenarioAssertTests.ChatScenarioTests
 
                 var answer = "";
 
-                return answer;
+                return new ChatResponse(new ChatMessage(ChatRole.Assistant, answer));
             });
         }
     }

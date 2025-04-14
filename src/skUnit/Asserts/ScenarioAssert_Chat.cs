@@ -1,4 +1,5 @@
-﻿using Microsoft.SemanticKernel;
+﻿using Microsoft.Extensions.AI;
+using Microsoft.SemanticKernel;
 using Microsoft.SemanticKernel.ChatCompletion;
 using Microsoft.SemanticKernel.Connectors.OpenAI;
 using skUnit.Exceptions;
@@ -32,7 +33,7 @@ public partial class ScenarioAssert
     public async Task PassAsync(
         ChatScenario scenario, 
         Kernel? kernel = null, Func<ChatHistory, 
-        Task<string>>? getAnswerFunc = null,
+        Task<ChatResponse>>? getAnswerFunc = null,
         ChatHistory? chatHistory = null
 
         )
@@ -80,23 +81,23 @@ public partial class ScenarioAssert
                     var chatService = kernel.GetRequiredService<IChatCompletionService>();
                     var result = await chatService.GetChatMessageContentsAsync(history);
 
-                    return result.First().Content ?? "";
+                    return new ChatResponse(new ChatMessage(ChatRole.Assistant, result.First().Content ?? ""));
                 };
 
-                var answer = await getAnswerFunc(chatHistory);
+                var response = await getAnswerFunc(chatHistory);
 
                 // To let chatHistory stay clean for getting the answer
                 chatHistory.AddAssistantMessage(chatItem.Content);
 
 
                 Log($"### [ACTUAL ANSWER]");
-                Log(answer);
+                Log(response.Text);
                 Log();
 
                 foreach (var assertion in chatItem.Assertions)
                 {
                     // ToDo: After supporting IChatClient the chat history should be passed here:
-                    await CheckAssertionAsync(assertion, answer, chatHistory);
+                    await CheckAssertionAsync(assertion, response, chatHistory);
                 }
             }
 
@@ -173,7 +174,7 @@ public partial class ScenarioAssert
 
                 foreach (var assertion in functionCall.Assertions)
                 {
-                    await CheckAssertionAsync(assertion, result ?? "", chatHistory);
+                    await CheckAssertionAsync(assertion, new ChatResponse(new ChatMessage(ChatRole.Assistant, result ?? "")), chatHistory);
                 }
             }
         }
@@ -198,7 +199,7 @@ public partial class ScenarioAssert
     /// <param name="chatHistory"></param>
     /// <returns></returns>
     /// <exception cref="InvalidOperationException">If the OpenAI was unable to generate a valid response.</exception>
-    public async Task PassAsync(List<ChatScenario> scenarios, Kernel? kernel = null, Func<ChatHistory, Task<string>>? getAnswerFunc = null, ChatHistory? chatHistory = null)
+    public async Task PassAsync(List<ChatScenario> scenarios, Kernel? kernel = null, Func<ChatHistory, Task<ChatResponse>>? getAnswerFunc = null, ChatHistory? chatHistory = null)
     {
         foreach (var scenario in scenarios)
         {

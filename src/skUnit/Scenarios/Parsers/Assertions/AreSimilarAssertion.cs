@@ -19,14 +19,13 @@ public class AreSimilarAssertion : IKernelAssertion
     /// Checks if <paramref name="answer"/> is similar to ExpectedAnswer using <paramref name="semantic"/>
     /// </summary>
     /// <param name="semantic"></param>
-    /// <param name="input"></param>
-    /// <param name="historytory"></param>
-    /// <param name="answer"></param>
+    /// <param name="response"></param>
+    /// <param name="history"></param>
     /// <returns></returns>
     /// <exception cref="SemanticAssertException"></exception>
-    public async Task Assert(Semantic semantic, string input, IEnumerable<object>? history = null)
+    public async Task Assert(Semantic semantic, ChatResponse response, IEnumerable<object>? history = null)
     {
-        var result = await semantic.AreSimilarAsync(input, ExpectedAnswer);
+        var result = await semantic.AreSimilarAsync(response.Text, ExpectedAnswer);
 
         if (!result.IsValid)
             throw new SemanticAssertException(result.Reason ?? "No reason is provided.");

@@ -28,10 +28,10 @@ namespace skUnit.Scenarios.Parsers.Assertions
         /// <param name="historytory"></param>
         /// <returns></returns>
         /// <exception cref="SemanticAssertException"></exception>
-        public async Task Assert(Semantic semantic, string input, IEnumerable<object>? history)
+        public async Task Assert(Semantic semantic, ChatResponse response, IEnumerable<object>? history)
         {
-            if (input.Trim() != ExpectedAnswer.Trim())
-                throw new SemanticAssertException($"Expected input is: '{ExpectedAnswer}' while actual is : '{input}'");
+            if (response.Text.Trim() != ExpectedAnswer.Trim())
+                throw new SemanticAssertException($"Expected input is: '{ExpectedAnswer}' while actual is : '{response.Text}'");
         }
 
         public string AssertionType => "Equals";

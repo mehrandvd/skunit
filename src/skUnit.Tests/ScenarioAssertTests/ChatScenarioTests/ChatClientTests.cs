@@ -17,7 +17,7 @@ namespace skUnit.Tests.ScenarioAssertTests.ChatScenarioTests
         public async Task EiffelTallChat_MustWork()
         {
             var scenarios = await LoadChatScenarioAsync("EiffelTallChat");
-            await ScenarioAssert.PassAsync(scenarios, ChatClient);
+            await ScenarioAssert.PassAsync(scenarios, BaseChatClient);
         }
 
 
@@ -25,18 +25,18 @@ namespace skUnit.Tests.ScenarioAssertTests.ChatScenarioTests
         public async Task FunctionCall_MustWork()
         {
             var scenarios = await LoadChatScenarioAsync("GetFoodMenuChat");
-            await ScenarioAssert.PassAsync(scenarios, ChatClient, getAnswerFunc: async history =>
+            await ScenarioAssert.PassAsync(scenarios, BaseChatClient, getAnswerFunc: async history =>
             {
                 AIFunction getFoodMenu = AIFunctionFactory.Create(GetFoodMenu);
 
-                var result = await ChatClient.GetResponseAsync(
+                var result = await BaseChatClient.GetResponseAsync(
                     history,
                     options: new ChatOptions
                     {
                         Tools = [getFoodMenu]
                     });
 
-                var answer = result.Text;
+                var answer = result;
                 return answer;
             });
         }
@@ -45,20 +45,19 @@ namespace skUnit.Tests.ScenarioAssertTests.ChatScenarioTests
         public async Task FunctionCallJson_MustWork()
         {
             var scenarios = await LoadChatScenarioAsync("GetFoodMenuChatJson");
-            await ScenarioAssert.PassAsync(scenarios, ChatClient, getAnswerFunc: async history =>
-            {
-                AIFunction getFoodMenu = AIFunctionFactory.Create(GetFoodMenu);
 
-                var result = await ChatClient.GetResponseAsync(
-                    history,
-                    options: new ChatOptions
-                    {
-                        Tools = [getFoodMenu]
-                    });
+            var builder = new ChatClientBuilder(BaseChatClient)
+                .ConfigureOptions(options =>
+                {
+                    options.Tools ??= [];
+                    options.Tools.Add(AIFunctionFactory.Create(GetFoodMenu));
+                })
+                .UseFunctionInvocation()
+                ;
 
-                var answer = result.Text;
-                return answer;
-            });
+            var chatClient = builder.Build();
+
+            await ScenarioAssert.PassAsync(scenarios, chatClient);
         }
 
 

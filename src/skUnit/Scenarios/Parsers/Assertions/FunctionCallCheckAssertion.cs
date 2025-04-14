@@ -76,11 +76,11 @@ namespace skUnit.Scenarios.Parsers.Assertions
         /// Checks if <paramref name="answer"/> is meets the conditions in FunctionCallJson <paramref name="semantic"/>
         /// </summary>
         /// <param name="semantic"></param>
-        /// <param name="input"></param>
+        /// <param name="response"></param>
         /// <param name="history"></param>
         /// <returns></returns>
         /// <exception cref="SemanticAssertException"></exception>
-        public async Task Assert(Semantic semantic, string input, IEnumerable<object>? history = null)
+        public async Task Assert(Semantic semantic, ChatResponse response, IEnumerable<object>? history = null)
         {
             if (FunctionName is null)
                 throw new InvalidOperationException("FunctionCall Name is null");
@@ -88,7 +88,7 @@ namespace skUnit.Scenarios.Parsers.Assertions
 
             if (history is IList<ChatMessage> chatMessageHistory)
             {
-                var functionCalls = chatMessageHistory
+                var functionCalls = response.Messages
                                     .Where(
                                         ch => ch.Contents.OfType<FunctionCallContent>().Any()
                                     )
@@ -112,7 +112,7 @@ namespace skUnit.Scenarios.Parsers.Assertions
                     var thisFunctionCall = thisFunctionCalls.Last();
 
                     var thisCallResult = (
-                        from fr in chatMessageHistory.SelectMany(c => c.Contents).OfType<FunctionResultContent>()
+                        from fr in response.Messages.SelectMany(c => c.Contents).OfType<FunctionResultContent>()
                         where fr.CallId == thisFunctionCall.CallId
                         select fr
                     ).FirstOrDefault();
@@ -132,7 +132,7 @@ namespace skUnit.Scenarios.Parsers.Assertions
                             var assertion = argumentAssertion.Value;
                             var actualValue = value?.ToString();
 
-                            await assertion.Assert(semantic, actualValue);
+                            await assertion.Assert(semantic, new ChatResponse(new ChatMessage(ChatRole.Assistant, actualValue)));
                         }
                         else
                         {

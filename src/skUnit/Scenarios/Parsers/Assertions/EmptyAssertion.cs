@@ -19,18 +19,17 @@ namespace skUnit.Scenarios.Parsers.Assertions
         /// Checks if the <paramref name="answer"/> is empty/>.
         /// </summary>
         /// <param name="semantic"></param>
-        /// <param name="input"></param>
-        /// <param name="historytory"></param>
-        /// <param name="answer"></param>
+        /// <param name="response"></param>
+        /// <param name="history"></param>
         /// <returns></returns>
         /// <exception cref="SemanticAssertException"></exception>
-        public async Task Assert(Semantic semantic, string input, IEnumerable<object>? history = null)
+        public async Task Assert(Semantic semantic, ChatResponse response, IEnumerable<object>? history = null)
         {
-            if (!string.IsNullOrWhiteSpace(input))
+            if (!string.IsNullOrWhiteSpace(response.Text))
             {
                 throw new SemanticAssertException($"""
                                     Expected to be empty, but not empty:
-                                    {input} 
+                                    {response.Text} 
                                     """ );
             }
         }
