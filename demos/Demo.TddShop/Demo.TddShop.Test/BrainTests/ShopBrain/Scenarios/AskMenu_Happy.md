@@ -1,5 +1,5 @@
 ## [USER]
-Hi there, What do you have on menu?
+Hi there such a beautiful day. What do you have on menu?
 
 ## [AGENT]
 Pizza
