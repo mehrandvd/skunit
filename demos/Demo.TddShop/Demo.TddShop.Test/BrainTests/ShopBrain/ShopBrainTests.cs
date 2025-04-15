@@ -19,7 +19,7 @@ namespace Demo.TddShop.Test.BrainTests.ShopBrain
             var chatClient = new AzureOpenAIClient(
                 new Uri(endpoint),
                 new System.ClientModel.ApiKeyCredential(azureKey)
-            ).AsChatClient(deployment);
+            ).GetChatClient(deployment).AsIChatClient();
 
             ScenarioAssert = new ScenarioAssert(chatClient, output.WriteLine);
         }

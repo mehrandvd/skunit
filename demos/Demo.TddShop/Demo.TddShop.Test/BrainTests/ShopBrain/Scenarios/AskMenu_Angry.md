@@ -5,7 +5,7 @@ What the fuck do you have on your menu, huh?
 Nothing
 
 ### CHECK SemanticCondition
-It mentions no food.
+It does not mentions any specific food.
 
 ### CHECK FunctionCall
 GetFoodMenu
