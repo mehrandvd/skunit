@@ -218,7 +218,10 @@ namespace skUnit
             }
         }
 
-
-
+        [Experimental("SKEXP0001")]
+        public async Task PassAsync(ChatScenario scenarios, Kernel kernel, IList<ChatMessage>? chatHistory = null)
+        {
+            await PassAsync([scenarios], kernel, chatHistory);
+        }
     }
 }
