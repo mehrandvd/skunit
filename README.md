@@ -70,7 +70,7 @@ One of the benefits of skUnit scenarios is that they are valid **Markdown** file
 
 > skUnit scenarios are valid **Markdown** files, which makes them very readable and easy to edit.
 
-For example, you can see how clear and simple this scenario is: [Chatting about Eiffel height](https://github.com/mehrandvd/skunit/blob/main/src/skUnit.Tests/SemanticKernelTests/ChatScenarioTests/Samples/EiffelTallChat/skchat.md)
+For example, you can see how clear and simple this scenario is: [Chatting about Eiffel height](https://github.com/mehrandvd/skunit/blob/main/src/skUnit.Tests/SemanticKernelTests/Samples/EiffelTallChat/skchat.md)
 
 ![image](https://github.com/mehrandvd/skunit/assets/5070766/53d009a9-4a0b-44dc-91e0-b0be81b4c5a7)
 

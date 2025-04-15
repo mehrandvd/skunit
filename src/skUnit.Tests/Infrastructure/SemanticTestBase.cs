@@ -54,13 +54,8 @@ public class SemanticTestBase
             .Build();
     }
 
-    protected async Task<List<InvocationScenario>> LoadInvokeScenarioAsync(string scenario)
-    {
-        return await InvocationScenario.LoadFromResourceAsync($"skUnit.Tests.ScenarioAssertTests.InvokeScenarioTests.Samples.{scenario}.sktest.md", Assembly.GetExecutingAssembly());
-    }
-
     protected async Task<List<ChatScenario>> LoadChatScenarioAsync(string scenario)
     {
-        return await ChatScenario.LoadFromResourceAsync($"skUnit.Tests.ScenarioAssertTests.ChatScenarioTests.Samples.{scenario}.md", Assembly.GetExecutingAssembly());
+        return await ChatScenario.LoadFromResourceAsync($"skUnit.Tests.ScenarioAssertTests.Samples.{scenario}.md", Assembly.GetExecutingAssembly());
     }
 }

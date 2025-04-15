@@ -3,13 +3,13 @@ using skUnit.Tests.Infrastructure;
 using System.ComponentModel;
 using Xunit.Abstractions;
 
-namespace skUnit.Tests.ScenarioAssertTests.ChatScenarioTests
+namespace skUnit.Tests.ScenarioAssertTests
 {
     public class ChatClientTests : SemanticTestBase
     {
         public ChatClientTests(ITestOutputHelper output) : base(output)
         {
-            
+
         }
 
         [Fact]
@@ -83,5 +83,5 @@ namespace skUnit.Tests.ScenarioAssertTests.ChatScenarioTests
         }
     }
 
-    
+
 }
