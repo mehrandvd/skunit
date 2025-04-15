@@ -46,7 +46,7 @@ public class ParseChatScenarioTests
                 
                 """;
 
-        var scenarios = ChatScenario.LoadFromText(scenarioText, "");
+        var scenarios = ChatScenario.LoadFromText(scenarioText);
 
         Assert.NotEmpty(scenarios);
 
@@ -90,7 +90,7 @@ public class ParseChatScenarioTests
                 
                 """;
 
-        var scenarios = ChatScenario.LoadFromText(scenarioText, "");
+        var scenarios = ChatScenario.LoadFromText(scenarioText);
 
         Assert.NotEmpty(scenarios);
 
@@ -150,7 +150,7 @@ public class ParseChatScenarioTests
                 
                 """;
 
-        var scenarios = ChatScenario.LoadFromText(scenarioText, "");
+        var scenarios = ChatScenario.LoadFromText(scenarioText);
 
         Assert.NotEmpty(scenarios);
 
@@ -189,7 +189,7 @@ public class ParseChatScenarioTests
                            ```
                            """;
 
-        var scenarios = ChatScenario.LoadFromText(scenarioText, "");
+        var scenarios = ChatScenario.LoadFromText(scenarioText);
 
         Assert.NotEmpty(scenarios);
 

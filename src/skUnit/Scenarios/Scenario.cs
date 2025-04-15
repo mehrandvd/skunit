@@ -10,7 +10,7 @@ namespace skUnit.Scenarios
 {
     public class Scenario<TScenario, TScenarioParser> where TScenarioParser : IScenarioParser<TScenario>, new()
     {
-        public static List<TScenario> LoadFromText(string text, string config)
+        public static List<TScenario> LoadFromText(string text)
         {
             var parser = new TScenarioParser();
             var scenario = parser.Parse(text);
