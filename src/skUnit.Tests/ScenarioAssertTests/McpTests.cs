@@ -35,8 +35,7 @@ namespace skUnit.Tests.ScenarioAssertTests
                           {
                               options.Tools ??= [.. tools];
                           })
-                          .UseFunctionInvocation()
-                ;
+                          .UseFunctionInvocation();
 
             var chatClient = builder.Build();
 
