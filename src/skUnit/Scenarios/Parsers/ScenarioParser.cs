@@ -8,6 +8,6 @@ namespace skUnit.Scenarios.Parsers
 {
     public interface IScenarioParser<TScenario>
     {
-        public abstract List<TScenario> Parse(string text, string config);
+        public abstract List<TScenario> Parse(string text);
     }
 }

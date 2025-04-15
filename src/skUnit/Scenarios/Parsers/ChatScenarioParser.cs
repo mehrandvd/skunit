@@ -14,9 +14,8 @@ namespace skUnit.Scenarios.Parsers
         /// Parses a ChatScenario from <paramref name="text"/>
         /// </summary>
         /// <param name="text"></param>
-        /// <param name="config"></param>
         /// <returns></returns>
-        public List<ChatScenario> Parse(string text, string config)
+        public List<ChatScenario> Parse(string text)
         {
             var scenarioTexts = Regex.Split(text, Environment.NewLine + @"-{5,}" + Environment.NewLine, RegexOptions.Multiline);
             var scenarios = new List<ChatScenario>();

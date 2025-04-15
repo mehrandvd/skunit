@@ -13,7 +13,7 @@ namespace skUnit.Scenarios
         public static List<TScenario> LoadFromText(string text, string config)
         {
             var parser = new TScenarioParser();
-            var scenario = parser.Parse(text, config);
+            var scenario = parser.Parse(text);
             return scenario;
         }
 
@@ -27,7 +27,7 @@ namespace skUnit.Scenarios
             using StreamReader reader = new StreamReader(stream);
             var result = await reader.ReadToEndAsync();
             var parser = new TScenarioParser();
-            var scenario = parser.Parse(result, "");
+            var scenario = parser.Parse(result);
             return scenario;
         }
     }
