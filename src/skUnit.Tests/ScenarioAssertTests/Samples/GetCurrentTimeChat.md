@@ -6,16 +6,12 @@ What time is it?
 ## [AGENT]
 10:23
 
-### CHECK FunctionCall
-```json
-{
-	"function_name": "GetCurrentTime",
-}
-```
+### CHECK SemanticCondition
+It mentions a time.
 
 ### CHECK FunctionCall
 ```json
 {
-	"function_name": "TimePlugin-GetCurrentTime",
+	"function_name": "TimePlugin_GetCurrentTime",
 }
 ```

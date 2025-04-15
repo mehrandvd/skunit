@@ -13,9 +13,9 @@ namespace skUnit.Tests.Infrastructure;
 
 public class SemanticTestBase
 {
-    private readonly string _apiKey;
-    private readonly string _endpoint;
-    private readonly string _deploymentName;
+    protected readonly string ApiKey;
+    protected readonly string Endpoint;
+    protected readonly string DeploymentName;
     protected IChatClient BaseChatClient { get; set; }
     protected ScenarioAssert ScenarioAssert { get; set; }
     protected ITestOutputHelper Output { get; set; }
@@ -28,27 +28,27 @@ public class SemanticTestBase
 
         IConfiguration configuration = builder.Build();
 
-        _apiKey =
+        ApiKey =
             configuration["AzureOpenAI_ApiKey"] ??
             throw new Exception("No ApiKey is provided.");
-        _endpoint =
+        Endpoint =
             configuration["AzureOpenAI_Endpoint"] ??
             throw new Exception("No Endpoint is provided.");
-        _deploymentName =
+        DeploymentName =
             configuration["AzureOpenAI_Deployment"] ??
             throw new Exception("No Deployment is provided.");
 
         ScenarioAssert = new ScenarioAssert(
             new AzureOpenAIClient(
-                new Uri(_endpoint),
-                new System.ClientModel.ApiKeyCredential(_apiKey)
-                ).GetChatClient(_deploymentName).AsIChatClient()
+                new Uri(Endpoint),
+                new System.ClientModel.ApiKeyCredential(ApiKey)
+                ).GetChatClient(DeploymentName).AsIChatClient()
             , message => Output.WriteLine(message));
 
         var openAI = new AzureOpenAIClient(
-            new Uri(_endpoint),
-            new System.ClientModel.ApiKeyCredential(_apiKey)
-        ).GetChatClient(_deploymentName).AsIChatClient();
+            new Uri(Endpoint),
+            new System.ClientModel.ApiKeyCredential(ApiKey)
+        ).GetChatClient(DeploymentName).AsIChatClient();
 
         BaseChatClient = new ChatClientBuilder(openAI)
             .Build();
