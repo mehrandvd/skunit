@@ -10,7 +10,7 @@ namespace skUnit.Tests.ScenarioAssertTests
     public class McpTests(ITestOutputHelper output) : SemanticTestBase(output)
     {
         [Fact]
-        public async Task AskTime_MustWork()
+        public async Task TimeServerMcp_MustWork()
         {
             var clientTransport = new StdioClientTransport(new StdioClientTransportOptions
             {
