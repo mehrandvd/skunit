@@ -22,7 +22,6 @@ namespace skUnit
         /// <summary>
         /// Checks whether the <paramref name="scenario"/> passes on the given <paramref name="chatClient"/>
         /// using its ChatCompletionService.
-        /// If you want to test the kernel using something other than ChatCompletionService (for example using your own function),
         /// pass <paramref name="getAnswerFunc"/> and specify how do you want the answer be created from chat history like:
         /// <code>
         /// getAnswerFunc = async history =>
@@ -144,7 +143,6 @@ namespace skUnit
         /// <summary>
         /// Checks whether all of the <paramref name="scenarios"/> passes on the given <paramref name="kernel"/>
         /// using its ChatCompletionService.
-        /// If you want to test the kernel using something other than ChatCompletionService (for example using your own function),
         /// pass <paramref name="getAnswerFunc"/> and specify how do you want the answer be created from chat history like:
         /// <code>
         /// getAnswerFunc = async history =>
@@ -169,59 +167,6 @@ namespace skUnit
                 Log("----------------------------------");
                 Log();
             }
-        }
-
-        /// <summary>
-        /// Checks whether all of the <paramref name="scenarios"/> passes on the given <paramref name="kernel"/>
-        /// using its ChatCompletionService.
-        /// If you want to test the kernel using something other than ChatCompletionService (for example using your own function),
-        /// pass <paramref name="getAnswerFunc"/> and specify how do you want the answer be created from chat history like:
-        /// <code>
-        /// getAnswerFunc = async history =>
-        ///     await AnswerChatFunction.InvokeAsync(kernel, new KernelArguments()
-        ///     {
-        ///         ["history"] = history,
-        ///     });
-        /// </code>
-        /// </summary>
-        /// <param name="scenarios"></param>
-        /// <param name="kernel"></param>
-        /// <param name="getAnswerFunc"></param>
-        /// <param name="chatHistory"></param>
-        /// <returns></returns>
-        /// <exception cref="InvalidOperationException">If the OpenAI was unable to generate a valid response.</exception>
-        [Experimental("SKEXP0001")]
-        public async Task PassAsync(List<ChatScenario> scenarios, Kernel kernel, IList<ChatMessage>? chatHistory = null)
-        {
-            var completionService = kernel.GetRequiredService<IChatCompletionService>();
-            var innerClient = completionService.AsChatClient();
-
-            ChatClientBuilder builder = new ChatClientBuilder(innerClient)
-                                        .ConfigureOptions(options =>
-                                        {
-                                            IEnumerable<AIFunction> aiFunctions =
-                                                kernel.Plugins.SelectMany(kp => kp.AsAIFunctions());
-                                            options.Tools = [.. aiFunctions];
-                                            //options.ToolMode = ChatToolMode.Auto;
-                                        })
-                                        .UseFunctionInvocation()
-                                        ;
-
-            var chatClient = builder.Build();
-
-            foreach (var scenario in scenarios)
-            {
-                await PassAsync(scenario, chatClient, null, chatHistory);
-                Log();
-                Log("----------------------------------");
-                Log();
-            }
-        }
-
-        [Experimental("SKEXP0001")]
-        public async Task PassAsync(ChatScenario scenarios, Kernel kernel, IList<ChatMessage>? chatHistory = null)
-        {
-            await PassAsync([scenarios], kernel, chatHistory);
         }
     }
 }
