@@ -16,7 +16,7 @@
 
   <ItemGroup>
     <PackageReference Include="Markdig" Version="0.40.0" />
-    <PackageReference Include="Microsoft.Extensions.AI" Version="9.4.0-preview.1.25207.5" />
+    <PackageReference Include="Microsoft.Extensions.AI" Version="9.4.3-preview.1.25230.7" />
     <PackageReference Include="Microsoft.SemanticKernel.Abstractions" Version="1.46.0" />
     <PackageReference Include="SemanticValidation" Version="0.19.0-beta" />
   </ItemGroup>
