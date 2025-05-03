@@ -19,6 +19,7 @@ public class SemanticTestBase
     protected IChatClient BaseChatClient { get; set; }
     protected ScenarioAssert ScenarioAssert { get; set; }
     protected ITestOutputHelper Output { get; set; }
+    protected IConfiguration Configuration { get; set; }
 
     public SemanticTestBase(ITestOutputHelper output)
     {
@@ -26,16 +27,16 @@ public class SemanticTestBase
         var builder = new ConfigurationBuilder()
             .AddUserSecrets<SemanticTestBase>();
 
-        IConfiguration configuration = builder.Build();
+        Configuration = builder.Build();
 
         ApiKey =
-            configuration["AzureOpenAI_ApiKey"] ??
+            Configuration["AzureOpenAI_ApiKey"] ??
             throw new Exception("No ApiKey is provided.");
         Endpoint =
-            configuration["AzureOpenAI_Endpoint"] ??
+            Configuration["AzureOpenAI_Endpoint"] ??
             throw new Exception("No Endpoint is provided.");
         DeploymentName =
-            configuration["AzureOpenAI_Deployment"] ??
+            Configuration["AzureOpenAI_Deployment"] ??
             throw new Exception("No Deployment is provided.");
 
         ScenarioAssert = new ScenarioAssert(

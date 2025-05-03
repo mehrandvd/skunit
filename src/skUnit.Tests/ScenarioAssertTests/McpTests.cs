@@ -4,6 +4,7 @@ using System.ComponentModel;
 using ModelContextProtocol.Client;
 using ModelContextProtocol.Protocol.Transport;
 using Xunit.Abstractions;
+using Microsoft.Extensions.Configuration;
 
 namespace skUnit.Tests.ScenarioAssertTests
 {
@@ -12,6 +13,8 @@ namespace skUnit.Tests.ScenarioAssertTests
         [Fact]
         public async Task TimeServerMcp_MustWork()
         {
+            var smitheryKey = Configuration["Smithery_Key"] ?? throw new Exception("No Smithery Key is provided.");
+
             var clientTransport = new StdioClientTransport(new StdioClientTransportOptions
             {
                 Name = "Time MCP Server",
@@ -22,7 +25,9 @@ namespace skUnit.Tests.ScenarioAssertTests
                     "-y",
                     "@smithery/cli@latest",
                     "run",
-                    "@yokingma/time-mcp"
+                    "@yokingma/time-mcp",
+                    "--key",
+                    smitheryKey
                 ],
             });
 
