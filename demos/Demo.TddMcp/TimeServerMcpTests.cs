@@ -14,15 +14,16 @@ namespace Demo.TddMcp
     {
         ScenarioAssert ScenarioAssert { get; set; }
         IChatClient ChatClient { get; set; }
+        IConfiguration Configuration { get; set; }
         public TimeServerMcpTests(ITestOutputHelper output)
         {
-            var configuration = new ConfigurationBuilder()
+            Configuration = new ConfigurationBuilder()
                                 .AddUserSecrets<TimeServerMcpTests>()
                                 .Build();
 
-            var apiKey = configuration["AzureOpenAI_ApiKey"] ?? throw new Exception("No ApiKey is provided.");
-            var endpoint = configuration["AzureOpenAI_Endpoint"] ?? throw new Exception("No Endpoint is provided.");
-            var deploymentName = configuration["AzureOpenAI_Deployment"] ?? throw new Exception("No Deployment is provided.");
+            var apiKey = Configuration["AzureOpenAI_ApiKey"] ?? throw new Exception("No ApiKey is provided.");
+            var endpoint = Configuration["AzureOpenAI_Endpoint"] ?? throw new Exception("No Endpoint is provided.");
+            var deploymentName = Configuration["AzureOpenAI_Deployment"] ?? throw new Exception("No Deployment is provided.");
 
             ChatClient = new AzureOpenAIClient(
                 new Uri(endpoint),
@@ -35,6 +36,8 @@ namespace Demo.TddMcp
         [Fact]
         public async Task Tools_MustWork()
         {
+            var smitheryKey = Configuration["Smithery_Key"] ?? throw new Exception("No Smithery Key is provided.");
+
             var clientTransport = new StdioClientTransport(new StdioClientTransportOptions
             {
                 Name = "Time MCP Server",
@@ -45,7 +48,9 @@ namespace Demo.TddMcp
                     "-y",
                     "@smithery/cli@latest",
                     "run",
-                    "@yokingma/time-mcp"
+                    "@yokingma/time-mcp",
+                    "--key",
+                    smitheryKey
                 ],
             });
 
