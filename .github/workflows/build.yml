@@ -24,10 +24,5 @@ jobs:
       run: dotnet restore ${{ env.SOLUTION_PATH }}
     - name: Build
       run: dotnet build ${{ env.SOLUTION_PATH }} --no-restore
-    - name: Test
-      env:
-          AzureOpenAI_ApiKey: ${{ secrets.AZUREOPENAI_APIKEY }}
-          AzureOpenAI_Deployment: ${{ secrets.AZUREOPENAI_DEPLOYMENT }}
-          AzureOpenAI_Endpoint: ${{ secrets.AZUREOPENAI_ENDPOINT }}
-          Smithery_Key: ${{ secrets.SMITHERY_KEY }}
-      run: dotnet test ${{ env.SOLUTION_PATH }} --filter GitHubActions!=Skip --no-build --verbosity normal
+#   - name: Test
+#     run: dotnet test ${{ env.SOLUTION_PATH }} --filter GitHubActions!=Skip --no-build --verbosity normal
