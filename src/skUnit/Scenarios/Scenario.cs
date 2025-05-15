@@ -8,6 +8,7 @@ using skUnit.Scenarios.Parsers;
 
 namespace skUnit.Scenarios
 {
+// just a comment
     public class Scenario<TScenario, TScenarioParser> where TScenarioParser : IScenarioParser<TScenario>, new()
     {
         public static List<TScenario> LoadFromText(string text)
