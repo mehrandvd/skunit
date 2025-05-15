@@ -1,0 +1,30 @@
+name: Test
+
+on:
+  workflow_dispatch:
+
+env:
+  SOLUTION_PATH: 'src/skUnit.sln'
+
+jobs:
+  build:
+
+    runs-on: ubuntu-latest
+
+    steps:
+    - uses: actions/checkout@v3
+    - name: Setup .NET
+      uses: actions/setup-dotnet@v3
+      with:
+        dotnet-version: 8.0.x
+    - name: Restore dependencies
+      run: dotnet restore ${{ env.SOLUTION_PATH }}
+    - name: Build
+      run: dotnet build ${{ env.SOLUTION_PATH }} --no-restore
+    - name: Test
+      env:
+          AzureOpenAI_ApiKey: ${{ secrets.AZUREOPENAI_APIKEY }}
+          AzureOpenAI_Deployment: ${{ secrets.AZUREOPENAI_DEPLOYMENT }}
+          AzureOpenAI_Endpoint: ${{ secrets.AZUREOPENAI_ENDPOINT }}
+          Smithery_Key: ${{ secrets.SMITHERY_KEY }}
+      run: dotnet test ${{ env.SOLUTION_PATH }} --filter GitHubActions!=Skip --no-build --verbosity normal

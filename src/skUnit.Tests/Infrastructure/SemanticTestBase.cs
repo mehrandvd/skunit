@@ -18,6 +18,8 @@ public class SemanticTestBase
     protected readonly string DeploymentName;
     protected IChatClient BaseChatClient { get; set; }
     protected ScenarioAssert ScenarioAssert { get; set; }
+    protected SemanticAssert SemanticAssert { get; set; }
+
     protected ITestOutputHelper Output { get; set; }
     protected IConfiguration Configuration { get; set; }
 
@@ -25,7 +27,8 @@ public class SemanticTestBase
     {
         Output = output;
         var builder = new ConfigurationBuilder()
-            .AddUserSecrets<SemanticTestBase>();
+            .AddUserSecrets<SemanticTestBase>()
+            .AddEnvironmentVariables();
 
         Configuration = builder.Build();
 
@@ -45,6 +48,13 @@ public class SemanticTestBase
                 new System.ClientModel.ApiKeyCredential(ApiKey)
                 ).GetChatClient(DeploymentName).AsIChatClient()
             , message => Output.WriteLine(message));
+
+        SemanticAssert = new SemanticAssert(
+            new AzureOpenAIClient(
+                new Uri(Endpoint),
+                new System.ClientModel.ApiKeyCredential(ApiKey)
+            ).GetChatClient(DeploymentName).AsIChatClient()
+        );
 
         var openAI = new AzureOpenAIClient(
             new Uri(Endpoint),
