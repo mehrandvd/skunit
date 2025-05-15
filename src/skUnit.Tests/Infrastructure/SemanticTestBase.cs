@@ -18,24 +18,28 @@ public class SemanticTestBase
     protected readonly string DeploymentName;
     protected IChatClient BaseChatClient { get; set; }
     protected ScenarioAssert ScenarioAssert { get; set; }
+    protected SemanticAssert SemanticAssert { get; set; }
+
     protected ITestOutputHelper Output { get; set; }
+    protected IConfiguration Configuration { get; set; }
 
     public SemanticTestBase(ITestOutputHelper output)
     {
         Output = output;
         var builder = new ConfigurationBuilder()
-            .AddUserSecrets<SemanticTestBase>();
+            .AddUserSecrets<SemanticTestBase>()
+            .AddEnvironmentVariables();
 
-        IConfiguration configuration = builder.Build();
+        Configuration = builder.Build();
 
         ApiKey =
-            configuration["AzureOpenAI_ApiKey"] ??
+            Configuration["AzureOpenAI_ApiKey"] ??
             throw new Exception("No ApiKey is provided.");
         Endpoint =
-            configuration["AzureOpenAI_Endpoint"] ??
+            Configuration["AzureOpenAI_Endpoint"] ??
             throw new Exception("No Endpoint is provided.");
         DeploymentName =
-            configuration["AzureOpenAI_Deployment"] ??
+            Configuration["AzureOpenAI_Deployment"] ??
             throw new Exception("No Deployment is provided.");
 
         ScenarioAssert = new ScenarioAssert(
@@ -44,6 +48,13 @@ public class SemanticTestBase
                 new System.ClientModel.ApiKeyCredential(ApiKey)
                 ).GetChatClient(DeploymentName).AsIChatClient()
             , message => Output.WriteLine(message));
+
+        SemanticAssert = new SemanticAssert(
+            new AzureOpenAIClient(
+                new Uri(Endpoint),
+                new System.ClientModel.ApiKeyCredential(ApiKey)
+            ).GetChatClient(DeploymentName).AsIChatClient()
+        );
 
         var openAI = new AzureOpenAIClient(
             new Uri(Endpoint),
