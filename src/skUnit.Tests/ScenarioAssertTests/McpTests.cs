@@ -11,6 +11,7 @@ namespace skUnit.Tests.ScenarioAssertTests
     public class McpTests(ITestOutputHelper output) : SemanticTestBase(output)
     {
         [Fact]
+        [Trait("GitHubActions", "Skip")]
         public async Task TimeServerMcp_MustWork()
         {
             var smitheryKey = Configuration["Smithery_Key"] ?? throw new Exception("No Smithery Key is provided.");
