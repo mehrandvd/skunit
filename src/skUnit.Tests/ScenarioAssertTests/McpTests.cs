@@ -2,7 +2,6 @@
 using skUnit.Tests.Infrastructure;
 using System.ComponentModel;
 using ModelContextProtocol.Client;
-using ModelContextProtocol.Protocol.Transport;
 using Xunit.Abstractions;
 using Microsoft.Extensions.Configuration;
 
