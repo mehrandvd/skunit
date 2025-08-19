@@ -197,9 +197,9 @@ public class ParseChatScenarioTests
 
         Assert.Equal(2, first.ChatItems.Count);
 
-        var lastChatItem = first.ChatItems.Last();    
+        var lastChatItem = first.ChatItems.Last();
         Assert.Equal(
-            "GetCurrentTime", 
+            "GetCurrentTime",
             lastChatItem.Assertions
                     .OfType<FunctionCallAssertion>()
                     .FirstOrDefault()?

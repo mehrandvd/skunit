@@ -13,7 +13,7 @@ namespace skUnit.Exceptions
     {
         public SemanticAssertException(string message) : base(message)
         {
-            
+
         }
     }
 }

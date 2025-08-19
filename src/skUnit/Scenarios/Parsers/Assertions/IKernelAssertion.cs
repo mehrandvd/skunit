@@ -5,7 +5,7 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 using Markdig.Helpers;
- using Microsoft.Extensions.AI;
+using Microsoft.Extensions.AI;
 using SemanticValidation;
 
 namespace skUnit.Scenarios.Parsers.Assertions

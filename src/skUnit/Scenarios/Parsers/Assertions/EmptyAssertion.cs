@@ -30,7 +30,7 @@ namespace skUnit.Scenarios.Parsers.Assertions
                 throw new SemanticAssertException($"""
                                     Expected to be empty, but not empty:
                                     {response.Text} 
-                                    """ );
+                                    """);
             }
 
             return Task.CompletedTask;

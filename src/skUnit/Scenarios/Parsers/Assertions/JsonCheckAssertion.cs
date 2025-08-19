@@ -79,10 +79,10 @@ namespace skUnit.Scenarios.Parsers.Assertions
                     {
                         throw new SemanticAssertException($"""
                             JsonCheck Assertion failed:
-                            { checkArray?.ToJsonString()} 
+                            {checkArray?.ToJsonString()} 
                             DESCRIPTION:
-                            { semanticAssertException.Message} 
-                            """ );
+                            {semanticAssertException.Message} 
+                            """);
                     }
                     catch (InvalidOperationException invalidOperationException)
                     {
@@ -97,9 +97,9 @@ namespace skUnit.Scenarios.Parsers.Assertions
                 else
                 {
                     throw new SemanticAssertException($"""
-                            Property '{ prop.Key}  ' not found in answer:
+                            Property '{prop.Key}  ' not found in answer:
                             {response} 
-                            """ );
+                            """);
                 }
             }
         }

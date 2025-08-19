@@ -143,8 +143,8 @@ namespace skUnit.Scenarios.Parsers
                 {
                     throw new InvalidOperationException($"""
                         Invalid function call. It should be in Plugin.Function format:
-                        { functionText} 
-                        """ );
+                        {functionText} 
+                        """);
                 }
 
                 var plugin = callParts[0];
@@ -159,8 +159,8 @@ namespace skUnit.Scenarios.Parsers
                     if (argsJson is null)
                         throw new InvalidOperationException($"""
                                 Unable to parse CALL JSON:
-                                { contentText} 
-                                """ );
+                                {contentText} 
+                                """);
 
                     foreach (var prop in argsJson)
                     {

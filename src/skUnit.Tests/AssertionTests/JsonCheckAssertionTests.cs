@@ -70,7 +70,7 @@ namespace skUnit.Tests.AssertionTests
 
             Assert.NotNull(assertion.JsonCheck);
 
-            await Assert.ThrowsAsync<SemanticAssertException>( () => assertion.Assert(null, """
+            await Assert.ThrowsAsync<SemanticAssertException>(() => assertion.Assert(null, """
                 {
                     "name": "Mehran",
                     "address": "The address is in Vanak area of Tehran"
