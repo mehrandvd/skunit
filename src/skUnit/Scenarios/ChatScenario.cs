@@ -28,10 +28,31 @@ public class ChatItem
     public ChatItem(ChatRole role, string content)
     {
         Role = role;
-        Content = content;
+        // Maintain backward compatibility: convert string content to TextContent
+        Contents = new List<AIContent> { new TextContent(content) };
     }
+
+    public ChatItem(ChatRole role, List<AIContent> contents)
+    {
+        Role = role;
+        Contents = contents;
+    }
+
     public ChatRole Role { get; set; }
-    public string Content { get; set; }
+    
+    /// <summary>
+    /// The AI content parts for this chat item (text, images, etc.)
+    /// </summary>
+    public List<AIContent> Contents { get; set; } = new();
+
+    /// <summary>
+    /// Backward compatibility property that returns combined text content
+    /// </summary>
+    public string Content 
+    { 
+        get => string.Join("\n", Contents.OfType<TextContent>().Select(t => t.Text));
+        set => Contents = new List<AIContent> { new TextContent(value) };
+    }
 
     /// <summary>
     /// All the assertions that should be checked after the result of InvokeAsync is ready for the user input and history so far.
@@ -42,6 +63,15 @@ public class ChatItem
     /// The function calls that should be asserted too.
     /// </summary>
     public List<FunctionCall> FunctionCalls { get; set; } = new();
+
+    /// <summary>
+    /// Convert to Microsoft.Extensions.AI ChatMessage
+    /// </summary>
+    /// <returns>ChatMessage with all content parts</returns>
+    public ChatMessage ToChatMessage()
+    {
+        return new ChatMessage(Role, Contents);
+    }
 
     public override string ToString()
     {

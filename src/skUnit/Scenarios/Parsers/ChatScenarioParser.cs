@@ -106,19 +106,23 @@ namespace skUnit.Scenarios.Parsers
 
             if (currentBlock == "USER")
             {
-                scenario.ChatItems.Add(new ChatItem(ChatRole.User, contentText));
+                var contents = ParseMultiModalContent(contentText);
+                scenario.ChatItems.Add(new ChatItem(ChatRole.User, contents));
             }
             else if (currentBlock == "AGENT")
             {
-                scenario.ChatItems.Add(new ChatItem(ChatRole.Assistant, contentText));
+                var contents = ParseMultiModalContent(contentText);
+                scenario.ChatItems.Add(new ChatItem(ChatRole.Assistant, contents));
             }
             else if (currentBlock == "SYSTEM")
             {
-                scenario.ChatItems.Add(new ChatItem(ChatRole.System, contentText));
+                var contents = ParseMultiModalContent(contentText);
+                scenario.ChatItems.Add(new ChatItem(ChatRole.System, contents));
             }
             else if (currentBlock == "TOOL")
             {
-                scenario.ChatItems.Add(new ChatItem(ChatRole.Tool, contentText));
+                var contents = ParseMultiModalContent(contentText);
+                scenario.ChatItems.Add(new ChatItem(ChatRole.Tool, contents));
             }
             else if (currentBlock == "SCENARIO")
             {
@@ -219,6 +223,105 @@ namespace skUnit.Scenarios.Parsers
             currentBlock = newBlock;
 
             return true;
+        }
+
+        /// <summary>
+        /// Parse content that may contain multi-modal parts (### Text, ### Image sections)
+        /// Falls back to treating the entire content as text if no multi-modal sections are found
+        /// </summary>
+        private static List<AIContent> ParseMultiModalContent(string contentText)
+        {
+            var contents = new List<AIContent>();
+            
+            // Check if content contains multi-modal subsections (### Text, ### Image)
+            var hasMultiModalSections = Regex.IsMatch(contentText, @"^###\s*(Text|Image)\s*$", RegexOptions.Multiline | RegexOptions.IgnoreCase);
+            
+            if (!hasMultiModalSections)
+            {
+                // Backward compatibility: treat entire content as text
+                if (!string.IsNullOrWhiteSpace(contentText))
+                {
+                    contents.Add(new TextContent(contentText));
+                }
+                return contents;
+            }
+
+            // Parse multi-modal sections
+            var md = Markdown.Parse(contentText);
+            var currentContentType = "";
+            var sectionContent = new StringBuilder();
+
+            foreach (var block in md)
+            {
+                var blockContent = contentText.Substring(block.Span.Start, block.Span.Length);
+
+                if (block is HeadingBlock heading && heading.Level == 3)
+                {
+                    // Flush previous section if any
+                    FlushContentSection(contents, currentContentType, sectionContent);
+
+                    // Check for Text or Image subsection
+                    var textMatch = Regex.Match(blockContent, @"^###\s*Text\s*$", RegexOptions.IgnoreCase);
+                    var imageMatch = Regex.Match(blockContent, @"^###\s*Image\s*$", RegexOptions.IgnoreCase);
+
+                    if (textMatch.Success)
+                    {
+                        currentContentType = "TEXT";
+                    }
+                    else if (imageMatch.Success)
+                    {
+                        currentContentType = "IMAGE";
+                    }
+                    else
+                    {
+                        // Not a recognized content type subsection, treat as regular content
+                        currentContentType = "";
+                        sectionContent.AppendLine(blockContent);
+                    }
+                }
+                else
+                {
+                    sectionContent.AppendLine(blockContent);
+                }
+            }
+
+            // Flush final section
+            FlushContentSection(contents, currentContentType, sectionContent);
+
+            return contents.Count > 0 ? contents : new List<AIContent> { new TextContent(contentText) };
+        }
+
+        private static void FlushContentSection(List<AIContent> contents, string contentType, StringBuilder sectionContent)
+        {
+            var content = sectionContent.ToString().Trim();
+            sectionContent.Clear();
+
+            if (string.IsNullOrWhiteSpace(content)) return;
+
+            switch (contentType.ToUpperInvariant())
+            {
+                case "TEXT":
+                    contents.Add(new TextContent(content));
+                    break;
+                case "IMAGE":
+                    // Extract image URL from markdown image syntax: ![alt](url)
+                    var imageMatch = Regex.Match(content, @"!\[([^\]]*)\]\(([^)]+)\)");
+                    if (imageMatch.Success)
+                    {
+                        var imageUrl = imageMatch.Groups[2].Value;
+                        contents.Add(new UriContent(new Uri(imageUrl), "image/*"));
+                    }
+                    else
+                    {
+                        // If not a proper markdown image, treat as text content
+                        contents.Add(new TextContent(content));
+                    }
+                    break;
+                default:
+                    // Default to text content for any unrecognized or empty content type
+                    contents.Add(new TextContent(content));
+                    break;
+            }
         }
     }
 }
