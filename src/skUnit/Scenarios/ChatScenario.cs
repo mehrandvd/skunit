@@ -1,6 +1,5 @@
 ﻿using Markdig.Helpers;
 using Microsoft.Extensions.AI;
-using skUnit.Scenarios.ContentParts;
 using skUnit.Scenarios.Parsers;
 using skUnit.Scenarios.Parsers.Assertions;
 
@@ -29,30 +28,30 @@ public class ChatItem
     public ChatItem(ChatRole role, string content)
     {
         Role = role;
-        // Maintain backward compatibility: convert string content to text content part
-        ContentParts = new List<ChatContentPart> { new TextContentPart { Text = content } };
+        // Maintain backward compatibility: convert string content to TextContent
+        Contents = new List<AIContent> { new TextContent(content) };
     }
 
-    public ChatItem(ChatRole role, List<ChatContentPart> contentParts)
+    public ChatItem(ChatRole role, List<AIContent> contents)
     {
         Role = role;
-        ContentParts = contentParts;
+        Contents = contents;
     }
 
     public ChatRole Role { get; set; }
     
     /// <summary>
-    /// The content parts for this chat item (text, images, etc.)
+    /// The AI content parts for this chat item (text, images, etc.)
     /// </summary>
-    public List<ChatContentPart> ContentParts { get; set; } = new();
+    public List<AIContent> Contents { get; set; } = new();
 
     /// <summary>
     /// Backward compatibility property that returns combined text content
     /// </summary>
     public string Content 
     { 
-        get => string.Join("\n", ContentParts.OfType<TextContentPart>().Select(t => t.Text));
-        set => ContentParts = new List<ChatContentPart> { new TextContentPart { Text = value } };
+        get => string.Join("\n", Contents.OfType<TextContent>().Select(t => t.Text));
+        set => Contents = new List<AIContent> { new TextContent(value) };
     }
 
     /// <summary>
@@ -71,8 +70,7 @@ public class ChatItem
     /// <returns>ChatMessage with all content parts</returns>
     public ChatMessage ToChatMessage()
     {
-        var aiContents = ContentParts.Select(cp => cp.ToAIContent()).ToList();
-        return new ChatMessage(Role, aiContents);
+        return new ChatMessage(Role, Contents);
     }
 
     public override string ToString()

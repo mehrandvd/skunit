@@ -6,7 +6,6 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 using skUnit.Scenarios;
-using skUnit.Scenarios.ContentParts;
 using Microsoft.Extensions.AI;
 
 namespace skUnit.Tests.ScenarioTests;
@@ -239,30 +238,29 @@ public class ParseChatScenarioTests
         Assert.Equal(2, first.ChatItems.Count);
 
         var userChatItem = first.ChatItems.First();
-        Assert.Equal(3, userChatItem.ContentParts.Count);
+        Assert.Equal(3, userChatItem.Contents.Count);
         
         // Check first text part
-        var firstTextPart = userChatItem.ContentParts[0] as TextContentPart;
-        Assert.NotNull(firstTextPart);
-        Assert.Contains("This image explains", firstTextPart.Text);
+        var firstTextContent = userChatItem.Contents[0] as TextContent;
+        Assert.NotNull(firstTextContent);
+        Assert.Contains("This image explains", firstTextContent.Text);
         
         // Check image part
-        var imagePart = userChatItem.ContentParts[1] as ImageContentPart;
-        Assert.NotNull(imagePart);
-        Assert.Equal("https://github.com/mehrandvd/skunit/assets/5070766/156b0831-e4f3-4e4b-b1b0-e2ec868efb5f", imagePart.ImageUri);
-        Assert.Equal("skUnit structure", imagePart.AltText);
+        var imageContent = userChatItem.Contents[1] as UriContent;
+        Assert.NotNull(imageContent);
+        Assert.Equal("https://github.com/mehrandvd/skunit/assets/5070766/156b0831-e4f3-4e4b-b1b0-e2ec868efb5f", imageContent.Uri.ToString());
         
         // Check second text part
-        var secondTextPart = userChatItem.ContentParts[2] as TextContentPart;
-        Assert.NotNull(secondTextPart);
-        Assert.Contains("How many scenarios", secondTextPart.Text);
+        var secondTextContent = userChatItem.Contents[2] as TextContent;
+        Assert.NotNull(secondTextContent);
+        Assert.Contains("How many scenarios", secondTextContent.Text);
 
         // Check agent response (should be plain text)
         var agentChatItem = first.ChatItems[1];
-        Assert.Single(agentChatItem.ContentParts);
-        var agentTextPart = agentChatItem.ContentParts[0] as TextContentPart;
-        Assert.NotNull(agentTextPart);
-        Assert.Contains("There are 2 scenarios", agentTextPart.Text);
+        Assert.Single(agentChatItem.Contents);
+        var agentTextContent = agentChatItem.Contents[0] as TextContent;
+        Assert.NotNull(agentTextContent);
+        Assert.Contains("There are 2 scenarios", agentTextContent.Text);
     }
 
     [Fact]
@@ -287,12 +285,11 @@ public class ParseChatScenarioTests
         Assert.Equal(2, first.ChatItems.Count);
 
         var userChatItem = first.ChatItems.First();
-        Assert.Single(userChatItem.ContentParts);
+        Assert.Single(userChatItem.Contents);
         
-        var imagePart = userChatItem.ContentParts[0] as ImageContentPart;
-        Assert.NotNull(imagePart);
-        Assert.Equal("https://example.com/test.jpg", imagePart.ImageUri);
-        Assert.Equal("test image", imagePart.AltText);
+        var imageContent = userChatItem.Contents[0] as UriContent;
+        Assert.NotNull(imageContent);
+        Assert.Equal("https://example.com/test.jpg", imageContent.Uri.ToString());
     }
 
     [Fact]
@@ -316,11 +313,11 @@ public class ParseChatScenarioTests
         Assert.Equal(2, first.ChatItems.Count);
 
         var userChatItem = first.ChatItems.First();
-        Assert.Single(userChatItem.ContentParts);
+        Assert.Single(userChatItem.Contents);
         
-        var textPart = userChatItem.ContentParts[0] as TextContentPart;
-        Assert.NotNull(textPart);
-        Assert.Equal("Just plain text without subsections", textPart.Text);
+        var textContent = userChatItem.Contents[0] as TextContent;
+        Assert.NotNull(textContent);
+        Assert.Equal("Just plain text without subsections", textContent.Text);
         
         // Test backward compatibility property
         Assert.Equal("Just plain text without subsections", userChatItem.Content);

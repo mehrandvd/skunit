@@ -5,7 +5,6 @@ using System.Text.Json.Nodes;
 using System.Text.RegularExpressions;
 using SemanticValidation.Utils;
 using Microsoft.Extensions.AI;
-using skUnit.Scenarios.ContentParts;
 
 namespace skUnit.Scenarios.Parsers
 {
@@ -107,23 +106,23 @@ namespace skUnit.Scenarios.Parsers
 
             if (currentBlock == "USER")
             {
-                var contentParts = ParseMultiModalContent(contentText);
-                scenario.ChatItems.Add(new ChatItem(ChatRole.User, contentParts));
+                var contents = ParseMultiModalContent(contentText);
+                scenario.ChatItems.Add(new ChatItem(ChatRole.User, contents));
             }
             else if (currentBlock == "AGENT")
             {
-                var contentParts = ParseMultiModalContent(contentText);
-                scenario.ChatItems.Add(new ChatItem(ChatRole.Assistant, contentParts));
+                var contents = ParseMultiModalContent(contentText);
+                scenario.ChatItems.Add(new ChatItem(ChatRole.Assistant, contents));
             }
             else if (currentBlock == "SYSTEM")
             {
-                var contentParts = ParseMultiModalContent(contentText);
-                scenario.ChatItems.Add(new ChatItem(ChatRole.System, contentParts));
+                var contents = ParseMultiModalContent(contentText);
+                scenario.ChatItems.Add(new ChatItem(ChatRole.System, contents));
             }
             else if (currentBlock == "TOOL")
             {
-                var contentParts = ParseMultiModalContent(contentText);
-                scenario.ChatItems.Add(new ChatItem(ChatRole.Tool, contentParts));
+                var contents = ParseMultiModalContent(contentText);
+                scenario.ChatItems.Add(new ChatItem(ChatRole.Tool, contents));
             }
             else if (currentBlock == "SCENARIO")
             {
@@ -230,9 +229,9 @@ namespace skUnit.Scenarios.Parsers
         /// Parse content that may contain multi-modal parts (### Text, ### Image sections)
         /// Falls back to treating the entire content as text if no multi-modal sections are found
         /// </summary>
-        private static List<ChatContentPart> ParseMultiModalContent(string contentText)
+        private static List<AIContent> ParseMultiModalContent(string contentText)
         {
-            var contentParts = new List<ChatContentPart>();
+            var contents = new List<AIContent>();
             
             // Check if content contains multi-modal subsections (### Text, ### Image)
             var hasMultiModalSections = Regex.IsMatch(contentText, @"^###\s*(Text|Image)\s*$", RegexOptions.Multiline | RegexOptions.IgnoreCase);
@@ -242,9 +241,9 @@ namespace skUnit.Scenarios.Parsers
                 // Backward compatibility: treat entire content as text
                 if (!string.IsNullOrWhiteSpace(contentText))
                 {
-                    contentParts.Add(new TextContentPart { Text = contentText });
+                    contents.Add(new TextContent(contentText));
                 }
-                return contentParts;
+                return contents;
             }
 
             // Parse multi-modal sections
@@ -259,7 +258,7 @@ namespace skUnit.Scenarios.Parsers
                 if (block is HeadingBlock heading && heading.Level == 3)
                 {
                     // Flush previous section if any
-                    FlushContentSection(contentParts, currentContentType, sectionContent);
+                    FlushContentSection(contents, currentContentType, sectionContent);
 
                     // Check for Text or Image subsection
                     var textMatch = Regex.Match(blockContent, @"^###\s*Text\s*$", RegexOptions.IgnoreCase);
@@ -287,12 +286,12 @@ namespace skUnit.Scenarios.Parsers
             }
 
             // Flush final section
-            FlushContentSection(contentParts, currentContentType, sectionContent);
+            FlushContentSection(contents, currentContentType, sectionContent);
 
-            return contentParts.Count > 0 ? contentParts : new List<ChatContentPart> { new TextContentPart { Text = contentText } };
+            return contents.Count > 0 ? contents : new List<AIContent> { new TextContent(contentText) };
         }
 
-        private static void FlushContentSection(List<ChatContentPart> contentParts, string contentType, StringBuilder sectionContent)
+        private static void FlushContentSection(List<AIContent> contents, string contentType, StringBuilder sectionContent)
         {
             var content = sectionContent.ToString().Trim();
             sectionContent.Clear();
@@ -302,26 +301,25 @@ namespace skUnit.Scenarios.Parsers
             switch (contentType.ToUpperInvariant())
             {
                 case "TEXT":
-                    contentParts.Add(new TextContentPart { Text = content });
+                    contents.Add(new TextContent(content));
                     break;
                 case "IMAGE":
                     // Extract image URL from markdown image syntax: ![alt](url)
                     var imageMatch = Regex.Match(content, @"!\[([^\]]*)\]\(([^)]+)\)");
                     if (imageMatch.Success)
                     {
-                        var altText = imageMatch.Groups[1].Value;
                         var imageUrl = imageMatch.Groups[2].Value;
-                        contentParts.Add(new ImageContentPart { ImageUri = imageUrl, AltText = string.IsNullOrWhiteSpace(altText) ? null : altText });
+                        contents.Add(new UriContent(new Uri(imageUrl), "image/*"));
                     }
                     else
                     {
                         // If not a proper markdown image, treat as text content
-                        contentParts.Add(new TextContentPart { Text = content });
+                        contents.Add(new TextContent(content));
                     }
                     break;
                 default:
                     // Default to text content for any unrecognized or empty content type
-                    contentParts.Add(new TextContentPart { Text = content });
+                    contents.Add(new TextContent(content));
                     break;
             }
         }
