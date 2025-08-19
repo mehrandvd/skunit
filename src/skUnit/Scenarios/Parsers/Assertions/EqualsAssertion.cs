@@ -32,7 +32,7 @@ namespace skUnit.Scenarios.Parsers.Assertions
         {
             if (response.Text.Trim() != ExpectedAnswer.Trim())
                 throw new SemanticAssertException($"Expected input is: '{ExpectedAnswer}' while actual is : '{response.Text}'");
-            
+
             return Task.CompletedTask;
         }
 

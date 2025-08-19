@@ -25,16 +25,16 @@ public class ContainsAllAssertion : IKernelAssertion
     /// <exception cref="SemanticAssertException"></exception>
     public Task Assert(Semantic semantic, ChatResponse response, IList<ChatMessage>? history = null)
     {
-        var notFounds = Texts.Where(t=>!response.Text.Contains(t.Trim())).ToList();
+        var notFounds = Texts.Where(t => !response.Text.Contains(t.Trim())).ToList();
 
         if (notFounds.Any())
             throw new SemanticAssertException($"Text does not contain these: '{string.Join(", ", notFounds)}'");
-        
+
         return Task.CompletedTask;
     }
 
     public string AssertionType => "ContainsAll";
-    public string Description => string.Join(", ",Texts);
+    public string Description => string.Join(", ", Texts);
 
     public override string ToString() => $"{AssertionType}: {Texts}";
 }

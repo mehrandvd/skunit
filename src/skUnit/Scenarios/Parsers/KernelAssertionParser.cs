@@ -24,11 +24,11 @@ namespace skUnit.Scenarios.Parsers
                     => new AreSimilarAssertion() { ExpectedAnswer = text },
                 "contains" or "contain" or "containsall"
                     => new ContainsAllAssertion() { Texts = text.Split(',', '،') },
-                "containsany" 
+                "containsany"
                     => new ContainsAnyAssertion() { Texts = text.Split(',', '،') },
                 "equal" or "equals"
                     => new EqualsAssertion() { ExpectedAnswer = text },
-                "jsoncheck" 
+                "jsoncheck"
                     => new JsonCheckAssertion().SetJsonAssertText(text),
                 "functioncall"
                     => new FunctionCallAssertion().SetJsonAssertText(text),

@@ -28,7 +28,7 @@ public class ContainsAnyAssertion : IKernelAssertion
 
         if (!founds.Any())
             throw new SemanticAssertException($"Text does not contain any of these: '{string.Join(", ", Texts)}'");
-        
+
         return Task.CompletedTask;
     }
 

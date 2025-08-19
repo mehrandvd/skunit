@@ -40,7 +40,7 @@ namespace skUnit
         /// <exception cref="InvalidOperationException">If the OpenAI was unable to generate a valid response.</exception>
         public async Task PassAsync(
             ChatScenario scenario,
-            IChatClient? chatClient = null, 
+            IChatClient? chatClient = null,
             Func<IList<ChatMessage>, Task<ChatResponse>>? getAnswerFunc = null,
             IList<ChatMessage>? chatHistory = null
 
