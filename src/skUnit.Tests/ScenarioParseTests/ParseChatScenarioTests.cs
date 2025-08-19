@@ -6,6 +6,8 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 using skUnit.Scenarios;
+using skUnit.Scenarios.ContentParts;
+using Microsoft.Extensions.AI;
 
 namespace skUnit.Tests.ScenarioTests;
 
@@ -206,5 +208,159 @@ public class ParseChatScenarioTests
                     .FunctionName
         );
 
+    }
+
+    [Fact]
+    public void ParseScenario_MultiModal_TextAndImage_MustWork()
+    {
+        var scenarioText = """
+                           # SCENARIO Multi-modal Test
+                           
+                           ## [USER]
+                           ### Text
+                           This image explains how skUnit parses the chat scenarios.
+                           ### Image
+                           ![skUnit structure](https://github.com/mehrandvd/skunit/assets/5070766/156b0831-e4f3-4e4b-b1b0-e2ec868efb5f)
+                           ### Text
+                           How many scenarios are there in the picture?
+                           
+                           ## [AGENT]
+                           There are 2 scenarios in the picture
+                           
+                           ### CHECK SemanticSimilar
+                           There are 2 scenarios in the picture
+                           """;
+
+        var scenarios = ChatScenario.LoadFromText(scenarioText);
+
+        Assert.NotEmpty(scenarios);
+
+        var first = scenarios.First();
+        Assert.Equal(2, first.ChatItems.Count);
+
+        var userChatItem = first.ChatItems.First();
+        Assert.Equal(3, userChatItem.ContentParts.Count);
+        
+        // Check first text part
+        var firstTextPart = userChatItem.ContentParts[0] as TextContentPart;
+        Assert.NotNull(firstTextPart);
+        Assert.Contains("This image explains", firstTextPart.Text);
+        
+        // Check image part
+        var imagePart = userChatItem.ContentParts[1] as ImageContentPart;
+        Assert.NotNull(imagePart);
+        Assert.Equal("https://github.com/mehrandvd/skunit/assets/5070766/156b0831-e4f3-4e4b-b1b0-e2ec868efb5f", imagePart.ImageUri);
+        Assert.Equal("skUnit structure", imagePart.AltText);
+        
+        // Check second text part
+        var secondTextPart = userChatItem.ContentParts[2] as TextContentPart;
+        Assert.NotNull(secondTextPart);
+        Assert.Contains("How many scenarios", secondTextPart.Text);
+
+        // Check agent response (should be plain text)
+        var agentChatItem = first.ChatItems[1];
+        Assert.Single(agentChatItem.ContentParts);
+        var agentTextPart = agentChatItem.ContentParts[0] as TextContentPart;
+        Assert.NotNull(agentTextPart);
+        Assert.Contains("There are 2 scenarios", agentTextPart.Text);
+    }
+
+    [Fact]
+    public void ParseScenario_MultiModal_ImageOnly_MustWork()
+    {
+        var scenarioText = """
+                           # SCENARIO Image Only Test
+                           
+                           ## [USER]
+                           ### Image
+                           ![test image](https://example.com/test.jpg)
+                           
+                           ## [AGENT]
+                           I can see the image.
+                           """;
+
+        var scenarios = ChatScenario.LoadFromText(scenarioText);
+
+        Assert.NotEmpty(scenarios);
+
+        var first = scenarios.First();
+        Assert.Equal(2, first.ChatItems.Count);
+
+        var userChatItem = first.ChatItems.First();
+        Assert.Single(userChatItem.ContentParts);
+        
+        var imagePart = userChatItem.ContentParts[0] as ImageContentPart;
+        Assert.NotNull(imagePart);
+        Assert.Equal("https://example.com/test.jpg", imagePart.ImageUri);
+        Assert.Equal("test image", imagePart.AltText);
+    }
+
+    [Fact]
+    public void ParseScenario_BackwardCompatibility_TextOnly_MustWork()
+    {
+        var scenarioText = """
+                           # SCENARIO Backward Compatibility Test
+                           
+                           ## [USER]
+                           Just plain text without subsections
+                           
+                           ## [AGENT]
+                           Plain text response
+                           """;
+
+        var scenarios = ChatScenario.LoadFromText(scenarioText);
+
+        Assert.NotEmpty(scenarios);
+
+        var first = scenarios.First();
+        Assert.Equal(2, first.ChatItems.Count);
+
+        var userChatItem = first.ChatItems.First();
+        Assert.Single(userChatItem.ContentParts);
+        
+        var textPart = userChatItem.ContentParts[0] as TextContentPart;
+        Assert.NotNull(textPart);
+        Assert.Equal("Just plain text without subsections", textPart.Text);
+        
+        // Test backward compatibility property
+        Assert.Equal("Just plain text without subsections", userChatItem.Content);
+    }
+
+    [Fact]
+    public void ParseScenario_MultiModal_ToChatMessage_MustWork()
+    {
+        var scenarioText = """
+                           # SCENARIO Multi-modal ChatMessage Test
+                           
+                           ## [USER]
+                           ### Text
+                           Look at this image:
+                           ### Image
+                           ![test](https://example.com/image.png)
+                           ### Text
+                           What do you see?
+                           """;
+
+        var scenarios = ChatScenario.LoadFromText(scenarioText);
+        var first = scenarios.First();
+        var userChatItem = first.ChatItems.First();
+        
+        // Test conversion to Microsoft.Extensions.AI ChatMessage
+        var chatMessage = userChatItem.ToChatMessage();
+        Assert.Equal(ChatRole.User, chatMessage.Role);
+        Assert.Equal(3, chatMessage.Contents.Count);
+        
+        // Verify content types
+        Assert.IsType<TextContent>(chatMessage.Contents[0]);
+        Assert.IsType<UriContent>(chatMessage.Contents[1]);
+        Assert.IsType<TextContent>(chatMessage.Contents[2]);
+        
+        var textContent1 = (TextContent)chatMessage.Contents[0];
+        var uriContent = (UriContent)chatMessage.Contents[1];
+        var textContent2 = (TextContent)chatMessage.Contents[2];
+        
+        Assert.Contains("Look at this image", textContent1.Text);
+        Assert.Equal("https://example.com/image.png", uriContent.Uri.ToString());
+        Assert.Contains("What do you see", textContent2.Text);
     }
 }

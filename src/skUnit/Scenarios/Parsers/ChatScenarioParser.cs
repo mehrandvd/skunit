@@ -5,6 +5,7 @@ using System.Text.Json.Nodes;
 using System.Text.RegularExpressions;
 using SemanticValidation.Utils;
 using Microsoft.Extensions.AI;
+using skUnit.Scenarios.ContentParts;
 
 namespace skUnit.Scenarios.Parsers
 {
@@ -106,19 +107,23 @@ namespace skUnit.Scenarios.Parsers
 
             if (currentBlock == "USER")
             {
-                scenario.ChatItems.Add(new ChatItem(ChatRole.User, contentText));
+                var contentParts = ParseMultiModalContent(contentText);
+                scenario.ChatItems.Add(new ChatItem(ChatRole.User, contentParts));
             }
             else if (currentBlock == "AGENT")
             {
-                scenario.ChatItems.Add(new ChatItem(ChatRole.Assistant, contentText));
+                var contentParts = ParseMultiModalContent(contentText);
+                scenario.ChatItems.Add(new ChatItem(ChatRole.Assistant, contentParts));
             }
             else if (currentBlock == "SYSTEM")
             {
-                scenario.ChatItems.Add(new ChatItem(ChatRole.System, contentText));
+                var contentParts = ParseMultiModalContent(contentText);
+                scenario.ChatItems.Add(new ChatItem(ChatRole.System, contentParts));
             }
             else if (currentBlock == "TOOL")
             {
-                scenario.ChatItems.Add(new ChatItem(ChatRole.Tool, contentText));
+                var contentParts = ParseMultiModalContent(contentText);
+                scenario.ChatItems.Add(new ChatItem(ChatRole.Tool, contentParts));
             }
             else if (currentBlock == "SCENARIO")
             {
@@ -219,6 +224,106 @@ namespace skUnit.Scenarios.Parsers
             currentBlock = newBlock;
 
             return true;
+        }
+
+        /// <summary>
+        /// Parse content that may contain multi-modal parts (### Text, ### Image sections)
+        /// Falls back to treating the entire content as text if no multi-modal sections are found
+        /// </summary>
+        private static List<ChatContentPart> ParseMultiModalContent(string contentText)
+        {
+            var contentParts = new List<ChatContentPart>();
+            
+            // Check if content contains multi-modal subsections (### Text, ### Image)
+            var hasMultiModalSections = Regex.IsMatch(contentText, @"^###\s*(Text|Image)\s*$", RegexOptions.Multiline | RegexOptions.IgnoreCase);
+            
+            if (!hasMultiModalSections)
+            {
+                // Backward compatibility: treat entire content as text
+                if (!string.IsNullOrWhiteSpace(contentText))
+                {
+                    contentParts.Add(new TextContentPart { Text = contentText });
+                }
+                return contentParts;
+            }
+
+            // Parse multi-modal sections
+            var md = Markdown.Parse(contentText);
+            var currentContentType = "";
+            var sectionContent = new StringBuilder();
+
+            foreach (var block in md)
+            {
+                var blockContent = contentText.Substring(block.Span.Start, block.Span.Length);
+
+                if (block is HeadingBlock heading && heading.Level == 3)
+                {
+                    // Flush previous section if any
+                    FlushContentSection(contentParts, currentContentType, sectionContent);
+
+                    // Check for Text or Image subsection
+                    var textMatch = Regex.Match(blockContent, @"^###\s*Text\s*$", RegexOptions.IgnoreCase);
+                    var imageMatch = Regex.Match(blockContent, @"^###\s*Image\s*$", RegexOptions.IgnoreCase);
+
+                    if (textMatch.Success)
+                    {
+                        currentContentType = "TEXT";
+                    }
+                    else if (imageMatch.Success)
+                    {
+                        currentContentType = "IMAGE";
+                    }
+                    else
+                    {
+                        // Not a recognized content type subsection, treat as regular content
+                        currentContentType = "";
+                        sectionContent.AppendLine(blockContent);
+                    }
+                }
+                else
+                {
+                    sectionContent.AppendLine(blockContent);
+                }
+            }
+
+            // Flush final section
+            FlushContentSection(contentParts, currentContentType, sectionContent);
+
+            return contentParts.Count > 0 ? contentParts : new List<ChatContentPart> { new TextContentPart { Text = contentText } };
+        }
+
+        private static void FlushContentSection(List<ChatContentPart> contentParts, string contentType, StringBuilder sectionContent)
+        {
+            var content = sectionContent.ToString().Trim();
+            sectionContent.Clear();
+
+            if (string.IsNullOrWhiteSpace(content)) return;
+
+            switch (contentType.ToUpperInvariant())
+            {
+                case "TEXT":
+                    contentParts.Add(new TextContentPart { Text = content });
+                    break;
+                case "IMAGE":
+                    // Extract image URL from markdown image syntax: ![alt](url)
+                    var imageMatch = Regex.Match(content, @"!\[([^\]]*)\]\(([^)]+)\)");
+                    if (imageMatch.Success)
+                    {
+                        var altText = imageMatch.Groups[1].Value;
+                        var imageUrl = imageMatch.Groups[2].Value;
+                        contentParts.Add(new ImageContentPart { ImageUri = imageUrl, AltText = string.IsNullOrWhiteSpace(altText) ? null : altText });
+                    }
+                    else
+                    {
+                        // If not a proper markdown image, treat as text content
+                        contentParts.Add(new TextContentPart { Text = content });
+                    }
+                    break;
+                default:
+                    // Default to text content for any unrecognized or empty content type
+                    contentParts.Add(new TextContentPart { Text = content });
+                    break;
+            }
         }
     }
 }

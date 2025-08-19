@@ -1,5 +1,6 @@
 ﻿using Markdig.Helpers;
 using Microsoft.Extensions.AI;
+using skUnit.Scenarios.ContentParts;
 using skUnit.Scenarios.Parsers;
 using skUnit.Scenarios.Parsers.Assertions;
 
@@ -28,10 +29,31 @@ public class ChatItem
     public ChatItem(ChatRole role, string content)
     {
         Role = role;
-        Content = content;
+        // Maintain backward compatibility: convert string content to text content part
+        ContentParts = new List<ChatContentPart> { new TextContentPart { Text = content } };
     }
+
+    public ChatItem(ChatRole role, List<ChatContentPart> contentParts)
+    {
+        Role = role;
+        ContentParts = contentParts;
+    }
+
     public ChatRole Role { get; set; }
-    public string Content { get; set; }
+    
+    /// <summary>
+    /// The content parts for this chat item (text, images, etc.)
+    /// </summary>
+    public List<ChatContentPart> ContentParts { get; set; } = new();
+
+    /// <summary>
+    /// Backward compatibility property that returns combined text content
+    /// </summary>
+    public string Content 
+    { 
+        get => string.Join("\n", ContentParts.OfType<TextContentPart>().Select(t => t.Text));
+        set => ContentParts = new List<ChatContentPart> { new TextContentPart { Text = value } };
+    }
 
     /// <summary>
     /// All the assertions that should be checked after the result of InvokeAsync is ready for the user input and history so far.
@@ -42,6 +64,16 @@ public class ChatItem
     /// The function calls that should be asserted too.
     /// </summary>
     public List<FunctionCall> FunctionCalls { get; set; } = new();
+
+    /// <summary>
+    /// Convert to Microsoft.Extensions.AI ChatMessage
+    /// </summary>
+    /// <returns>ChatMessage with all content parts</returns>
+    public ChatMessage ToChatMessage()
+    {
+        var aiContents = ContentParts.Select(cp => cp.ToAIContent()).ToList();
+        return new ChatMessage(Role, aiContents);
+    }
 
     public override string ToString()
     {
