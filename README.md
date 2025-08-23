@@ -37,7 +37,7 @@ And here's how to test it with just a few lines of C#:
 public async Task TestGreeting()
 {
     var markdown = File.ReadAllText("greeting.md");
-    var scenarios = await ChatScenario.LoadFromText(markdown);
+    var scenarios = ChatScenario.LoadFromText(markdown);
     
     await ScenarioAssert.PassAsync(scenarios, myChatClient);
 }
@@ -216,7 +216,7 @@ public class MyChatTests
     public async Task TestChat()
     {
         var markdown = File.ReadAllText("scenario.md");
-        var scenarios = await ChatScenario.LoadFromText(markdown);
+        var scenarios = ChatScenario.LoadFromText(markdown);
         
         await _scenarioAssert.PassAsync(scenarios, _chatClient);
     }
