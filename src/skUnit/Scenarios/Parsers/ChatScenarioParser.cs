@@ -232,10 +232,10 @@ namespace skUnit.Scenarios.Parsers
         private static List<AIContent> ParseMultiModalContent(string contentText)
         {
             var contents = new List<AIContent>();
-            
+
             // Check if content contains multi-modal subsections (### Text, ### Image)
             var hasMultiModalSections = Regex.IsMatch(contentText, @"^###\s*(Text|Image)\s*$", RegexOptions.Multiline | RegexOptions.IgnoreCase);
-            
+
             if (!hasMultiModalSections)
             {
                 // Backward compatibility: treat entire content as text

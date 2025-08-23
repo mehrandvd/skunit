@@ -239,17 +239,17 @@ public class ParseChatScenarioTests
 
         var userChatItem = first.ChatItems.First();
         Assert.Equal(3, userChatItem.Contents.Count);
-        
+
         // Check first text part
         var firstTextContent = userChatItem.Contents[0] as TextContent;
         Assert.NotNull(firstTextContent);
         Assert.Contains("This image explains", firstTextContent.Text);
-        
+
         // Check image part
         var imageContent = userChatItem.Contents[1] as UriContent;
         Assert.NotNull(imageContent);
         Assert.Equal("https://github.com/mehrandvd/skunit/assets/5070766/156b0831-e4f3-4e4b-b1b0-e2ec868efb5f", imageContent.Uri.ToString());
-        
+
         // Check second text part
         var secondTextContent = userChatItem.Contents[2] as TextContent;
         Assert.NotNull(secondTextContent);
@@ -286,7 +286,7 @@ public class ParseChatScenarioTests
 
         var userChatItem = first.ChatItems.First();
         Assert.Single(userChatItem.Contents);
-        
+
         var imageContent = userChatItem.Contents[0] as UriContent;
         Assert.NotNull(imageContent);
         Assert.Equal("https://example.com/test.jpg", imageContent.Uri.ToString());
@@ -314,11 +314,11 @@ public class ParseChatScenarioTests
 
         var userChatItem = first.ChatItems.First();
         Assert.Single(userChatItem.Contents);
-        
+
         var textContent = userChatItem.Contents[0] as TextContent;
         Assert.NotNull(textContent);
         Assert.Equal("Just plain text without subsections", textContent.Text);
-        
+
         // Test backward compatibility property
         Assert.Equal("Just plain text without subsections", userChatItem.Content);
     }
@@ -341,21 +341,21 @@ public class ParseChatScenarioTests
         var scenarios = ChatScenario.LoadFromText(scenarioText);
         var first = scenarios.First();
         var userChatItem = first.ChatItems.First();
-        
+
         // Test conversion to Microsoft.Extensions.AI ChatMessage
         var chatMessage = userChatItem.ToChatMessage();
         Assert.Equal(ChatRole.User, chatMessage.Role);
         Assert.Equal(3, chatMessage.Contents.Count);
-        
+
         // Verify content types
         Assert.IsType<TextContent>(chatMessage.Contents[0]);
         Assert.IsType<UriContent>(chatMessage.Contents[1]);
         Assert.IsType<TextContent>(chatMessage.Contents[2]);
-        
+
         var textContent1 = (TextContent)chatMessage.Contents[0];
         var uriContent = (UriContent)chatMessage.Contents[1];
         var textContent2 = (TextContent)chatMessage.Contents[2];
-        
+
         Assert.Contains("Look at this image", textContent1.Text);
         Assert.Equal("https://example.com/image.png", uriContent.Uri.ToString());
         Assert.Contains("What do you see", textContent2.Text);
