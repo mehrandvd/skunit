@@ -25,7 +25,7 @@ namespace skUnit.Tests.ScenarioAssertTests
                     "-y",
                     "@smithery/cli@latest",
                     "run",
-                    "@yokingma/time-mcp",
+                    "@javilujann/timemcp",
                     "--key",
                     smitheryKey
                 ],
