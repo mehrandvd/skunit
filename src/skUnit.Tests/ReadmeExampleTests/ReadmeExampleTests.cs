@@ -21,23 +21,23 @@ Hi there! How can I help you today?
 It's a friendly greeting response";
 
             var scenarios = ChatScenario.LoadFromText(markdown);
-            
+
             Assert.Single(scenarios);
             var scenario = scenarios[0];
             Assert.Equal(2, scenario.ChatItems.Count);
-            
+
             // Check first chat item (USER)
             var userChatItem = scenario.ChatItems[0];
             Assert.Equal(ChatRole.User, userChatItem.Role);
             Assert.Equal("Hello!", userChatItem.Content);
-            
+
             // Check second chat item (AGENT)
             var agentChatItem = scenario.ChatItems[1];
             Assert.Equal(ChatRole.Assistant, agentChatItem.Role);
             Assert.Equal("Hi there! How can I help you today?", agentChatItem.Content);
             Assert.Single(agentChatItem.Assertions);
         }
-        
+
         [Fact]
         public void JsonCheckExample_ShouldParseCorrectly()
         {
@@ -57,11 +57,11 @@ Give me user info as JSON
 }";
 
             var scenarios = ChatScenario.LoadFromText(markdown);
-            
+
             Assert.Single(scenarios);
             var scenario = scenarios[0];
             Assert.Equal(2, scenario.ChatItems.Count);
-            
+
             var agentChatItem = scenario.ChatItems[1];
             Assert.Equal(ChatRole.Assistant, agentChatItem.Role);
             Assert.Single(agentChatItem.Assertions);
