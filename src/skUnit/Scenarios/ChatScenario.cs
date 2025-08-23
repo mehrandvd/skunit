@@ -39,7 +39,7 @@ public class ChatItem
     }
 
     public ChatRole Role { get; set; }
-    
+
     /// <summary>
     /// The AI content parts for this chat item (text, images, etc.)
     /// </summary>
@@ -48,8 +48,8 @@ public class ChatItem
     /// <summary>
     /// Backward compatibility property that returns combined text content
     /// </summary>
-    public string Content 
-    { 
+    public string Content
+    {
         get => string.Join("\n", Contents.OfType<TextContent>().Select(t => t.Text));
         set => Contents = new List<AIContent> { new TextContent(value) };
     }
