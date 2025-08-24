@@ -100,29 +100,6 @@ namespace skUnit
                         throw new InvalidOperationException("Both chatClient and getAnswerFunc can not be null. One of them should be specified");
                     }
 
-                    //getAnswerFunc ??= async history =>
-                    //{
-                    //    if (chatClient is null)
-                    //        throw new InvalidOperationException("Both chatClient and getAnswerFunc can not be null. One of them should be specified");
-
-                    //    var result = await chatClient.GetResponseAsync(history);
-
-                    //    //var functionCallMessages =(
-                    //    //    from m in result.Messages
-                    //    //    where 
-                    //    //        (m.Contents.OfType<FunctionCallContent>().Any())
-                    //    //        || (m.Contents.OfType<FunctionResultContent>().Any())
-                    //    //    select m
-                    //    //    ).ToList();
-
-                    //    //foreach(var m in functionCallMessages)
-                    //    //{
-                    //    //    chatHistory.Add(m);
-                    //    //}
-
-                    //    return result;
-                    //};
-
                     var response = await populateAnswer(chatHistory);
 
                     // To let chatHistory stay clean for getting the answer
@@ -186,7 +163,6 @@ namespace skUnit
         /// </summary>
         /// <param name="scenarios"></param>
         /// <param name="kernel"></param>
-        /// <param name="getAnswerFunc"></param>
         /// <param name="chatHistory"></param>
         /// <returns></returns>
         /// <exception cref="InvalidOperationException">If the OpenAI was unable to generate a valid response.</exception>
