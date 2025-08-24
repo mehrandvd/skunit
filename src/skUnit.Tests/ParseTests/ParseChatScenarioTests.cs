@@ -1,14 +1,8 @@
-﻿using skUnit.Scenarios.Parsers.Assertions;
-using skUnit.Scenarios.Parsers;
-using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
+﻿using Microsoft.Extensions.AI;
 using skUnit.Scenarios;
-using Microsoft.Extensions.AI;
+using skUnit.Scenarios.Parsers.Assertions;
 
-namespace skUnit.Tests.ScenarioTests;
+namespace skUnit.Tests.ParseTests;
 
 public class ParseChatScenarioTests
 {
