@@ -36,24 +36,58 @@ namespace skUnit
         /// <param name="chatClient"></param>
         /// <param name="getAnswerFunc"></param>
         /// <param name="chatHistory"></param>
+        /// <param name="options"></param>
         /// <returns></returns>
         /// <exception cref="InvalidOperationException">If the OpenAI was unable to generate a valid response.</exception>
         public async Task PassAsync(
             ChatScenario scenario,
             IChatClient? chatClient = null,
             Func<IList<ChatMessage>, Task<ChatResponse>>? getAnswerFunc = null,
-            IList<ChatMessage>? chatHistory = null
-
+            IList<ChatMessage>? chatHistory = null,
+            ScenarioRunOptions? options = null
             )
         {
             if (chatClient is null && getAnswerFunc is null)
                 throw new InvalidOperationException("Both chatClient and getAnswerFunc can not be null. One of them should be specified");
+
+            options ??= new ScenarioRunOptions();
 
             chatHistory ??= [];
 
             Log($"# SCENARIO {scenario.Description}");
             Log("");
 
+            List<Exception> exceptions = [];
+
+            for (var round=0; round < options.TotalRuns; round++)
+            {
+                if (options.TotalRuns > 1)
+                {
+                    Log($"# ROUND {round + 1}");
+                    Log();
+                }
+
+                try
+                {
+                    await PassCoreAsync(scenario, chatClient, getAnswerFunc, chatHistory);
+                }
+                catch (Exception ex)
+                {
+                    Log($"❌ Exception: {ex.Message}");
+                    exceptions.Add(ex); 
+                }
+            }
+
+            if (exceptions.Count * 1f / options.TotalRuns > options.MinSuccessRate)
+            {
+                var message = $"Only {(options.TotalRuns - exceptions.Count) * 100 / options.TotalRuns}% of rounds passed, which is below the required success rate of {options.MinSuccessRate * 100}%";
+                Log(message);
+                throw new Exception(message);
+            }
+        }
+
+        private async Task PassCoreAsync(ChatScenario scenario, IChatClient? chatClient, Func<IList<ChatMessage>, Task<ChatResponse>>? getAnswerFunc, IList<ChatMessage> chatHistory)
+        {
             var queue = new Queue<ChatItem>(scenario.ChatItems);
 
             while (queue.Count > 0)
@@ -137,11 +171,11 @@ namespace skUnit
         /// <param name="chatHistory"></param>
         /// <returns></returns>
         /// <exception cref="InvalidOperationException">If the OpenAI was unable to generate a valid response.</exception>
-        public async Task PassAsync(List<ChatScenario> scenarios, IChatClient? chatClient = null, Func<IList<ChatMessage>, Task<ChatResponse>>? getAnswerFunc = null, IList<ChatMessage>? chatHistory = null)
+        public async Task PassAsync(List<ChatScenario> scenarios, IChatClient? chatClient = null, Func<IList<ChatMessage>, Task<ChatResponse>>? getAnswerFunc = null, IList<ChatMessage>? chatHistory = null, ScenarioRunOptions? options = null)
         {
             foreach (var scenario in scenarios)
             {
-                await PassAsync(scenario, chatClient, getAnswerFunc, chatHistory);
+                await PassAsync(scenario, chatClient, getAnswerFunc, chatHistory, options);
                 Log();
                 Log("----------------------------------");
                 Log();
@@ -167,7 +201,7 @@ namespace skUnit
         /// <returns></returns>
         /// <exception cref="InvalidOperationException">If the OpenAI was unable to generate a valid response.</exception>
         [Experimental("SKEXP0001")]
-        public async Task PassAsync(List<ChatScenario> scenarios, Kernel kernel, IList<ChatMessage>? chatHistory = null)
+        public async Task PassAsync(List<ChatScenario> scenarios, Kernel kernel, IList<ChatMessage>? chatHistory = null, ScenarioRunOptions? options = null)
         {
             var completionService = kernel.GetRequiredService<IChatCompletionService>();
             var innerClient = completionService.AsChatClient();
@@ -185,19 +219,13 @@ namespace skUnit
 
             var chatClient = builder.Build();
 
-            foreach (var scenario in scenarios)
-            {
-                await PassAsync(scenario, chatClient, null, chatHistory);
-                Log();
-                Log("----------------------------------");
-                Log();
-            }
+            await PassAsync(scenarios, chatClient, null, chatHistory, options);
         }
 
         [Experimental("SKEXP0001")]
-        public async Task PassAsync(ChatScenario scenarios, Kernel kernel, IList<ChatMessage>? chatHistory = null)
+        public async Task PassAsync(ChatScenario scenarios, Kernel kernel, IList<ChatMessage>? chatHistory = null, ScenarioRunOptions? options = null)
         {
-            await PassAsync([scenarios], kernel, chatHistory);
+            await PassAsync([scenarios], kernel, chatHistory, options);
         }
     }
 }
