@@ -43,7 +43,7 @@ public async Task TestGreeting()
 }
 ```
 
-Note that in this example, the agent message just for clarity and is not being used and is optional. So the following test scenario is equivalent:
+Note that in this example, the **agent message** is just for clarity and is not being used and is optional. So the following test scenario is equivalent:
 
 ```md
 ## [USER]
