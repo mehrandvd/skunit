@@ -260,12 +260,43 @@ var chatClient = new ChatClientBuilder(baseChatClient)
 - **[CHECK Statement Spec](docs/check-statements-spec.md)** - All available assertion types
 - **[MCP Testing Guide](docs/mcp-testing-guide.md)** - How to test Model Context Protocol servers
 - **[Multi-Modal Support](docs/multi-modal-support.md)** - Working with images and other media
+- **[Scenario Run Options](docs/scenario-run-options.md)** - Mitigate hallucinations with multi-run success thresholds
 
 ## 📋 Requirements
 
 - **.NET 8.0** or higher
 - **AI Provider** (Azure OpenAI, OpenAI, Anthropic, etc.) for semantic assertions
 - **Test Framework** (xUnit, NUnit, MSTest - your choice!)
+
+## 🔒 Advanced: Mitigating Hallucinations with ScenarioRunOptions
+
+LLM outputs can vary between runs. A single spurious response shouldn't fail your build if the model normally behaves correctly.
+
+Use `ScenarioRunOptions` to execute each scenario multiple times and require only a percentage to pass. This adds statistical robustness without eliminating genuine regressions.
+
+```csharp
+var options = new ScenarioRunOptions
+{
+    TotalRuns = 3,        // Run the whole scenario three times
+    MinSuccessRate = 0.67 // At least 2 of 3 runs must pass
+};
+
+await ScenarioAssert.PassAsync(scenarios, chatClient, options: options);
+```
+
+Recommended starting points:
+- Deterministic / low-temp prompts: `TotalRuns = 1`, `MinSuccessRate = 1.0`
+- Function / tool invocation: `TotalRuns = 3`, `MinSuccessRate = 0.67`
+- Creative generation: `TotalRuns = 5`, `MinSuccessRate = 0.6`
+- Critical CI gating: `TotalRuns = 5`, `MinSuccessRate = 0.8`
+
+Failure message example:
+```
+Only 40% of rounds passed, which is below the required success rate of 80%
+```
+Indicates a systematic issue (not just randomness) – investigate prompt, model settings, or assertions.
+
+See full guide: [Scenario Run Options](docs/scenario-run-options.md)
 
 ## 🤝 Contributing
 
