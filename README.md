@@ -21,13 +21,13 @@ Here's a simple test scenario in Markdown:
 # SCENARIO Simple Greeting
 
 ## [USER]
-Hello!
+What is the tallest mountain?
 
 ## [AGENT]
-Hi there! How can I help you today?
+The tallest mountain is Everest! (OPTIONAL)
 
 ### CHECK SemanticCondition
-It's a friendly greeting response
+It mentions Mount Everest.
 ```
 
 And here's how to test it with just a few lines of C#:
@@ -41,6 +41,18 @@ public async Task TestGreeting()
     
     await ScenarioAssert.PassAsync(scenarios, myChatClient);
 }
+```
+
+Note that in this example, the agent message just for clarity and is not being used and is optional. So the following test scenario is equivalent:
+
+```md
+## [USER]
+What is the tallest mountain?
+
+## [AGENT]
+
+### CHECK SemanticCondition
+It mentions Mount Everest.
 ```
 
 That's it! ✨ skUnit handles the conversation, calls your AI, and verifies the response makes sense.
