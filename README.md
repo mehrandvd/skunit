@@ -259,7 +259,6 @@ var chatClient = new ChatClientBuilder(baseChatClient)
 - **[Chat Scenario Spec](docs/chat-scenario-spec.md)** - Complete guide to writing chat scenarios
 - **[CHECK Statement Spec](docs/check-statements-spec.md)** - All available assertion types
 - **[MCP Testing Guide](docs/mcp-testing-guide.md)** - How to test Model Context Protocol servers
-- **[Invocation Scenario Spec](docs/invocation-scenario-spec.md)** - Simple input/output testing
 - **[Multi-Modal Support](docs/multi-modal-support.md)** - Working with images and other media
 
 ## 📋 Requirements
