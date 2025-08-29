@@ -64,19 +64,16 @@ That's it! ✨ skUnit handles the conversation, calls your AI, and verifies the 
 Test single interactions with basic checks:
 
 ```md
-# SCENARIO Weather Check
-
 ## [USER]
-What's the weather like?
+Is Everest a mountain or a Tree?
 
 ## [AGENT]
-It's sunny and 72°F outside
 
 ### CHECK ContainsAny
-sunny, weather, temperature
+mountain
 
 ### CHECK SemanticCondition
-It provides weather information
+It mentions the mountain
 ```
 
 ### 2. Level Up: JSON Validation
@@ -87,22 +84,24 @@ Test structured responses with powerful JSON assertions:
 # SCENARIO User Info
 
 ## [USER]
-Give me user info as JSON
+Give me the most expensive product info as a JSON like this:
+{"id": 12, "title": "The product", "price": 0, "description": "the description of the product"}
 
 ## [AGENT]
-{"name": "John", "age": 30, "city": "New York"}
+{"id": 12, "title": "Surface Studio 2", "price": 3000, "description: "It is a very high-quality laptop"}
 
 ### CHECK JsonCheck
 {
-  "name": ["NotEmpty"],
-  "age": ["GreaterThan", 0],
-  "city": ["SemanticCondition", "It's a real city name"]
+  "id": ["NotEmpty"],
+  "title": ["Surface Studio 2"],
+  "price": ["Equal", 3000],
+  "description": ["SemanticCondition", "It mentions the quality of the laptop."]
 }
 ```
 
 ### 3. Advanced: Function Call Testing
 
-Verify your AI calls the right functions with the right parameters:
+Verify your AI calls the right functions (MCP maybe) with the right parameters:
 
 ```md
 # SCENARIO Time Query
@@ -138,13 +137,13 @@ Yes it is
 It agrees that the Eiffel Tower is tall or expresses a positive sentiment.
 
 ## [USER]
-What about Everest Mountain?
+What about Everest?
 
 ## [AGENT]
 Yes it is tall too
 
 ### CHECK SemanticCondition
-It agrees that Everest mountain is tall or expresses a positive sentiment.
+It agrees that Everest is tall or expresses a positive sentiment.
 ```
 
 ![skUnit Chat Scenario Structure](https://github.com/mehrandvd/skunit/assets/5070766/156b0831-e4f3-4e4b-b1b0-e2ec868efb5f)
