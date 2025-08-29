@@ -93,7 +93,7 @@ Give me the most expensive product info as a JSON like this:
 ### CHECK JsonCheck
 {
   "id": ["NotEmpty"],
-  "title": ["Surface Studio 2"],
+  "title": ["Equal", "Surface Studio 2"],
   "price": ["Equal", 3000],
   "description": ["SemanticCondition", "It mentions the quality of the laptop."]
 }
