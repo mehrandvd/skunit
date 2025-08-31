@@ -27,24 +27,23 @@ using skUnit.Scenarios;
 
 public class ChatTests
 {
-    private readonly ITestOutputHelper _output;
     private readonly IChatClient _chatClient;
+    private readonly ScenarioAssert _scenarioAssert;
 
     public ChatTests(ITestOutputHelper output)
     {
-        _output = output;
         _chatClient = CreateChatClient(); // Your setup
+        _scenarioAssert = new ScenarioAssert(_chatClient, output.WriteLine);
     }
 
     [Fact]
     public async Task SimpleTest()
     {
-        var scenarioAssert = new ScenarioAssert(_chatClient, _output.WriteLine);
         var scenarios = await ChatScenario.LoadFromResourceAsync(
             "MyProject.Scenarios.test.md", 
             typeof(ChatTests).Assembly);
         
-        await scenarioAssert.PassAsync(scenarios);
+        await _scenarioAssert.PassAsync(scenarios, _chatClient);
     }
 }
 ```
@@ -56,12 +55,11 @@ public class ChatTests
 [InlineData("Scenario2")]
 public async Task TestScenarios(string scenarioName)
 {
-    var scenarioAssert = new ScenarioAssert(_chatClient, _output.WriteLine);
     var scenarios = await ChatScenario.LoadFromResourceAsync(
         $"MyProject.Scenarios.{scenarioName}.md",
         typeof(ChatTests).Assembly);
     
-    await scenarioAssert.PassAsync(scenarios);
+    await _scenarioAssert.PassAsync(scenarios, _chatClient);
 }
 ```
 
@@ -79,23 +77,25 @@ using skUnit.Scenarios;
 public class ChatTests
 {
     private static IChatClient _chatClient = null!;
+    private static ScenarioAssert ScenarioAssert { get; set; } = null!;
+
     public TestContext TestContext { get; set; } = null!;
 
     [ClassInitialize]
     public static void ClassInitialize(TestContext context)
     {
         _chatClient = CreateChatClient(); // Your setup
+        ScenarioAssert = new ScenarioAssert(_chatClient, context.WriteLine);
     }
 
     [TestMethod]
     public async Task SimpleTest()
     {
-        var scenarioAssert = new ScenarioAssert(_chatClient, TestContext.WriteLine);
         var scenarios = await ChatScenario.LoadFromResourceAsync(
             "MyProject.Scenarios.test.md", 
             typeof(ChatTests).Assembly);
         
-        await scenarioAssert.PassAsync(scenarios);
+        await ScenarioAssert.PassAsync(scenarios, _chatClient);
     }
 }
 ```
@@ -107,12 +107,11 @@ public class ChatTests
 [DataRow("Scenario2")]
 public async Task TestScenarios(string scenarioName)
 {
-    var scenarioAssert = new ScenarioAssert(_chatClient, TestContext.WriteLine);
     var scenarios = await ChatScenario.LoadFromResourceAsync(
         $"MyProject.Scenarios.{scenarioName}.md",
         typeof(ChatTests).Assembly);
     
-    await scenarioAssert.PassAsync(scenarios);
+    await ScenarioAssert.PassAsync(scenarios, _chatClient);
 }
 ```
 
@@ -130,22 +129,23 @@ using skUnit.Scenarios;
 public class ChatTests
 {
     private IChatClient _chatClient = null!;
+    private ScenarioAssert _scenarioAssert = null!;
 
     [OneTimeSetUp]
     public void OneTimeSetUp()
     {
         _chatClient = CreateChatClient(); // Your setup
+        _scenarioAssert = new ScenarioAssert(_chatClient, TestContext.WriteLine);
     }
 
     [Test]
     public async Task SimpleTest()
     {
-        var scenarioAssert = new ScenarioAssert(_chatClient, TestContext.WriteLine);
         var scenarios = await ChatScenario.LoadFromResourceAsync(
             "MyProject.Scenarios.test.md", 
             typeof(ChatTests).Assembly);
         
-        await scenarioAssert.PassAsync(scenarios);
+        await _scenarioAssert.PassAsync(scenarios, _chatClient);
     }
 }
 ```
@@ -156,12 +156,11 @@ public class ChatTests
 [TestCase("Scenario2")]
 public async Task TestScenarios(string scenarioName)
 {
-    var scenarioAssert = new ScenarioAssert(_chatClient, TestContext.WriteLine);
     var scenarios = await ChatScenario.LoadFromResourceAsync(
         $"MyProject.Scenarios.{scenarioName}.md",
         typeof(ChatTests).Assembly);
     
-    await scenarioAssert.PassAsync(scenarios);
+    await _scenarioAssert.PassAsync(scenarios, _chatClient);
 }
 ```
 
