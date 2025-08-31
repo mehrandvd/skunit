@@ -34,7 +34,7 @@ namespace skUnit.Tests.ScenarioAssertTests
         {
             var scenarios = await LoadChatScenarioAsync("GetFoodMenuChat");
             await ScenarioAssert.PassAsync(
-                scenarios, 
+                scenarios,
                 BaseChatClient,
                 options: new ScenarioRunOptions
                 {
