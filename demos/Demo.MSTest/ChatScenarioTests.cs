@@ -10,7 +10,7 @@ namespace Demo.MSTest;
 public class ChatScenarioTests
 {
     private static IChatClient _chatClient = null!;
-    private static ScenarioAssert _scenarioAssert = null!;
+    private static ScenarioAssert ScenarioAssert { get; set; } = null!;
 
     public TestContext TestContext { get; set; } = null!;
 
@@ -33,44 +33,39 @@ public class ChatScenarioTests
             .AsIChatClient();
 
         // This uses Console.WriteLine for class-level initialization
-        _scenarioAssert = new ScenarioAssert(_chatClient, Console.WriteLine);
+        ScenarioAssert = new ScenarioAssert(_chatClient, context.WriteLine);
     }
 
     [TestMethod]
     public async Task SimpleGreeting_ShouldPass()
     {
         // Create per-test instance with TestContext logging
-        var scenarioAssert = new ScenarioAssert(_chatClient, TestContext.WriteLine);
 
         var scenarios = await ChatScenario.LoadFromResourceAsync(
             "Demo.MSTest.Scenarios.SimpleGreeting.md",
             typeof(ChatScenarioTests).Assembly);
 
-        await scenarioAssert.PassAsync(scenarios, _chatClient);
+        await ScenarioAssert.PassAsync(scenarios, _chatClient);
     }
 
     [TestMethod]
     public async Task GetCurrentTimeChat_ShouldPass()
     {
-        var scenarioAssert = new ScenarioAssert(_chatClient, TestContext.WriteLine);
-
         var scenarios = await ChatScenario.LoadFromResourceAsync(
             "Demo.MSTest.Scenarios.GetCurrentTimeChat.md",
             typeof(ChatScenarioTests).Assembly);
 
-        await scenarioAssert.PassAsync(scenarios, _chatClient);
+        await ScenarioAssert.PassAsync(scenarios, _chatClient);
     }
 
     [TestMethod]
     public async Task JsonUserInfo_ShouldPass()
     {
-        var scenarioAssert = new ScenarioAssert(_chatClient, TestContext.WriteLine);
-
         var scenarios = await ChatScenario.LoadFromResourceAsync(
             "Demo.MSTest.Scenarios.JsonUserInfo.md",
             typeof(ChatScenarioTests).Assembly);
 
-        await scenarioAssert.PassAsync(scenarios, _chatClient);
+        await ScenarioAssert.PassAsync(scenarios, _chatClient);
     }
 
     [DataTestMethod]
@@ -79,12 +74,10 @@ public class ChatScenarioTests
     [DataRow("JsonUserInfo")]
     public async Task ScenarioMatrix_ShouldPass(string scenarioName)
     {
-        var scenarioAssert = new ScenarioAssert(_chatClient, TestContext.WriteLine);
-
         var scenarios = await ChatScenario.LoadFromResourceAsync(
             $"Demo.MSTest.Scenarios.{scenarioName}.md",
             typeof(ChatScenarioTests).Assembly);
 
-        await scenarioAssert.PassAsync(scenarios, _chatClient);
+        await ScenarioAssert.PassAsync(scenarios, _chatClient);
     }
 }
