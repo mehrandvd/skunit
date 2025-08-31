@@ -202,18 +202,8 @@ This output is generated line by line as the test is executed:
 ### Flexible Use of Hashtags
 When defining skUnit statements such as `# SCENARIO`, `## [USER]`, and so on, you have the freedom to use as many hashtags as you wish. There's no strict rule that mandates a specific count of hashtags for each statement. This flexibility allows you to format your markdown in a way that enhances readability for you. However, as a best practice, we suggest adhering to the recommended usage to maintain a clear and comprehensible hierarchy.
 
-### Assistant Alias Support
-For better alignment with Microsoft Extensions AI (MEAI) standards, skUnit supports `[ASSISTANT]` as an alias for `[AGENT]`. Both forms are functionally equivalent and map to the same assistant role:
-
-```md
-# SCENARIO Using AGENT
-
-## [USER]
-What is the capital of France?
-
-## [AGENT]
-The capital of France is Paris.
-```
+### Assistant Syntax
+For better alignment with Microsoft Extensions AI (MEAI) standards, skUnit uses `[ASSISTANT]` as the default syntax for AI responses. The legacy `[AGENT]` syntax is also supported for backward compatibility. Both forms are functionally equivalent and map to the same assistant role:
 
 ```md
 # SCENARIO Using ASSISTANT
@@ -225,6 +215,16 @@ What is the capital of France?
 The capital of France is Paris.
 ```
 
+```md
+# SCENARIO Using Legacy AGENT
+
+## [USER]
+What is the capital of France?
+
+## [AGENT]
+The capital of France is Paris.
+```
+
 You can even mix both forms within the same scenario:
 
 ```md
@@ -233,13 +233,13 @@ You can even mix both forms within the same scenario:
 ## [USER]
 Hello
 
-## [AGENT]
+## [ASSISTANT]
 Hi there!
 
 ## [USER]
 How are you?
 
-## [ASSISTANT]
+## [AGENT]
 I'm doing well, thank you!
 ```
 
