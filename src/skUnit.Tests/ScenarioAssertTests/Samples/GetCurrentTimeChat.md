@@ -3,7 +3,7 @@
 ## [USER]
 What time is it?
 
-## [AGENT]
+## [ASSISTANT]
 10:23
 
 ### CHECK SemanticCondition

@@ -56,7 +56,7 @@ public async Task TestMcpServer()
 ## [USER]
 What time is it?
 
-## [AGENT]
+## [ASSISTANT]
 It's currently 2:30 PM PST
 
 ### CHECK FunctionCall
@@ -76,7 +76,7 @@ It mentions a specific time
 ## [USER]
 Schedule a meeting for tomorrow at 2 PM
 
-## [AGENT]
+## [ASSISTANT]
 I've scheduled your meeting for tomorrow at 2:00 PM
 
 ### CHECK FunctionCall
