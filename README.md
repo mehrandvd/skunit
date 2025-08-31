@@ -57,6 +57,8 @@ It mentions Mount Everest.
 
 That's it! ✨ skUnit handles the conversation, calls your AI, and verifies the response makes sense.
 
+> **💡 Pro Tip:** For better alignment with Microsoft Extensions AI (MEAI), you can use `[ASSISTANT]` instead of `[AGENT]` - both work identically!
+
 ## 🎯 Key Features
 
 ### 1. Start Simple: Basic Chat Scenarios

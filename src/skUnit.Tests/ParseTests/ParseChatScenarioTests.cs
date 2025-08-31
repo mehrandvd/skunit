@@ -354,4 +354,115 @@ public class ParseChatScenarioTests
         Assert.Equal("https://example.com/image.png", uriContent.Uri.ToString());
         Assert.Contains("What do you see", textContent2.Text);
     }
+
+    [Fact]
+    public void ParseScenario_AssistantAlias_MustWork()
+    {
+        var scenarioText = """
+                           # SCENARIO Assistant Alias Test
+                           
+                           ## [USER]
+                           What is the capital of France?
+                           
+                           ## [ASSISTANT]
+                           The capital of France is Paris.
+                           
+                           ### CHECK SemanticCondition
+                           It mentions Paris as the capital.
+                           """;
+
+        var scenarios = ChatScenario.LoadFromText(scenarioText);
+
+        Assert.Single(scenarios);
+        var scenario = scenarios[0];
+        Assert.Equal(2, scenario.ChatItems.Count);
+
+        // Check USER item
+        var userChatItem = scenario.ChatItems[0];
+        Assert.Equal(ChatRole.User, userChatItem.Role);
+        Assert.Equal("What is the capital of France?", userChatItem.Content);
+
+        // Check ASSISTANT item (should be treated same as AGENT)
+        var assistantChatItem = scenario.ChatItems[1];
+        Assert.Equal(ChatRole.Assistant, assistantChatItem.Role);
+        Assert.Equal("The capital of France is Paris.", assistantChatItem.Content);
+        Assert.Single(assistantChatItem.Assertions);
+    }
+
+    [Fact]
+    public void ParseScenario_MixedAgentAndAssistant_MustWork()
+    {
+        var scenarioText = """
+                           # SCENARIO Mixed Agent and Assistant Test
+                           
+                           ## [USER]
+                           Hello
+                           
+                           ## [AGENT]
+                           Hi there!
+                           
+                           ## [USER]
+                           How are you?
+                           
+                           ## [ASSISTANT]
+                           I'm doing well, thank you!
+                           """;
+
+        var scenarios = ChatScenario.LoadFromText(scenarioText);
+
+        Assert.Single(scenarios);
+        var scenario = scenarios[0];
+        Assert.Equal(4, scenario.ChatItems.Count);
+
+        // Both AGENT and ASSISTANT should map to ChatRole.Assistant
+        Assert.Equal(ChatRole.User, scenario.ChatItems[0].Role);
+        Assert.Equal(ChatRole.Assistant, scenario.ChatItems[1].Role);
+        Assert.Equal(ChatRole.User, scenario.ChatItems[2].Role);
+        Assert.Equal(ChatRole.Assistant, scenario.ChatItems[3].Role);
+
+        Assert.Equal("Hi there!", scenario.ChatItems[1].Content);
+        Assert.Equal("I'm doing well, thank you!", scenario.ChatItems[3].Content);
+    }
+
+    [Fact]
+    public void ParseScenario_MultipleScenarios_AgentAndAssistant_MustWork()
+    {
+        var scenarioText = """
+                           # SCENARIO Agent Test
+
+                           ## [USER]
+                           Hello there!
+
+                           ## [AGENT]
+                           Hi, how can I help you?
+
+                           -----
+
+                           # SCENARIO Assistant Test
+
+                           ## [USER]  
+                           What's the weather like?
+
+                           ## [ASSISTANT]
+                           It's sunny and warm today!
+                           """;
+
+        var scenarios = ChatScenario.LoadFromText(scenarioText);
+
+        Assert.Equal(2, scenarios.Count);
+
+        // First scenario with [AGENT]
+        var agentScenario = scenarios[0];
+        Assert.Equal(2, agentScenario.ChatItems.Count);
+        Assert.Equal(ChatRole.User, agentScenario.ChatItems[0].Role);
+        Assert.Equal(ChatRole.Assistant, agentScenario.ChatItems[1].Role);
+        Assert.Equal("Hi, how can I help you?", agentScenario.ChatItems[1].Content);
+
+        // Second scenario with [ASSISTANT]
+        var assistantScenario = scenarios[1];
+        Assert.Equal(2, assistantScenario.ChatItems.Count);
+        Assert.Equal(ChatRole.User, assistantScenario.ChatItems[0].Role);
+        Assert.Equal(ChatRole.Assistant, assistantScenario.ChatItems[1].Role);
+        Assert.Equal("It's sunny and warm today!", assistantScenario.ChatItems[1].Content);
+    }
 }

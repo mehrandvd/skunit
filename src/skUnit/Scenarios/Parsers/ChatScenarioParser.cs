@@ -53,10 +53,11 @@ namespace skUnit.Scenarios.Parsers
                             continue;
                         }
 
-                        var agentMatch = Regex.Match(blockContent, @$"#{{1,}}\s*{specialId}\s*\[AGENT\]\s*(?<name>.*)");
+                        var agentMatch = Regex.Match(blockContent, @$"#{{1,}}\s*{specialId}\s*\[(AGENT|ASSISTANT)\]\s*(?<name>.*)");
                         if (agentMatch.Success)
                         {
-                            PackBlock(testCase, "AGENT", ref currentBlock, key, contentBuilder);
+                            var blockType = agentMatch.Groups[1].Value; // Gets "AGENT" or "ASSISTANT"
+                            PackBlock(testCase, blockType, ref currentBlock, key, contentBuilder);
                             //key = promptMatch.Groups["name"].Value;
                             continue;
                         }
@@ -109,7 +110,7 @@ namespace skUnit.Scenarios.Parsers
                 var contents = ParseMultiModalContent(contentText);
                 scenario.ChatItems.Add(new ChatItem(ChatRole.User, contents));
             }
-            else if (currentBlock == "AGENT")
+            else if (currentBlock == "AGENT" || currentBlock == "ASSISTANT")
             {
                 var contents = ParseMultiModalContent(contentText);
                 scenario.ChatItems.Add(new ChatItem(ChatRole.Assistant, contents));

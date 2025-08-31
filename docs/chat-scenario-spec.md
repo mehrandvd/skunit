@@ -202,6 +202,47 @@ This output is generated line by line as the test is executed:
 ### Flexible Use of Hashtags
 When defining skUnit statements such as `# SCENARIO`, `## [USER]`, and so on, you have the freedom to use as many hashtags as you wish. There's no strict rule that mandates a specific count of hashtags for each statement. This flexibility allows you to format your markdown in a way that enhances readability for you. However, as a best practice, we suggest adhering to the recommended usage to maintain a clear and comprehensible hierarchy.
 
+### Assistant Alias Support
+For better alignment with Microsoft Extensions AI (MEAI) standards, skUnit supports `[ASSISTANT]` as an alias for `[AGENT]`. Both forms are functionally equivalent and map to the same assistant role:
+
+```md
+# SCENARIO Using AGENT
+
+## [USER]
+What is the capital of France?
+
+## [AGENT]
+The capital of France is Paris.
+```
+
+```md
+# SCENARIO Using ASSISTANT
+
+## [USER]
+What is the capital of France?
+
+## [ASSISTANT]
+The capital of France is Paris.
+```
+
+You can even mix both forms within the same scenario:
+
+```md
+# SCENARIO Mixed Usage
+
+## [USER]
+Hello
+
+## [AGENT]
+Hi there!
+
+## [USER]
+How are you?
+
+## [ASSISTANT]
+I'm doing well, thank you!
+```
+
 ### Unique Identifiers
 In certain uncommon instances, the data may contain skUnit expressions that could disrupt the parsing of the scenario. For instance, let's consider a scenario with two chat items. If the first chat item contains a markdown value that disrupts parsing, it could pose a problem:
 
