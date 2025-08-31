@@ -59,7 +59,7 @@ namespace skUnit
 
             List<Exception> exceptions = [];
 
-            for (var round=0; round < options.TotalRuns; round++)
+            for (var round = 0; round < options.TotalRuns; round++)
             {
                 if (options.TotalRuns > 1)
                 {
@@ -74,7 +74,7 @@ namespace skUnit
                 catch (Exception ex)
                 {
                     Log($"❌ Exception: {ex.Message}");
-                    exceptions.Add(ex); 
+                    exceptions.Add(ex);
                 }
             }
 
