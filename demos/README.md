@@ -29,6 +29,15 @@ Complex multi-scenario testing for e-commerce chat applications.
 - **Features**: Multi-turn conversations, complex business logic testing
 - **Key Learning**: How to test sophisticated chat workflows with multiple scenarios
 
+## 🧪 Demo.MSTest
+**MSTest Framework Integration**
+
+Shows how to use skUnit with MSTest framework for semantic testing.
+
+- **Location**: `Demo.MSTest/`
+- **Features**: MSTest attributes, TestContext integration, data-driven tests
+- **Key Learning**: How to use skUnit with MSTest instead of xUnit (proving framework agnosticism)
+
 ## Running the Demos
 
 Each demo is a complete .NET project that you can run independently:

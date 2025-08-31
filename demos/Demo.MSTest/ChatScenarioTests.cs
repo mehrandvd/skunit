@@ -11,7 +11,7 @@ public class ChatScenarioTests
 {
     private static IChatClient _chatClient = null!;
     private static ScenarioAssert _scenarioAssert = null!;
-    
+
     public TestContext TestContext { get; set; } = null!;
 
     [ClassInitialize]
@@ -21,11 +21,11 @@ public class ChatScenarioTests
             .AddUserSecrets<ChatScenarioTests>()
             .Build();
 
-        var apiKey = configuration["AzureOpenAI_ApiKey"] 
+        var apiKey = configuration["AzureOpenAI_ApiKey"]
             ?? throw new InvalidOperationException("AzureOpenAI_ApiKey not found in user secrets");
-        var endpoint = configuration["AzureOpenAI_Endpoint"] 
+        var endpoint = configuration["AzureOpenAI_Endpoint"]
             ?? throw new InvalidOperationException("AzureOpenAI_Endpoint not found in user secrets");
-        var deployment = configuration["AzureOpenAI_Deployment"] 
+        var deployment = configuration["AzureOpenAI_Deployment"]
             ?? throw new InvalidOperationException("AzureOpenAI_Deployment not found in user secrets");
 
         _chatClient = new AzureOpenAIClient(new Uri(endpoint), new System.ClientModel.ApiKeyCredential(apiKey))
@@ -80,7 +80,7 @@ public class ChatScenarioTests
     public async Task ScenarioMatrix_ShouldPass(string scenarioName)
     {
         var scenarioAssert = new ScenarioAssert(_chatClient, TestContext.WriteLine);
-        
+
         var scenarios = await ChatScenario.LoadFromResourceAsync(
             $"Demo.MSTest.Scenarios.{scenarioName}.md",
             typeof(ChatScenarioTests).Assembly);
