@@ -46,7 +46,7 @@ public class ChatScenarioTests
             "Demo.MSTest.Scenarios.SimpleGreeting.md",
             typeof(ChatScenarioTests).Assembly);
 
-        await scenarioAssert.PassAsync(scenarios);
+        await scenarioAssert.PassAsync(scenarios, _chatClient);
     }
 
     [TestMethod]
@@ -58,7 +58,7 @@ public class ChatScenarioTests
             "Demo.MSTest.Scenarios.GetCurrentTimeChat.md",
             typeof(ChatScenarioTests).Assembly);
 
-        await scenarioAssert.PassAsync(scenarios);
+        await scenarioAssert.PassAsync(scenarios, _chatClient);
     }
 
     [TestMethod]
@@ -70,7 +70,7 @@ public class ChatScenarioTests
             "Demo.MSTest.Scenarios.JsonUserInfo.md",
             typeof(ChatScenarioTests).Assembly);
 
-        await scenarioAssert.PassAsync(scenarios);
+        await scenarioAssert.PassAsync(scenarios, _chatClient);
     }
 
     [DataTestMethod]
@@ -85,6 +85,6 @@ public class ChatScenarioTests
             $"Demo.MSTest.Scenarios.{scenarioName}.md",
             typeof(ChatScenarioTests).Assembly);
 
-        await scenarioAssert.PassAsync(scenarios);
+        await scenarioAssert.PassAsync(scenarios, _chatClient);
     }
 }
