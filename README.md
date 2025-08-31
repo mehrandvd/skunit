@@ -163,10 +163,18 @@ It's currently 2:30 PM
 {
   "function_name": "get_current_time"
 }
-
-### CHECK SemanticCondition
-It mentions a specific time
 ```
+
+Even you can assert the called parameters:
+
+### CHECK FunctionCall
+{
+  "function_name": "GetFoodMenu",
+  "arguments": {
+    "mood": ["Equals", "Happy"]
+  }
+}
+
 
 ### 4. Multi-Turn Conversations
 
