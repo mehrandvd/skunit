@@ -59,51 +59,6 @@ That's it! ✨ skUnit handles the conversation, calls your AI, and verifies the 
 
 > **💡 Pro Tip:** For better alignment with Microsoft Extensions AI (MEAI), you can use `[ASSISTANT]` instead of `[AGENT]` - both work identically!
 
-## 🧪 Works with Any Test Framework
-
-skUnit is completely test-framework agnostic! Here's the same test with different frameworks:
-
-### xUnit
-```csharp
-[Fact]
-public async Task TestGreeting()
-{
-    var markdown = File.ReadAllText("greeting.md");
-    var scenarios = ChatScenario.LoadFromText(markdown);
-    
-    await ScenarioAssert.PassAsync(scenarios, myChatClient);
-}
-```
-
-### MSTest
-```csharp
-[TestMethod]
-public async Task TestGreeting()
-{
-    var scenarioAssert = new ScenarioAssert(myChatClient, TestContext.WriteLine);
-    
-    var scenarios = await ChatScenario.LoadFromResourceAsync(
-        "MyProject.Scenarios.greeting.md", 
-        typeof(MyTestClass).Assembly);
-        
-    await scenarioAssert.PassAsync(scenarios);
-}
-```
-
-### NUnit  
-```csharp
-[Test]
-public async Task TestGreeting()
-{
-    var markdown = File.ReadAllText("greeting.md");
-    var scenarios = ChatScenario.LoadFromText(markdown);
-    
-    await ScenarioAssert.PassAsync(scenarios, myChatClient);
-}
-```
-
-The core difference is just the logging integration - use `TestContext.WriteLine` for MSTest, `ITestOutputHelper.WriteLine` for xUnit, or `TestContext.WriteLine` for NUnit.
-
 ## 🎯 Key Features
 
 ### 1. Start Simple: Basic Chat Scenarios
@@ -319,6 +274,52 @@ var chatClient = new ChatClientBuilder(baseChatClient)
     .UseFunctionInvocation()
     .Build();
 ```
+
+## 🧪 Works with Any Test Framework
+
+skUnit is completely test-framework agnostic! Here's the same test with different frameworks:
+
+### xUnit
+```csharp
+[Fact]
+public async Task TestGreeting()
+{
+    var markdown = File.ReadAllText("greeting.md");
+    var scenarios = ChatScenario.LoadFromText(markdown);
+    
+    await ScenarioAssert.PassAsync(scenarios, myChatClient);
+}
+```
+
+### MSTest
+```csharp
+[TestMethod]
+public async Task TestGreeting()
+{
+    var scenarioAssert = new ScenarioAssert(myChatClient, TestContext.WriteLine);
+    
+    var scenarios = await ChatScenario.LoadFromResourceAsync(
+        "MyProject.Scenarios.greeting.md", 
+        typeof(MyTestClass).Assembly);
+        
+    await scenarioAssert.PassAsync(scenarios);
+}
+```
+
+### NUnit  
+```csharp
+[Test]
+public async Task TestGreeting()
+{
+    var markdown = File.ReadAllText("greeting.md");
+    var scenarios = ChatScenario.LoadFromText(markdown);
+    
+    await ScenarioAssert.PassAsync(scenarios, myChatClient);
+}
+```
+
+The core difference is just the logging integration - use `TestContext.WriteLine` for MSTest, `ITestOutputHelper.WriteLine` for xUnit, or `TestContext.WriteLine` for NUnit.
+
 
 ## 📚 Documentation
 
