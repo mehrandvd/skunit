@@ -3,7 +3,7 @@
 ## [USER]
 What a beautiful day. What food do your menu?
 
-## [AGENT]
+## [ASSISTANT]
 Pizza
 
 ### CHECK FunctionCall

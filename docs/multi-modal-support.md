@@ -33,7 +33,7 @@ This image explains how skUnit parses the chat scenarios.
 ### Text
 How many scenarios are there in the picture?
 
-## [AGENT]
+## [ASSISTANT]
 There are 2 scenarios in the picture
 
 ### CHECK SemanticSimilar
@@ -50,7 +50,7 @@ The new multi-modal support is fully backward compatible. Existing scenarios tha
 ## [USER]
 Just plain text without subsections
 
-## [AGENT]
+## [ASSISTANT]
 Plain text response
 ```
 

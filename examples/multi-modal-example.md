@@ -8,7 +8,7 @@ This image explains how skUnit parses the chat scenarios.
 ### Text
 How many scenarios are there in the picture?
 
-## [AGENT]
+## [ASSISTANT]
 There are 2 scenarios in the picture
 
 ### CHECK SemanticSimilar

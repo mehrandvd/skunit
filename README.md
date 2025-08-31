@@ -23,7 +23,7 @@ Here's a simple test scenario in Markdown:
 ## [USER]
 What is the tallest mountain?
 
-## [AGENT]
+## [ASSISTANT]
 The tallest mountain is Everest! (OPTIONAL)
 
 ### CHECK SemanticCondition
@@ -49,13 +49,15 @@ Note that in this example, the **agent message** is just for clarity and is not 
 ## [USER]
 What is the tallest mountain?
 
-## [AGENT]
+## [ASSISTANT]
 
 ### CHECK SemanticCondition
 It mentions Mount Everest.
 ```
 
 That's it! ✨ skUnit handles the conversation, calls your AI, and verifies the response makes sense.
+
+> **💡 Pro Tip:** For better alignment with Microsoft Extensions AI (MEAI), you can use `[ASSISTANT]` instead of `[AGENT]` - both work identically!
 
 ## 🎯 Key Features
 
@@ -67,7 +69,7 @@ Test single interactions with basic checks:
 ## [USER]
 Is Everest a mountain or a Tree?
 
-## [AGENT]
+## [ASSISTANT]
 
 ### CHECK ContainsAny
 mountain
@@ -87,7 +89,7 @@ Test structured responses with powerful JSON assertions:
 Give me the most expensive product info as a JSON like this:
 {"id": 12, "title": "The product", "price": 0, "description": "the description of the product"}
 
-## [AGENT]
+## [ASSISTANT]
 {"id": 12, "title": "Surface Studio 2", "price": 3000, "description: "It is a very high-quality laptop"}
 
 ### CHECK JsonCheck
@@ -109,7 +111,7 @@ Verify your AI calls the right functions (MCP maybe) with the right parameters:
 ## [USER]
 What time is it?
 
-## [AGENT]
+## [ASSISTANT]
 It's currently 2:30 PM
 
 ### CHECK FunctionCall
@@ -130,7 +132,7 @@ Test complex conversations with multiple exchanges:
 ## [USER]
 Is Eiffel tall?
 
-## [AGENT]
+## [ASSISTANT]
 Yes it is
 
 ### CHECK SemanticCondition
@@ -139,7 +141,7 @@ It agrees that the Eiffel Tower is tall or expresses a positive sentiment.
 ## [USER]
 What about Everest?
 
-## [AGENT]
+## [ASSISTANT]
 Yes it is tall too
 
 ### CHECK SemanticCondition
@@ -172,7 +174,7 @@ Test [Model Context Protocol](https://modelcontextprotocol.io/) servers to ensur
 ## [USER]
 What time is it?
 
-## [AGENT]
+## [ASSISTANT]
 It's currently 2:30 PM PST
 
 ### CHECK FunctionCall

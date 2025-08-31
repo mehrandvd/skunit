@@ -13,7 +13,7 @@ Is Eiffel tall?
 ## CHECK ContainsAny
 Question
 
-## [AGENT]
+## [ASSISTANT]
 Yes it is
 
 ### CHECK SemanticCondition
@@ -31,7 +31,7 @@ Neutral,Positive
 ## [USER]
 What about everest mountain?
 
-## [AGENT]
+## [ASSISTANT]
 Yes it is tall too
 
 ### CHECK SemanticCondition
@@ -40,7 +40,7 @@ The sentence is positive.
 ## [USER]
 What about a mouse?
 
-## [AGENT]
+## [ASSISTANT]
 No it is not tall.
 
 ### CHECK SemanticCondition
@@ -54,7 +54,7 @@ Example:
 	"height": "330 meters"
 }
 
-## [AGENT]
+## [ASSISTANT]
 {
 	"height": "330 meters"
 }
