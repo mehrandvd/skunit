@@ -59,6 +59,51 @@ That's it! ✨ skUnit handles the conversation, calls your AI, and verifies the 
 
 > **💡 Pro Tip:** For better alignment with Microsoft Extensions AI (MEAI), you can use `[ASSISTANT]` instead of `[AGENT]` - both work identically!
 
+## 🧪 Works with Any Test Framework
+
+skUnit is completely test-framework agnostic! Here's the same test with different frameworks:
+
+### xUnit
+```csharp
+[Fact]
+public async Task TestGreeting()
+{
+    var markdown = File.ReadAllText("greeting.md");
+    var scenarios = ChatScenario.LoadFromText(markdown);
+    
+    await ScenarioAssert.PassAsync(scenarios, myChatClient);
+}
+```
+
+### MSTest
+```csharp
+[TestMethod]
+public async Task TestGreeting()
+{
+    var scenarioAssert = new ScenarioAssert(myChatClient, TestContext.WriteLine);
+    
+    var scenarios = await ChatScenario.LoadFromResourceAsync(
+        "MyProject.Scenarios.greeting.md", 
+        typeof(MyTestClass).Assembly);
+        
+    await scenarioAssert.PassAsync(scenarios);
+}
+```
+
+### NUnit  
+```csharp
+[Test]
+public async Task TestGreeting()
+{
+    var markdown = File.ReadAllText("greeting.md");
+    var scenarios = ChatScenario.LoadFromText(markdown);
+    
+    await ScenarioAssert.PassAsync(scenarios, myChatClient);
+}
+```
+
+The core difference is just the logging integration - use `TestContext.WriteLine` for MSTest, `ITestOutputHelper.WriteLine` for xUnit, or `TestContext.WriteLine` for NUnit.
+
 ## 🎯 Key Features
 
 ### 1. Start Simple: Basic Chat Scenarios
@@ -271,6 +316,7 @@ var chatClient = new ChatClientBuilder(baseChatClient)
 
 - **[Chat Scenario Spec](docs/chat-scenario-spec.md)** - Complete guide to writing chat scenarios
 - **[CHECK Statement Spec](docs/check-statements-spec.md)** - All available assertion types
+- **[Test Framework Integration](docs/test-framework-integration.md)** - How to use skUnit with xUnit, MSTest, NUnit, and more
 - **[MCP Testing Guide](docs/mcp-testing-guide.md)** - How to test Model Context Protocol servers
 - **[Multi-Modal Support](docs/multi-modal-support.md)** - Working with images and other media
 - **[Scenario Run Options](docs/scenario-run-options.md)** - Mitigate hallucinations with multi-run success thresholds
