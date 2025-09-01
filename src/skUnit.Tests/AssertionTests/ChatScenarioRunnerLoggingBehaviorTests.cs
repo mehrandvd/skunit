@@ -4,28 +4,27 @@ using System.Text;
 
 namespace skUnit.Tests.AssertionTests;
 
-public class LoggingBehaviorComparisonTests
+public class ChatScenarioRunnerLoggingBehaviorTests
 {
     [Fact]
-    public void Both_Constructors_Produce_Identical_Output()
+    public void Both_Constructors_Produce_Valid_ChatScenarioRunner()
     {
         // Arrange
         var chatClient = CreateMockChatClient();
-        var legacyOutput = new StringBuilder();
-        var newOutput = new StringBuilder();
+        var actionOutput = new StringBuilder();
 
         // Create logger factory that captures to string
         var loggerFactory = LoggerFactory.Create(builder =>
-            builder.AddProvider(new StringLoggerProvider(newOutput)));
-        var logger = loggerFactory.CreateLogger<ScenarioAssert>();
+            builder.AddProvider(new StringLoggerProvider(new StringBuilder())));
+        var logger = loggerFactory.CreateLogger<ChatScenarioRunner>();
 
-        // Act - Create both instances
-        var legacyAssert = new ScenarioAssert(chatClient, message => legacyOutput.AppendLine(message));
-        var newAssert = new ScenarioAssert(chatClient, logger);
+        // Act - Create both instances using different constructors
+        var actionRunner = new ChatScenarioRunner(chatClient, message => actionOutput.AppendLine(message));
+        var loggerRunner = new ChatScenarioRunner(chatClient, logger);
 
         // Both should work without throwing
-        Assert.NotNull(legacyAssert);
-        Assert.NotNull(newAssert);
+        Assert.NotNull(actionRunner);
+        Assert.NotNull(loggerRunner);
 
         // Since we can't easily test the Log method directly (it's private),
         // this test validates that both constructors work and create valid instances

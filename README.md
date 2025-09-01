@@ -18,7 +18,7 @@ Write your tests in **Markdown**, run them with **any test framework** (xUnit, N
 Here's a simple test scenario in Markdown:
 
 ```md
-# SCENARIO Simple Greeting
+# SCENARIO Mountain Chat
 
 ## [USER]
 What is the tallest mountain?
@@ -26,7 +26,7 @@ What is the tallest mountain?
 ## [ASSISTANT]
 The tallest mountain is Everest! (OPTIONAL)
 
-### CHECK SemanticCondition
+### ASSERT SemanticCondition
 It mentions Mount Everest.
 ```
 
@@ -34,12 +34,12 @@ And here's how to test it with just a few lines of C#:
 
 ```csharp
 [Fact]
-public async Task TestGreeting()
+public async Task SimpleTest()
 {
-    var markdown = File.ReadAllText("greeting.md");
+    var markdown = File.ReadAllText("mountain-chat.md");
     var scenarios = ChatScenario.LoadFromText(markdown);
-    
-    await ScenarioAssert.PassAsync(scenarios, myChatClient);
+
+    await ScenarioRunner.RunAsync(scenarios, systemUnderTestClient);
 }
 ```
 
@@ -51,13 +51,11 @@ What is the tallest mountain?
 
 ## [ASSISTANT]
 
-### CHECK SemanticCondition
+### ASSERT SemanticCondition
 It mentions Mount Everest.
 ```
 
 That's it! ✨ skUnit handles the conversation, calls your AI, and verifies the response makes sense.
-
-> **💡 Pro Tip:** For better alignment with Microsoft Extensions AI (MEAI), you can use `[ASSISTANT]` instead of `[AGENT]` - both work identically!
 
 ## 🎯 Key Features
 
@@ -71,10 +69,10 @@ Is Everest a mountain or a Tree?
 
 ## [ASSISTANT]
 
-### CHECK ContainsAny
+### ASSERT ContainsAny
 mountain
 
-### CHECK SemanticCondition
+### ASSERT SemanticCondition
 It mentions the mountain
 ```
 
@@ -92,7 +90,7 @@ Give me the most expensive product info as a JSON like this:
 ## [ASSISTANT]
 {"id": 12, "title": "Surface Studio 2", "price": 3000, "description: "It is a very high-quality laptop"}
 
-### CHECK JsonCheck
+### ASSERT JsonCheck
 {
   "id": ["NotEmpty"],
   "title": ["Contains", "Surface"],
@@ -114,7 +112,7 @@ What time is it?
 ## [ASSISTANT]
 It's currently 2:30 PM
 
-### CHECK FunctionCall
+### ASSERT FunctionCall
 {
   "function_name": "get_current_time"
 }
@@ -122,7 +120,7 @@ It's currently 2:30 PM
 
 Even you can assert the called parameters:
 
-### CHECK FunctionCall
+### ASSERT FunctionCall
 {
   "function_name": "GetFoodMenu",
   "arguments": {
@@ -143,7 +141,7 @@ Is Eiffel tall?
 ## [ASSISTANT]
 Yes it is
 
-### CHECK SemanticCondition
+### ASSERT SemanticCondition
 It agrees that the Eiffel Tower is tall or expresses a positive sentiment.
 
 ## [USER]
@@ -152,13 +150,13 @@ What about Everest?
 ## [ASSISTANT]
 Yes it is tall too
 
-### CHECK SemanticCondition
+### ASSERT SemanticCondition
 It agrees that Everest is tall or expresses a positive sentiment.
 ```
 
 ![skUnit Chat Scenario Structure](https://github.com/mehrandvd/skunit/assets/5070766/156b0831-e4f3-4e4b-b1b0-e2ec868efb5f)
 
-Each scenario can contain multiple sub-scenarios (conversation turns), and each response can have multiple CHECK statements to verify different aspects of the AI's behavior.
+Each scenario can contain multiple sub-scenarios (conversation turns), and each response can have multiple ASSERT statements to verify different aspects of the AI's behavior.
 
 ### 5. Readable Markdown Scenarios
 
@@ -185,12 +183,12 @@ What time is it?
 ## [ASSISTANT]
 It's currently 2:30 PM PST
 
-### CHECK FunctionCall
+### ASSERT FunctionCall
 {
   "function_name": "current_time"
 }
 
-### CHECK SemanticCondition
+### ASSERT SemanticCondition
 It mentions a specific time
 ```
 
@@ -204,7 +202,12 @@ var chatClient = new ChatClientBuilder(baseChatClient)
     .UseFunctionInvocation()
     .Build();
 
-await ScenarioAssert.PassAsync(scenarios, chatClient);
+// In your test class constructor:
+var assertionClient = /* assertion/evaluation model */;
+ScenarioRunner = new ChatScenarioRunner(assertionClient);
+
+// In your test:
+await ScenarioRunner.RunAsync(scenarios, chatClient);
 ```
 
 ## 🚀 Installation & Setup
@@ -220,7 +223,7 @@ dotnet add package skUnit
 ```csharp
 public class MyChatTests
 {
-    private readonly ScenarioAssert _scenarioAssert;
+    private readonly ChatScenarioRunner _scenarioRunner;
     private readonly IChatClient _chatClient;
 
     public MyChatTests(ITestOutputHelper output)
@@ -230,7 +233,7 @@ public class MyChatTests
             .GetChatClient(deploymentName)
             .AsIChatClient();
             
-        _scenarioAssert = new ScenarioAssert(_chatClient, output.WriteLine);
+        _scenarioRunner = new ChatScenarioRunner(_chatClient, output.WriteLine);
     }
 
     [Fact]
@@ -239,7 +242,7 @@ public class MyChatTests
         var markdown = File.ReadAllText("scenario.md");
         var scenarios = ChatScenario.LoadFromText(markdown);
         
-        await _scenarioAssert.PassAsync(scenarios, _chatClient);
+        await _scenarioRunner.RunAsync(scenarios, _chatClient);
     }
 }
 ```
@@ -281,50 +284,90 @@ skUnit is completely test-framework agnostic! Here's the same test with differen
 
 ### xUnit
 ```csharp
-[Fact]
-public async Task TestGreeting()
+public class GreetingTests
 {
-    var markdown = File.ReadAllText("greeting.md");
-    var scenarios = ChatScenario.LoadFromText(markdown);
-    
-    await ScenarioAssert.PassAsync(scenarios, myChatClient);
+    private readonly ChatScenarioRunner ScenarioRunner;
+    private readonly IChatClient systemUnderTestClient;
+
+    public GreetingTests()
+    {
+        var assertionClient = /* assertion/evaluation model */;
+        systemUnderTestClient = /* system under test model */;
+        ScenarioRunner = new ChatScenarioRunner(assertionClient);
+    }
+
+    [Fact]
+    public async Task TestGreeting()
+    {
+        var markdown = File.ReadAllText("greeting.md");
+        var scenarios = ChatScenario.LoadFromText(markdown);
+
+        await ScenarioRunner.RunAsync(scenarios, systemUnderTestClient);
+    }
 }
 ```
 
 ### MSTest
 ```csharp
-[TestMethod]
-public async Task TestGreeting()
+public class GreetingTests : TestClass
 {
-    var scenarioAssert = new ScenarioAssert(myChatClient, TestContext.WriteLine);
-    
-    var scenarios = await ChatScenario.LoadFromResourceAsync(
-        "MyProject.Scenarios.greeting.md", 
-        typeof(MyTestClass).Assembly);
-        
-    await scenarioAssert.PassAsync(scenarios);
+    private readonly ChatScenarioRunner ScenarioRunner;
+    private readonly IChatClient systemUnderTestClient;
+
+    public GreetingTests()
+    {
+        var assertionClient = /* assertion/evaluation model */;
+        systemUnderTestClient = /* system under test model */;
+        ScenarioRunner = new ChatScenarioRunner(assertionClient, TestContext.WriteLine);
+    }
+
+    [TestMethod]
+    public async Task TestGreeting()
+    {
+        var scenarios = await ChatScenario.LoadFromResourceAsync(
+            "MyProject.Scenarios.greeting.md", 
+            typeof(GreetingTests).Assembly);
+            
+        await ScenarioRunner.RunAsync(scenarios, systemUnderTestClient);
+    }
 }
 ```
 
 ### NUnit  
 ```csharp
-[Test]
-public async Task TestGreeting()
+public class GreetingTests
 {
-    var markdown = File.ReadAllText("greeting.md");
-    var scenarios = ChatScenario.LoadFromText(markdown);
-    
-    await ScenarioAssert.PassAsync(scenarios, myChatClient);
+    private readonly ChatScenarioRunner ScenarioRunner;
+    private readonly IChatClient systemUnderTestClient;
+
+    public GreetingTests()
+    {
+        var assertionClient = /* assertion/evaluation model */;
+        systemUnderTestClient = /* system under test model */;
+        ScenarioRunner = new ChatScenarioRunner(assertionClient, TestContext.WriteLine);
+    }
+
+    [Test]
+    public async Task TestGreeting()
+    {
+        var markdown = File.ReadAllText("greeting.md");
+        var scenarios = ChatScenario.LoadFromText(markdown);
+
+        await ScenarioRunner.RunAsync(scenarios, systemUnderTestClient);
+    }
 }
 ```
 
-The core difference is just the logging integration - use `TestContext.WriteLine` for MSTest, `ITestOutputHelper.WriteLine` for xUnit, or `TestContext.WriteLine` for NUnit.
+The core difference is just the logging integration - use `TestContext.WriteLine` for MSTest, `ITestOutputHelper.WriteLine` for xUnit, or `TestContext.WriteLine` for NUnit. Both patterns show:
+
+- **Assertion Client**: Created once in the constructor for semantic evaluations
+- **System Under Test Client**: The client whose behavior you're testing, passed to `RunAsync`
 
 
 ## 📚 Documentation
 
 - **[Chat Scenario Spec](docs/chat-scenario-spec.md)** - Complete guide to writing chat scenarios
-- **[CHECK Statement Spec](docs/check-statements-spec.md)** - All available assertion types
+- **[ASSERT Statement Spec](docs/check-statements-spec.md)** - All available assertion types
 - **[Test Framework Integration](docs/test-framework-integration.md)** - How to use skUnit with xUnit, MSTest, NUnit, and more
 - **[MCP Testing Guide](docs/mcp-testing-guide.md)** - How to test Model Context Protocol servers
 - **[Multi-Modal Support](docs/multi-modal-support.md)** - Working with images and other media
@@ -349,7 +392,12 @@ var options = new ScenarioRunOptions
     MinSuccessRate = 0.67 // At least 2 of 3 runs must pass
 };
 
-await ScenarioAssert.PassAsync(scenarios, chatClient, options: options);
+// In your test class constructor:
+var assertionClient = /* assertion/evaluation model */;
+ScenarioRunner = new ChatScenarioRunner(assertionClient);
+
+// In your test:
+await ScenarioRunner.RunAsync(scenarios, systemUnderTestClient, options: options);
 ```
 
 Recommended starting points:

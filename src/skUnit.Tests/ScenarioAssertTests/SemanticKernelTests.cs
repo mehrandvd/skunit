@@ -26,16 +26,16 @@ namespace skUnit.Tests.ScenarioAssertTests
         public async Task EiffelTallChat_MustWork()
         {
             var scenarios = await LoadChatScenarioAsync("EiffelTallChat");
-            await ScenarioAssert.PassAsync(scenarios, Kernel);
+            await ScenarioRunner.RunAsync(scenarios, Kernel);
         }
 
         [Fact, Experimental("SKEXP0001")]
         public async Task TimeFunctionCall_MustWork()
         {
             var scenarios = await LoadChatScenarioAsync("GetCurrentTimeChat");
-            await ScenarioAssert.PassAsync(scenarios, Kernel);
+            await ScenarioRunner.RunAsync(scenarios, Kernel);
 
-            //await ScenarioAssert.PassAsync(scenarios, Kernel, getAnswerFunc: async chatHistory =>
+            //await ScenarioRunner.RunAsync(scenarios, Kernel, getAnswerFunc: async chatHistory =>
             //{
             //    var chatService = Kernel.GetRequiredService<IChatCompletionService>();
             //    var result = await chatService.GetChatMessageContentsAsync(

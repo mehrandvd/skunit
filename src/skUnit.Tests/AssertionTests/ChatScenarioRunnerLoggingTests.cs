@@ -3,21 +3,21 @@ using Microsoft.Extensions.Logging;
 
 namespace skUnit.Tests.AssertionTests;
 
-public class ScenarioAssertLoggingTests
+public class ChatScenarioRunnerLoggingTests
 {
     [Fact]
     public void Constructor_WithILogger_UsesLogger()
     {
         // Arrange
         var loggerFactory = LoggerFactory.Create(builder => builder.AddConsole());
-        var logger = loggerFactory.CreateLogger<ScenarioAssert>();
+        var logger = loggerFactory.CreateLogger<ChatScenarioRunner>();
         var chatClient = CreateMockChatClient();
 
         // Act
-        var scenarioAssert = new ScenarioAssert(chatClient, logger);
+        var scenarioRunner = new ChatScenarioRunner(chatClient, logger);
 
         // Assert
-        Assert.NotNull(scenarioAssert);
+        Assert.NotNull(scenarioRunner);
         // The fact that no exception was thrown indicates the constructor worked correctly
     }
 
@@ -28,10 +28,10 @@ public class ScenarioAssertLoggingTests
         var chatClient = CreateMockChatClient();
 
         // Act
-        var scenarioAssert = new ScenarioAssert(chatClient, (ILogger<ScenarioAssert>?)null);
+        var scenarioRunner = new ChatScenarioRunner(chatClient, (ILogger<ChatScenarioRunner>?)null);
 
         // Assert
-        Assert.NotNull(scenarioAssert);
+        Assert.NotNull(scenarioRunner);
         // Should not throw even with null logger due to NullLogger fallback
     }
 
@@ -44,10 +44,10 @@ public class ScenarioAssertLoggingTests
         var chatClient = CreateMockChatClient();
 
         // Act
-        var scenarioAssert = new ScenarioAssert(chatClient, onLog);
+        var scenarioRunner = new ChatScenarioRunner(chatClient, onLog);
 
         // Assert
-        Assert.NotNull(scenarioAssert);
+        Assert.NotNull(scenarioRunner);
         // The constructor should have created a DelegateLoggerAdapter internally
     }
 

@@ -17,10 +17,10 @@ namespace skUnit
     /// This class is for testing skUnit scenarios semantically. It contains various methods
     /// that you can test kernels and functions with scenarios. Scenarios are some markdown files with a specific format.
     /// </summary>
+    [Obsolete("Use ChatScenarioRunner instead. This class will be removed in a future version.", false)]
     public partial class ScenarioAssert
     {
-        private readonly ILogger<ScenarioAssert> _logger;
-        private Semantic Semantic { get; set; }
+        private readonly ChatScenarioRunner _runner;
 
         /// <summary>
         /// This class needs a ChatClient to work.
@@ -28,8 +28,7 @@ namespace skUnit
         /// </summary>
         public ScenarioAssert(IChatClient chatClient, ILogger<ScenarioAssert>? logger = null)
         {
-            Semantic = new Semantic(chatClient);
-            _logger = logger ?? NullLogger<ScenarioAssert>.Instance;
+            _runner = new ChatScenarioRunner(chatClient, logger != null ? new DelegateLoggerAdapter<ChatScenarioRunner>(msg => logger.LogInformation("{Message}", msg)) : null);
         }
 
         /// <summary>
@@ -39,45 +38,18 @@ namespace skUnit
         [Obsolete("Use constructor with ILogger<ScenarioAssert> parameter for better logging integration. This constructor will be deprecated in a future version.")]
         public ScenarioAssert(IChatClient chatClient, Action<string>? onLog)
         {
-            Semantic = new Semantic(chatClient);
-            _logger = onLog != null ? new DelegateLoggerAdapter(onLog) : NullLogger<ScenarioAssert>.Instance;
+            _runner = new ChatScenarioRunner(chatClient, onLog);
         }
 
-        private void Log(string? message = "")
-        {
-            _logger.LogInformation("{Message}", message ?? "");
-        }
-
-        private void LogWarning(string message)
-        {
-            _logger.LogWarning("{Message}", message);
-        }
-
-        private async Task CheckAssertionAsync(IKernelAssertion assertion, ChatResponse response, IList<ChatMessage> chatHistory)
-        {
-            Log($"### CHECK {assertion.AssertionType}");
-            Log($"{assertion.Description}");
-
-            try
-            {
-                await assertion.Assert(Semantic, response, chatHistory);
-                Log($"✅ OK");
-                Log("");
-            }
-            catch (SemanticAssertException exception)
-            {
-                Log("❌ FAIL");
-                Log("Reason:");
-                Log(exception.Message);
-                Log();
-                throw;
-            }
-        }
+        /// <summary>
+        /// Gets the internal ChatScenarioRunner for advanced usage.
+        /// </summary>
+        public ChatScenarioRunner Runner => _runner;
     }
 
     /// <summary>
     /// Internal adapter that wraps an Action&lt;string&gt; delegate to provide ILogger functionality
-    /// for backward compatibility with the legacy onLog parameter.
+    /// for backward compatibility with the legacy onLog parameter for ScenarioAssert.
     /// </summary>
     public class DelegateLoggerAdapter : ILogger<ScenarioAssert>
     {

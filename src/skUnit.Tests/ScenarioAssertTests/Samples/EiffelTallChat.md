@@ -10,13 +10,13 @@ Is Eiffel tall?
 }
 ```
 
-## CHECK ContainsAny
+## ASSERT ContainsAny
 Question
 
 ## [ASSISTANT]
 Yes it is
 
-### CHECK SemanticCondition
+### ASSERT SemanticCondition
 Approves that eiffel tower is tall or is positive about it.
 
 ## CALL MyPlugin.GetIntent
@@ -25,7 +25,7 @@ Approves that eiffel tower is tall or is positive about it.
 	"options": "Positive,Negative,Neutral"
 }
 ```
-## CHECK ContainsAny
+## ASSERT ContainsAny
 Neutral,Positive
 
 ## [USER]
@@ -34,7 +34,7 @@ What about everest mountain?
 ## [ASSISTANT]
 Yes it is tall too
 
-### CHECK SemanticCondition
+### ASSERT SemanticCondition
 The sentence is positive.
 
 ## [USER]
@@ -43,7 +43,7 @@ What about a mouse?
 ## [ASSISTANT]
 No it is not tall.
 
-### CHECK SemanticCondition
+### ASSERT SemanticCondition
 The sentence is negative or mentions that mouse is not tall.
 
 ## [USER]
@@ -59,12 +59,12 @@ Example:
 	"height": "330 meters"
 }
 
-### CHECK JsonCheck
+### ASSERT JsonCheck
 {
 	"height": ["NotEmpty", ""]
 }
 
-### CHECK JsonCheck
+### ASSERT JsonCheck
 {
 	"height": ["Contain", "meters"]
 }

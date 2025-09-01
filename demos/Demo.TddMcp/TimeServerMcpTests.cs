@@ -12,8 +12,8 @@ namespace Demo.TddMcp
 {
     public class TimeServerMcpTests
     {
-        ScenarioAssert ScenarioAssert { get; set; }
-        IChatClient ChatClient { get; set; }
+        ChatScenarioRunner ScenarioRunner { get; set; }
+        IChatClient baseChatClient { get; set; }
         IConfiguration Configuration { get; set; }
         public TimeServerMcpTests(ITestOutputHelper output)
         {
@@ -25,12 +25,17 @@ namespace Demo.TddMcp
             var endpoint = Configuration["AzureOpenAI_Endpoint"] ?? throw new Exception("No Endpoint is provided.");
             var deploymentName = Configuration["AzureOpenAI_Deployment"] ?? throw new Exception("No Deployment is provided.");
 
-            ChatClient = new AzureOpenAIClient(
+            var assertionClient = new AzureOpenAIClient(
                 new Uri(endpoint),
                 new System.ClientModel.ApiKeyCredential(apiKey)
             ).GetChatClient(deploymentName).AsIChatClient();
 
-            ScenarioAssert = new ScenarioAssert(ChatClient, output.WriteLine);
+            baseChatClient = new AzureOpenAIClient(
+                new Uri(endpoint),
+                new System.ClientModel.ApiKeyCredential(apiKey)
+            ).GetChatClient(deploymentName).AsIChatClient();
+
+            ScenarioRunner = new ChatScenarioRunner(assertionClient, output.WriteLine);
         }
 
         [Fact]
@@ -58,18 +63,18 @@ namespace Demo.TddMcp
 
             var tools = await mcp.ListToolsAsync();
 
-            var builder = new ChatClientBuilder(ChatClient)
+            var builder = new ChatClientBuilder(baseChatClient)
                           .ConfigureOptions(options =>
                           {
                               options.Tools = tools.ToArray();
                           })
                           .UseFunctionInvocation();
 
-            var chatClient = builder.Build();
+            var systemUnderTestClient = builder.Build();
 
             var scenarioText = await File.ReadAllTextAsync("TestScenario.md");
             var scenario = ChatScenario.LoadFromText(scenarioText);
-            await ScenarioAssert.PassAsync(scenario, chatClient);
+            await ScenarioRunner.RunAsync(scenario, systemUnderTestClient);
         }
     }
 }

@@ -1,5 +1,7 @@
-# CHECK Statement
-The `CHECK` statement is used to **verify** the quality of an output by comparing it with some **criteria**. For example:
+# CHECK Statement and ASSERT Keyword
+
+The `CHECK` statement (and the new `ASSERT` keyword) is used to **verify** the quality of an output by comparing it with some **criteria**. Both keywords work identically - use whichever you prefer:
+
 ```md
 ## ANSWER
 Yes it is a very good day
@@ -7,15 +9,29 @@ Yes it is a very good day
 ### CHECK SemanticCondition
 Its vibe is positive
 
+### ASSERT SemanticCondition
+Its vibe is positive
+
 ### CHECK SemanticSimilar
+It is a beautiful day
+
+### ASSERT SemanticSimilar
 It is a beautiful day
 
 ### CHECK Contains
 day
 
+### ASSERT ContainsAll
+day
+
 ### CHECK Equals
 Yes it is a very good day
+
+### ASSERT Equals
+Yes it is a very good day
 ```
+
+Both `CHECK` and `ASSERT` keywords work identically. The `ASSERT` keyword was introduced for better readability and consistency with common testing terminology.
 
 In this example, the expected answer is something like "Yes it is a very good day", but the actual answer could be anything. To verify the actual output, you can use different types of checks. In this document, we are going to **explain** each of them in detail.
 
@@ -269,4 +285,6 @@ It checks if the argument value is similar in meaning to the given text:
   }
 }
 ```
+
+
 ``````

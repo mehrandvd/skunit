@@ -39,6 +39,7 @@ namespace skUnit
         /// <param name="options"></param>
         /// <returns></returns>
         /// <exception cref="InvalidOperationException">If the OpenAI was unable to generate a valid response.</exception>
+        [Obsolete("Use ChatScenarioRunner.RunAsync instead. This method will be removed in a future version.", false)]
         public async Task PassAsync(
             ChatScenario scenario,
             IChatClient? chatClient = null,
@@ -47,109 +48,7 @@ namespace skUnit
             ScenarioRunOptions? options = null
             )
         {
-            if (chatClient is null && getAnswerFunc is null)
-                throw new InvalidOperationException("Both chatClient and getAnswerFunc can not be null. One of them should be specified");
-
-            options ??= new ScenarioRunOptions();
-
-            chatHistory ??= [];
-
-            Log($"# SCENARIO {scenario.Description}");
-            Log("");
-
-            List<Exception> exceptions = [];
-
-            for (var round = 0; round < options.TotalRuns; round++)
-            {
-                if (options.TotalRuns > 1)
-                {
-                    Log($"# ROUND {round + 1}");
-                    Log();
-                }
-
-                try
-                {
-                    await PassCoreAsync(scenario, chatClient, getAnswerFunc, chatHistory);
-                }
-                catch (Exception ex)
-                {
-                    Log($"❌ Exception: {ex.Message}");
-                    exceptions.Add(ex);
-                }
-            }
-
-            if (exceptions.Count * 1f / options.TotalRuns > options.MinSuccessRate)
-            {
-                var message = $"Only {(options.TotalRuns - exceptions.Count) * 100 / options.TotalRuns}% of rounds passed, which is below the required success rate of {options.MinSuccessRate * 100}%";
-                Log(message);
-                throw new Exception(message);
-            }
-        }
-
-        private async Task PassCoreAsync(ChatScenario scenario, IChatClient? chatClient, Func<IList<ChatMessage>, Task<ChatResponse>>? getAnswerFunc, IList<ChatMessage> chatHistory)
-        {
-            var queue = new Queue<ChatItem>(scenario.ChatItems);
-
-            while (queue.Count > 0)
-            {
-                var chatItem = queue.Dequeue();
-
-
-                if (chatItem.Role == ChatRole.System)
-                {
-                    chatHistory.Add(new ChatMessage(ChatRole.System, chatItem.Content));
-                    Log($"## [{chatItem.Role.ToString().ToUpper()}]");
-                    Log(chatItem.Content);
-                    Log();
-                }
-                else if (chatItem.Role == ChatRole.User)
-                {
-                    chatHistory.Add(new ChatMessage(ChatRole.User, chatItem.Content));
-                    Log($"## [{chatItem.Role.ToString().ToUpper()}]");
-                    Log(chatItem.Content);
-                    Log();
-                }
-                else if (chatItem.Role == ChatRole.Assistant)
-                {
-                    Log($"## [EXPECTED ANSWER]");
-                    Log(chatItem.Content);
-                    Log();
-
-                    Func<IList<ChatMessage>, Task<ChatResponse>> populateAnswer;
-
-                    if (getAnswerFunc != null)
-                    {
-                        populateAnswer = getAnswerFunc;
-                    }
-                    else if (chatClient != null)
-                    {
-                        populateAnswer = async history =>
-                        {
-                            var result = await chatClient.GetResponseAsync(history);
-                            return result;
-                        };
-                    }
-                    else
-                    {
-                        throw new InvalidOperationException("Both chatClient and getAnswerFunc can not be null. One of them should be specified");
-                    }
-
-                    var response = await populateAnswer(chatHistory);
-
-                    // To let chatHistory stay clean for getting the answer
-                    chatHistory.Add(new ChatMessage(ChatRole.Assistant, chatItem.Content));
-
-
-                    Log($"### [ACTUAL ANSWER]");
-                    Log(response.Text);
-                    Log();
-
-                    foreach (var assertion in chatItem.Assertions)
-                    {
-                        await CheckAssertionAsync(assertion, response, chatHistory);
-                    }
-                }
-            }
+            await _runner.RunAsync(scenario, chatClient, getAnswerFunc, chatHistory, options);
         }
 
         /// <summary>
@@ -171,15 +70,10 @@ namespace skUnit
         /// <param name="chatHistory"></param>
         /// <returns></returns>
         /// <exception cref="InvalidOperationException">If the OpenAI was unable to generate a valid response.</exception>
+        [Obsolete("Use ChatScenarioRunner.RunAsync instead. This method will be removed in a future version.", false)]
         public async Task PassAsync(List<ChatScenario> scenarios, IChatClient? chatClient = null, Func<IList<ChatMessage>, Task<ChatResponse>>? getAnswerFunc = null, IList<ChatMessage>? chatHistory = null, ScenarioRunOptions? options = null)
         {
-            foreach (var scenario in scenarios)
-            {
-                await PassAsync(scenario, chatClient, getAnswerFunc, chatHistory, options);
-                Log();
-                Log("----------------------------------");
-                Log();
-            }
+            await _runner.RunAsync(scenarios, chatClient, getAnswerFunc, chatHistory, options);
         }
 
         /// <summary>
@@ -201,31 +95,21 @@ namespace skUnit
         /// <returns></returns>
         /// <exception cref="InvalidOperationException">If the OpenAI was unable to generate a valid response.</exception>
         [Experimental("SKEXP0001")]
+        [Obsolete("Use ChatScenarioRunner.RunAsync instead. This method will be removed in a future version.", false)]
         public async Task PassAsync(List<ChatScenario> scenarios, Kernel kernel, IList<ChatMessage>? chatHistory = null, ScenarioRunOptions? options = null)
         {
-            var completionService = kernel.GetRequiredService<IChatCompletionService>();
-            var innerClient = completionService.AsChatClient();
-
-            ChatClientBuilder builder = new ChatClientBuilder(innerClient)
-                                        .ConfigureOptions(options =>
-                                        {
-                                            IEnumerable<AIFunction> aiFunctions =
-                                                kernel.Plugins.SelectMany(kp => kp.AsAIFunctions());
-                                            options.Tools = [.. aiFunctions];
-                                            //options.ToolMode = ChatToolMode.Auto;
-                                        })
-                                        .UseFunctionInvocation()
-                                        ;
-
-            var chatClient = builder.Build();
-
-            await PassAsync(scenarios, chatClient, null, chatHistory, options);
+#pragma warning disable SKEXP0001
+            await _runner.RunAsync(scenarios, kernel, chatHistory, options);
+#pragma warning restore SKEXP0001
         }
 
         [Experimental("SKEXP0001")]
+        [Obsolete("Use ChatScenarioRunner.RunAsync instead. This method will be removed in a future version.", false)]
         public async Task PassAsync(ChatScenario scenarios, Kernel kernel, IList<ChatMessage>? chatHistory = null, ScenarioRunOptions? options = null)
         {
-            await PassAsync([scenarios], kernel, chatHistory, options);
+#pragma warning disable SKEXP0001
+            await _runner.RunAsync(scenarios, kernel, chatHistory, options);
+#pragma warning restore SKEXP0001
         }
     }
 }

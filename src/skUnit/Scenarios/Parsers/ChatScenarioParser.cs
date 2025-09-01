@@ -70,11 +70,24 @@ namespace skUnit.Scenarios.Parsers
                             continue;
                         }
 
-                        var answerMatch = Regex.Match(blockContent, @$"#{{1,}}\s*{specialId}\s*CHECK\s*(?<type>.*)");
-                        if (answerMatch.Success)
+                        var checkMatch = Regex.Match(blockContent, @$"#{{1,}}\s*{specialId}\s*CHECK\s*(?<type>.*)");
+                        if (checkMatch.Success)
                         {
                             PackBlock(testCase, "CHECK", ref currentBlock, key, contentBuilder);
-                            key = answerMatch.Groups["type"].Value;
+                            key = checkMatch.Groups["type"].Value;
+                            if (string.IsNullOrWhiteSpace(key))
+                            {
+                                key = null;
+                            }
+
+                            continue;
+                        }
+
+                        var assertMatch = Regex.Match(blockContent, @$"#{{1,}}\s*{specialId}\s*ASSERT\s*(?<type>.*)");
+                        if (assertMatch.Success)
+                        {
+                            PackBlock(testCase, "ASSERT", ref currentBlock, key, contentBuilder);
+                            key = assertMatch.Groups["type"].Value;
                             if (string.IsNullOrWhiteSpace(key))
                             {
                                 key = null;
@@ -196,7 +209,7 @@ namespace skUnit.Scenarios.Parsers
                     ArgumentsText = contentText
                 });
             }
-            else if (currentBlock == "CHECK")
+            else if (currentBlock == "CHECK" || currentBlock == "ASSERT")
             {
                 var chatItem = scenario.ChatItems.Last();
                 var checkType = key ?? "SemanticSimilar";

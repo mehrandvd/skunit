@@ -8,7 +8,8 @@ namespace Demo.TddShop.Test.BrainTests.ShopBrain
 {
     public class ShopBrainTests
     {
-        ScenarioAssert ScenarioAssert { get; set; }
+        ChatScenarioRunner ScenarioRunner { get; set; }
+        IChatClient systemUnderTestClient { get; set; }
 
         public ShopBrainTests(ITestOutputHelper output)
         {
@@ -16,12 +17,13 @@ namespace Demo.TddShop.Test.BrainTests.ShopBrain
             var azureKey = Environment.GetEnvironmentVariable("AzureOpenAI_Gpt4_ApiKey")!;
             var endpoint = Environment.GetEnvironmentVariable("AzureOpenAI_Gpt4_Endpoint")!;
 
-            var chatClient = new AzureOpenAIClient(
+            var assertionClient = new AzureOpenAIClient(
                 new Uri(endpoint),
                 new System.ClientModel.ApiKeyCredential(azureKey)
             ).GetChatClient(deployment).AsIChatClient();
 
-            ScenarioAssert = new ScenarioAssert(chatClient, output.WriteLine);
+            ScenarioRunner = new ChatScenarioRunner(assertionClient, output.WriteLine);
+            systemUnderTestClient = new TddShop.ShopBrain().CreateChatClient();
         }
 
         [Theory]
@@ -34,9 +36,7 @@ namespace Demo.TddShop.Test.BrainTests.ShopBrain
             var scenarioText = await File.ReadAllTextAsync(@$"BrainTests/ShopBrain/Scenarios/{scenario}.md");
             var scenarios = ChatScenario.LoadFromText(scenarioText);
 
-            var chatClient = new TddShop.ShopBrain().CreateChatClient();
-
-            await ScenarioAssert.PassAsync(scenarios, chatClient);
+            await ScenarioRunner.RunAsync(scenarios, systemUnderTestClient);
         }
     }
 }
