@@ -18,7 +18,7 @@ Write your tests in **Markdown**, run them with **any test framework** (xUnit, N
 Here's a simple test scenario in Markdown:
 
 ```md
-# SCENARIO Simple Greeting
+# SCENARIO Mountain Chat
 
 ## [USER]
 What is the tallest mountain?
@@ -33,26 +33,13 @@ It mentions Mount Everest.
 And here's how to test it with just a few lines of C#:
 
 ```csharp
-public class GreetingTests
+[Fact]
+public async Task SimpleTest()
 {
-    private readonly ChatScenarioRunner ScenarioRunner;
-    private readonly IChatClient systemUnderTestClient;
+    var markdown = File.ReadAllText("mountain-chat.md");
+    var scenarios = ChatScenario.LoadFromText(markdown);
 
-    public GreetingTests()
-    {
-        var assertionClient = /* build the model used for semantic assertions */;
-        systemUnderTestClient = /* build or obtain the model under test */;
-        ScenarioRunner = new ChatScenarioRunner(assertionClient);
-    }
-
-    [Fact]
-    public async Task TestGreeting()
-    {
-        var markdown = File.ReadAllText("greeting.md");
-        var scenarios = ChatScenario.LoadFromText(markdown);
-
-        await ScenarioRunner.RunAsync(scenarios, systemUnderTestClient);
-    }
+    await ScenarioRunner.RunAsync(scenarios, systemUnderTestClient);
 }
 ```
 
@@ -64,13 +51,11 @@ What is the tallest mountain?
 
 ## [ASSISTANT]
 
-### CHECK SemanticCondition
+### ASSERT SemanticCondition
 It mentions Mount Everest.
 ```
 
 That's it! ✨ skUnit handles the conversation, calls your AI, and verifies the response makes sense.
-
-> **💡 Pro Tip:** For better alignment with Microsoft Extensions AI (MEAI), you can use `[ASSISTANT]` instead of `[AGENT]` - both work identically!
 
 ## 🎯 Key Features
 
@@ -84,10 +69,10 @@ Is Everest a mountain or a Tree?
 
 ## [ASSISTANT]
 
-### CHECK ContainsAny
+### ASSERT ContainsAny
 mountain
 
-### CHECK SemanticCondition
+### ASSERT SemanticCondition
 It mentions the mountain
 ```
 
@@ -105,7 +90,7 @@ Give me the most expensive product info as a JSON like this:
 ## [ASSISTANT]
 {"id": 12, "title": "Surface Studio 2", "price": 3000, "description: "It is a very high-quality laptop"}
 
-### CHECK JsonCheck
+### ASSERT JsonCheck
 {
   "id": ["NotEmpty"],
   "title": ["Contains", "Surface"],
@@ -127,7 +112,7 @@ What time is it?
 ## [ASSISTANT]
 It's currently 2:30 PM
 
-### CHECK FunctionCall
+### ASSERT FunctionCall
 {
   "function_name": "get_current_time"
 }
@@ -135,7 +120,7 @@ It's currently 2:30 PM
 
 Even you can assert the called parameters:
 
-### CHECK FunctionCall
+### ASSERT FunctionCall
 {
   "function_name": "GetFoodMenu",
   "arguments": {
@@ -156,7 +141,7 @@ Is Eiffel tall?
 ## [ASSISTANT]
 Yes it is
 
-### CHECK SemanticCondition
+### ASSERT SemanticCondition
 It agrees that the Eiffel Tower is tall or expresses a positive sentiment.
 
 ## [USER]
@@ -165,13 +150,13 @@ What about Everest?
 ## [ASSISTANT]
 Yes it is tall too
 
-### CHECK SemanticCondition
+### ASSERT SemanticCondition
 It agrees that Everest is tall or expresses a positive sentiment.
 ```
 
 ![skUnit Chat Scenario Structure](https://github.com/mehrandvd/skunit/assets/5070766/156b0831-e4f3-4e4b-b1b0-e2ec868efb5f)
 
-Each scenario can contain multiple sub-scenarios (conversation turns), and each response can have multiple CHECK statements to verify different aspects of the AI's behavior.
+Each scenario can contain multiple sub-scenarios (conversation turns), and each response can have multiple ASSERT statements to verify different aspects of the AI's behavior.
 
 ### 5. Readable Markdown Scenarios
 
@@ -198,12 +183,12 @@ What time is it?
 ## [ASSISTANT]
 It's currently 2:30 PM PST
 
-### CHECK FunctionCall
+### ASSERT FunctionCall
 {
   "function_name": "current_time"
 }
 
-### CHECK SemanticCondition
+### ASSERT SemanticCondition
 It mentions a specific time
 ```
 
@@ -382,7 +367,7 @@ The core difference is just the logging integration - use `TestContext.WriteLine
 ## 📚 Documentation
 
 - **[Chat Scenario Spec](docs/chat-scenario-spec.md)** - Complete guide to writing chat scenarios
-- **[CHECK Statement Spec](docs/check-statements-spec.md)** - All available assertion types
+- **[ASSERT Statement Spec](docs/check-statements-spec.md)** - All available assertion types
 - **[Test Framework Integration](docs/test-framework-integration.md)** - How to use skUnit with xUnit, MSTest, NUnit, and more
 - **[MCP Testing Guide](docs/mcp-testing-guide.md)** - How to test Model Context Protocol servers
 - **[Multi-Modal Support](docs/multi-modal-support.md)** - Working with images and other media
