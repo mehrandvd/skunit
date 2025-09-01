@@ -60,7 +60,7 @@ namespace skUnit.Tests.AssertionTests
             // Act & Assert
             var exception = await Assert.ThrowsAsync<InvalidOperationException>(
                 () => runner.RunAsync(scenario, (IChatClient?)null, null));
-            
+
             Assert.Contains("Both chatClient and getAnswerFunc can not be null", exception.Message);
         }
 
