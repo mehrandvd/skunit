@@ -16,7 +16,7 @@ Question
 ## [ASSISTANT]
 Yes it is
 
-### ASSERT Condition
+### ASSERT SemanticCondition
 Approves that eiffel tower is tall or is positive about it.
 
 ## CALL MyPlugin.GetIntent
@@ -34,7 +34,7 @@ What about everest mountain?
 ## [ASSISTANT]
 Yes it is tall too
 
-### ASSERT Condition
+### ASSERT SemanticCondition
 The sentence is positive.
 
 ## [USER]
@@ -43,7 +43,7 @@ What about a mouse?
 ## [ASSISTANT]
 No it is not tall.
 
-### ASSERT Condition
+### ASSERT SemanticCondition
 The sentence is negative or mentions that mouse is not tall.
 
 ## [USER]
@@ -59,12 +59,12 @@ Example:
 	"height": "330 meters"
 }
 
-### ASSERT JsonStructure
+### ASSERT JsonCheck
 {
 	"height": ["NotEmpty", ""]
 }
 
-### ASSERT JsonStructure
+### ASSERT JsonCheck
 {
 	"height": ["Contain", "meters"]
 }

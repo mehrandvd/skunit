@@ -6,5 +6,5 @@ Hello!
 ## [AGENT]
 Hi there! How can I help you today?
 
-### ASSERT Condition
+### ASSERT SemanticCondition
 It's a friendly greeting response

@@ -6,7 +6,7 @@ What a beautiful day. What food do your menu?
 ## [ASSISTANT]
 Pizza
 
-### ASSERT ToolCall
+### ASSERT FunctionCall
 ```json
 {
 	"function_name": "GetFoodMenu",

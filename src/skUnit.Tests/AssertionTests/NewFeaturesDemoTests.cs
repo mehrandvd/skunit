@@ -20,13 +20,13 @@ namespace skUnit.Tests.AssertionTests
             ## [ASSISTANT]
             Hello! I'm doing well, thank you for asking. How can I help you today?
 
-            ### ASSERT Condition
+            ### ASSERT SemanticCondition
             The response is a polite greeting
 
-            ### ASSERT ContainsText
+            ### ASSERT ContainsAll
             well, help
 
-            ### ASSERT Condition
+            ### ASSERT SemanticCondition
             It mentions a helpful tone
             """;
 

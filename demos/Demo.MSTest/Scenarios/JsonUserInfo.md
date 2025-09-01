@@ -6,7 +6,7 @@ Give me user info as JSON
 ## [AGENT]
 {"name": "John", "age": 30, "city": "New York"}
 
-### ASSERT JsonStructure
+### ASSERT JsonCheck
 {
   "name": ["NotEmpty"],
   "age": ["GreaterThan", 0],

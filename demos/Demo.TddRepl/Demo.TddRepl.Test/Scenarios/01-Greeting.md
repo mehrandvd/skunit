@@ -6,5 +6,5 @@ Hi
 ## [AGENT]
 Hi, How are you?
 
-### ASSERT Condition
+### ASSERT SemanticCondition
 It's a greeting or expresses a positive sentiment.

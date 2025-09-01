@@ -73,60 +73,6 @@ namespace skUnit.Tests.ParseTests
             Assert.Equal("Condition", assistantItem.Assertions[1].AssertionType);
         }
 
-        [Fact]
-        public void KernelAssertionParser_ParsesSynonyms()
-        {
-            // Test JsonStructure synonym
-            var jsonAssertion = KernelAssertionParser.Parse("{\"test\": \"value\"}", "JsonStructure");
-            Assert.Equal("JsonCheck", jsonAssertion.AssertionType);
 
-            // Test Condition synonym
-            var conditionAssertion = KernelAssertionParser.Parse("It should be positive", "Condition");
-            Assert.Equal("Condition", conditionAssertion.AssertionType);
-
-            // Test Similar synonym
-            var similarAssertion = KernelAssertionParser.Parse("Test response", "Similar");
-            Assert.Equal("SemanticSimilar", similarAssertion.AssertionType);
-
-            // Test ContainsText synonym
-            var containsAssertion = KernelAssertionParser.Parse("test,value", "ContainsText");
-            Assert.Equal("ContainsAll", containsAssertion.AssertionType);
-
-            // Test ToolCall synonym
-            var toolCallAssertion = KernelAssertionParser.Parse("{\"function\": \"test\"}", "ToolCall");
-            Assert.Equal("FunctionCall", toolCallAssertion.AssertionType);
-        }
-
-        [Fact]
-        public void ChatScenarioParser_ParsesAssertWithSynonyms()
-        {
-            // Arrange
-            const string scenarioText = """
-            # SCENARIO Synonym Test
-
-            ## [USER]
-            Create a JSON response
-
-            ## [ASSISTANT]
-            {"name": "John", "age": 30}
-
-            ### ASSERT JsonStructure
-            {
-              "name": ["NotEmpty"],
-              "age": ["Equal", 30]
-            }
-            """;
-
-            var parser = new ChatScenarioParser();
-
-            // Act
-            var scenarios = parser.Parse(scenarioText);
-
-            // Assert
-            Assert.Single(scenarios);
-            var assistantItem = scenarios[0].ChatItems.First(x => x.Role == ChatRole.Assistant);
-            Assert.Single(assistantItem.Assertions);
-            Assert.Equal("JsonCheck", assistantItem.Assertions[0].AssertionType);
-        }
     }
 }

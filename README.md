@@ -26,7 +26,7 @@ What is the tallest mountain?
 ## [ASSISTANT]
 The tallest mountain is Everest! (OPTIONAL)
 
-### ASSERT Condition
+### ASSERT SemanticCondition
 It mentions Mount Everest.
 ```
 

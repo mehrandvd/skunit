@@ -9,25 +9,25 @@ Yes it is a very good day
 ### CHECK SemanticCondition
 Its vibe is positive
 
-### ASSERT Condition
+### ASSERT SemanticCondition
 Its vibe is positive
 
 ### CHECK SemanticSimilar
 It is a beautiful day
 
-### ASSERT Similar
+### ASSERT SemanticSimilar
 It is a beautiful day
 
 ### CHECK Contains
 day
 
-### ASSERT ContainsText
+### ASSERT ContainsAll
 day
 
 ### CHECK Equals
 Yes it is a very good day
 
-### ASSERT ExactMatch
+### ASSERT Equals
 Yes it is a very good day
 ```
 
@@ -286,64 +286,5 @@ It checks if the argument value is similar in meaning to the given text:
 }
 ```
 
-## Assertion Name Synonyms
 
-For improved readability, skUnit supports descriptive synonyms for assertion types. Both the original names and synonyms work identically:
-
-### JSON Structure Validation
-- `JsonStructure` → `JsonCheck`
-- `Json` → `JsonCheck`
-
-```md
-### ASSERT JsonStructure
-{
-  "name": ["NotEmpty"],
-  "age": ["Equal", 25]
-}
-```
-
-### Semantic Conditions
-- `Condition` → `SemanticCondition`
-
-```md
-### ASSERT Condition
-Response shows a positive attitude
-```
-
-### Semantic Similarity
-- `Similar` → `SemanticSimilar`
-
-```md
-### ASSERT Similar
-Great weather today!
-```
-
-### Text Content Verification
-- `ContainsText` → `ContainsAll`
-
-```md
-### ASSERT ContainsText
-sunny, warm, nice
-```
-
-### Function/Tool Call Verification
-- `ToolCall` → `FunctionCall`
-- `FunctionInvocation` → `FunctionCall`
-
-```md
-### ASSERT ToolCall
-{
-  "function_name": "GetWeather"
-}
-```
-
-### Exact Text Matching
-- `ExactMatch` → `Equals`
-
-```md
-### ASSERT ExactMatch
-Hello, how can I help you?
-```
-
-Using synonyms makes scenarios more readable while maintaining full compatibility with existing assertion names.
 ``````
