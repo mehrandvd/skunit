@@ -18,25 +18,25 @@ namespace skUnit.Scenarios.Parsers
         {
             return type.Trim().ToLower() switch
             {
-                "semanticcondition" or "semantic-condition"
+                "semanticcondition" or "semantic-condition" or "condition"
                     => new HasConditionAssertion() { Condition = text },
-                "semanticsimilar" or "semantic-similar"
+                "semanticsimilar" or "semantic-similar" or "similar"
                     => new AreSimilarAssertion() { ExpectedAnswer = text },
-                "contains" or "contain" or "containsall"
+                "contains" or "contain" or "containsall" or "containstext"
                     => new ContainsAllAssertion() { Texts = text.Split(',', '،') },
-                "containsany"
+                "containsany" or "containsanyof"
                     => new ContainsAnyAssertion() { Texts = text.Split(',', '،') },
-                "equal" or "equals"
+                "equal" or "equals" or "exactmatch"
                     => new EqualsAssertion() { ExpectedAnswer = text },
-                "jsoncheck"
+                "jsoncheck" or "jsonstructure" or "json"
                     => new JsonCheckAssertion().SetJsonAssertText(text),
-                "functioncall"
+                "functioncall" or "functioninvocation" or "toolcall"
                     => new FunctionCallAssertion().SetJsonAssertText(text),
-                "empty"
+                "empty" or "isempty"
                     => new EmptyAssertion(),
-                "notempty"
+                "notempty" or "notEmpty" or "hasvalue"
                     => new NotEmptyAssertion(),
-                "isanyof"
+                "isanyof" or "oneOf" or "anyof"
                     => new IsAnyOfAssertion() { Texts = text.Split(',', '،') },
 
                 _ => throw new InvalidOperationException($"Not valid assert type: {type}")
