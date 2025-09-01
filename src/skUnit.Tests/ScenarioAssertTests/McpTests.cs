@@ -35,7 +35,7 @@ namespace skUnit.Tests.ScenarioAssertTests
 
             var tools = await client.ListToolsAsync();
 
-            var builder = new ChatClientBuilder(BaseChatClient)
+            var builder = new ChatClientBuilder(SystemUnderTestClient)
                           .ConfigureOptions(options =>
                           {
                               options.Tools ??= [.. tools];
@@ -45,7 +45,7 @@ namespace skUnit.Tests.ScenarioAssertTests
             var chatClient = builder.Build();
 
             var scenarios = await LoadChatScenarioAsync("GetCurrentTimeMcp");
-            await ChatScenarioRunner.RunAsync(scenarios, chatClient);
+            await ScenarioRunner.RunAsync(scenarios, chatClient);
         }
     }
 

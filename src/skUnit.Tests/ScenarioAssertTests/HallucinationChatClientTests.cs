@@ -17,9 +17,9 @@ namespace skUnit.Tests.ScenarioAssertTests
         public async Task EiffelTallChat_MustWork()
         {
             var scenarios = await LoadChatScenarioAsync("EiffelTallChat");
-            await ChatScenarioRunner.RunAsync(
+            await ScenarioRunner.RunAsync(
                 scenarios,
-                BaseChatClient,
+                SystemUnderTestClient,
                 options: new ScenarioRunOptions
                 {
                     TotalRuns = 3,
@@ -33,9 +33,9 @@ namespace skUnit.Tests.ScenarioAssertTests
         public async Task FunctionCall_MustWork()
         {
             var scenarios = await LoadChatScenarioAsync("GetFoodMenuChat");
-            await ChatScenarioRunner.RunAsync(
+            await ScenarioRunner.RunAsync(
                 scenarios,
-                BaseChatClient,
+                SystemUnderTestClient,
                 options: new ScenarioRunOptions
                 {
                     TotalRuns = 3,
@@ -45,7 +45,7 @@ namespace skUnit.Tests.ScenarioAssertTests
             {
                 AIFunction getFoodMenu = AIFunctionFactory.Create(GetFoodMenu);
 
-                var result = await BaseChatClient.GetResponseAsync(
+                var result = await SystemUnderTestClient.GetResponseAsync(
                     history,
                     options: new ChatOptions
                     {
@@ -62,7 +62,7 @@ namespace skUnit.Tests.ScenarioAssertTests
         {
             var scenarios = await LoadChatScenarioAsync("GetFoodMenuChatJson");
 
-            var builder = new ChatClientBuilder(BaseChatClient)
+            var builder = new ChatClientBuilder(SystemUnderTestClient)
                 .ConfigureOptions(options =>
                 {
                     options.Tools ??= [];
@@ -73,7 +73,7 @@ namespace skUnit.Tests.ScenarioAssertTests
 
             var chatClient = builder.Build();
 
-            await ChatScenarioRunner.RunAsync(scenarios, chatClient,
+            await ScenarioRunner.RunAsync(scenarios, chatClient,
                 options: new ScenarioRunOptions
                 {
                     TotalRuns = 3,

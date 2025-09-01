@@ -16,6 +16,10 @@ namespace skUnit
     /// <summary>
     /// Runner for executing chat-based test scenarios defined in markdown format.
     /// This class contains various methods to run and validate chat scenarios against AI chat clients.
+    /// 
+    /// The ChatScenarioRunner uses two different clients:
+    /// 1. Assertion Client: Passed to the constructor - used for semantic evaluations and assertions
+    /// 2. System Under Test Client: Passed to RunAsync - the client whose behavior is being tested
     /// </summary>
     public partial class ChatScenarioRunner
     {
@@ -23,22 +27,24 @@ namespace skUnit
         private Semantic Semantic { get; set; }
 
         /// <summary>
-        /// Creates a new ChatScenarioRunner with a ChatClient and logger.
-        /// Pass your pre-configured ChatClient and ILogger to this constructor.
+        /// Creates a new ChatScenarioRunner with an assertion client and logger.
         /// </summary>
-        public ChatScenarioRunner(IChatClient chatClient, ILogger<ChatScenarioRunner>? logger = null)
+        /// <param name="assertionClient">The chat client used for semantic evaluations and assertions (not the system under test)</param>
+        /// <param name="logger">Optional logger for test execution output</param>
+        public ChatScenarioRunner(IChatClient assertionClient, ILogger<ChatScenarioRunner>? logger = null)
         {
-            Semantic = new Semantic(chatClient);
+            Semantic = new Semantic(assertionClient);
             _logger = logger ?? NullLogger<ChatScenarioRunner>.Instance;
         }
 
         /// <summary>
-        /// Creates a new ChatScenarioRunner with a ChatClient and action-based logging.
-        /// Pass your pre-configured ChatClient to this constructor.
+        /// Creates a new ChatScenarioRunner with an assertion client and action-based logging.
         /// </summary>
-        public ChatScenarioRunner(IChatClient chatClient, Action<string>? onLog)
+        /// <param name="assertionClient">The chat client used for semantic evaluations and assertions (not the system under test)</param>
+        /// <param name="onLog">Optional action for logging test execution output</param>
+        public ChatScenarioRunner(IChatClient assertionClient, Action<string>? onLog)
         {
-            Semantic = new Semantic(chatClient);
+            Semantic = new Semantic(assertionClient);
             _logger = onLog != null ? new DelegateLoggerAdapter<ChatScenarioRunner>(onLog) : NullLogger<ChatScenarioRunner>.Instance;
         }
 

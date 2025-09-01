@@ -16,7 +16,7 @@ namespace skUnit.Tests.ScenarioAssertTests
         public async Task EiffelTallChat_MustWork()
         {
             var scenarios = await LoadChatScenarioAsync("EiffelTallChat");
-            await ChatScenarioRunner.RunAsync(scenarios, BaseChatClient);
+            await ScenarioRunner.RunAsync(scenarios, SystemUnderTestClient);
         }
 
 
@@ -24,11 +24,11 @@ namespace skUnit.Tests.ScenarioAssertTests
         public async Task FunctionCall_MustWork()
         {
             var scenarios = await LoadChatScenarioAsync("GetFoodMenuChat");
-            await ChatScenarioRunner.RunAsync(scenarios, BaseChatClient, getAnswerFunc: async history =>
+            await ScenarioRunner.RunAsync(scenarios, SystemUnderTestClient, getAnswerFunc: async history =>
             {
                 AIFunction getFoodMenu = AIFunctionFactory.Create(GetFoodMenu);
 
-                var result = await BaseChatClient.GetResponseAsync(
+                var result = await SystemUnderTestClient.GetResponseAsync(
                     history,
                     options: new ChatOptions
                     {
@@ -45,7 +45,7 @@ namespace skUnit.Tests.ScenarioAssertTests
         {
             var scenarios = await LoadChatScenarioAsync("GetFoodMenuChatJson");
 
-            var builder = new ChatClientBuilder(BaseChatClient)
+            var builder = new ChatClientBuilder(SystemUnderTestClient)
                 .ConfigureOptions(options =>
                 {
                     options.Tools ??= [];
@@ -56,7 +56,7 @@ namespace skUnit.Tests.ScenarioAssertTests
 
             var chatClient = builder.Build();
 
-            await ChatScenarioRunner.RunAsync(scenarios, chatClient);
+            await ScenarioRunner.RunAsync(scenarios, chatClient);
         }
 
 

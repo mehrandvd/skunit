@@ -16,8 +16,8 @@ public class SemanticTestBase
     protected readonly string ApiKey;
     protected readonly string Endpoint;
     protected readonly string DeploymentName;
-    protected IChatClient BaseChatClient { get; set; }
-    protected ChatScenarioRunner ChatScenarioRunner { get; set; }
+    protected IChatClient SystemUnderTestClient { get; set; }
+    protected ChatScenarioRunner ScenarioRunner { get; set; }
     protected SemanticAssert SemanticAssert { get; set; }
 
     protected ITestOutputHelper Output { get; set; }
@@ -42,26 +42,23 @@ public class SemanticTestBase
             Configuration["AzureOpenAI_Deployment"] ??
             throw new Exception("No Deployment is provided.");
 
-        ChatScenarioRunner = new ChatScenarioRunner(
-            new AzureOpenAIClient(
-                new Uri(Endpoint),
-                new System.ClientModel.ApiKeyCredential(ApiKey)
-                ).GetChatClient(DeploymentName).AsIChatClient()
-            , message => Output.WriteLine(message));
+        // Create assertion client for semantic evaluations
+        var assertionClient = new AzureOpenAIClient(
+            new Uri(Endpoint),
+            new System.ClientModel.ApiKeyCredential(ApiKey)
+            ).GetChatClient(DeploymentName).AsIChatClient();
 
-        SemanticAssert = new SemanticAssert(
-            new AzureOpenAIClient(
-                new Uri(Endpoint),
-                new System.ClientModel.ApiKeyCredential(ApiKey)
-            ).GetChatClient(DeploymentName).AsIChatClient()
-        );
+        ScenarioRunner = new ChatScenarioRunner(assertionClient, message => Output.WriteLine(message));
 
+        SemanticAssert = new SemanticAssert(assertionClient);
+
+        // Create system under test client
         var openAI = new AzureOpenAIClient(
             new Uri(Endpoint),
             new System.ClientModel.ApiKeyCredential(ApiKey)
         ).GetChatClient(DeploymentName).AsIChatClient();
 
-        BaseChatClient = new ChatClientBuilder(openAI)
+        SystemUnderTestClient = new ChatClientBuilder(openAI)
             .Build();
     }
 
