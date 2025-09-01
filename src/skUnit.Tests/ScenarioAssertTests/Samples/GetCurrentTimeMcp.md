@@ -6,10 +6,10 @@ What time is it?
 ## [ASSISTANT]
 10:23
 
-### CHECK SemanticCondition
+### ASSERT Condition
 It mentions a time.
 
-### CHECK FunctionCall
+### ASSERT ToolCall
 ```json
 {
 	"function_name": "getTime",

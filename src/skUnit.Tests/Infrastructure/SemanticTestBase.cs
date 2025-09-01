@@ -17,7 +17,7 @@ public class SemanticTestBase
     protected readonly string Endpoint;
     protected readonly string DeploymentName;
     protected IChatClient BaseChatClient { get; set; }
-    protected ScenarioAssert ScenarioAssert { get; set; }
+    protected ChatScenarioRunner ChatScenarioRunner { get; set; }
     protected SemanticAssert SemanticAssert { get; set; }
 
     protected ITestOutputHelper Output { get; set; }
@@ -42,7 +42,7 @@ public class SemanticTestBase
             Configuration["AzureOpenAI_Deployment"] ??
             throw new Exception("No Deployment is provided.");
 
-        ScenarioAssert = new ScenarioAssert(
+        ChatScenarioRunner = new ChatScenarioRunner(
             new AzureOpenAIClient(
                 new Uri(Endpoint),
                 new System.ClientModel.ApiKeyCredential(ApiKey)

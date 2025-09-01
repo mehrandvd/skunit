@@ -176,7 +176,7 @@ public class ParseChatScenarioTests
                            ## [AGENT]
                            It's 10:00 AM
 
-                           ### CHECK FunctionCall
+                           ### ASSERT ToolCall
                            ```json
                            {
                             "function_name": "GetCurrentTime",

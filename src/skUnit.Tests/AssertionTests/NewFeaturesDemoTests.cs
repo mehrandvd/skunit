@@ -26,7 +26,7 @@ namespace skUnit.Tests.AssertionTests
             ### ASSERT ContainsText
             well, help
 
-            ### CHECK SemanticCondition
+            ### ASSERT Condition
             It mentions a helpful tone
             """;
 
@@ -38,10 +38,10 @@ namespace skUnit.Tests.AssertionTests
             // Assert
             Assert.Single(scenarios);
             Assert.Equal("Simple Greeting Test", scenarios[0].Description);
-            
+
             var assistantItem = scenarios[0].ChatItems.First(x => x.Role == ChatRole.Assistant);
             Assert.Equal(3, assistantItem.Assertions.Count);
-            
+
             // Verify different assertion types work
             Assert.Equal("Condition", assistantItem.Assertions[0].AssertionType);
             Assert.Equal("ContainsAll", assistantItem.Assertions[1].AssertionType);

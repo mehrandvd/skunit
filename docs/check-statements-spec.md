@@ -1,5 +1,7 @@
-# CHECK Statement
-The `CHECK` statement is used to **verify** the quality of an output by comparing it with some **criteria**. For example:
+# CHECK Statement and ASSERT Keyword
+
+The `CHECK` statement (and the new `ASSERT` keyword) is used to **verify** the quality of an output by comparing it with some **criteria**. Both keywords work identically - use whichever you prefer:
+
 ```md
 ## ANSWER
 Yes it is a very good day
@@ -7,15 +9,29 @@ Yes it is a very good day
 ### CHECK SemanticCondition
 Its vibe is positive
 
+### ASSERT Condition
+Its vibe is positive
+
 ### CHECK SemanticSimilar
+It is a beautiful day
+
+### ASSERT Similar
 It is a beautiful day
 
 ### CHECK Contains
 day
 
+### ASSERT ContainsText
+day
+
 ### CHECK Equals
 Yes it is a very good day
+
+### ASSERT ExactMatch
+Yes it is a very good day
 ```
+
+Both `CHECK` and `ASSERT` keywords work identically. The `ASSERT` keyword was introduced for better readability and consistency with common testing terminology.
 
 In this example, the expected answer is something like "Yes it is a very good day", but the actual answer could be anything. To verify the actual output, you can use different types of checks. In this document, we are going to **explain** each of them in detail.
 
@@ -269,4 +285,65 @@ It checks if the argument value is similar in meaning to the given text:
   }
 }
 ```
+
+## Assertion Name Synonyms
+
+For improved readability, skUnit supports descriptive synonyms for assertion types. Both the original names and synonyms work identically:
+
+### JSON Structure Validation
+- `JsonStructure` → `JsonCheck`
+- `Json` → `JsonCheck`
+
+```md
+### ASSERT JsonStructure
+{
+  "name": ["NotEmpty"],
+  "age": ["Equal", 25]
+}
+```
+
+### Semantic Conditions
+- `Condition` → `SemanticCondition`
+
+```md
+### ASSERT Condition
+Response shows a positive attitude
+```
+
+### Semantic Similarity
+- `Similar` → `SemanticSimilar`
+
+```md
+### ASSERT Similar
+Great weather today!
+```
+
+### Text Content Verification
+- `ContainsText` → `ContainsAll`
+
+```md
+### ASSERT ContainsText
+sunny, warm, nice
+```
+
+### Function/Tool Call Verification
+- `ToolCall` → `FunctionCall`
+- `FunctionInvocation` → `FunctionCall`
+
+```md
+### ASSERT ToolCall
+{
+  "function_name": "GetWeather"
+}
+```
+
+### Exact Text Matching
+- `ExactMatch` → `Equals`
+
+```md
+### ASSERT ExactMatch
+Hello, how can I help you?
+```
+
+Using synonyms makes scenarios more readable while maintaining full compatibility with existing assertion names.
 ``````

@@ -45,7 +45,7 @@ namespace skUnit.Tests.ScenarioAssertTests
             var chatClient = builder.Build();
 
             var scenarios = await LoadChatScenarioAsync("GetCurrentTimeMcp");
-            await ScenarioAssert.PassAsync(scenarios, chatClient);
+            await ChatScenarioRunner.RunAsync(scenarios, chatClient);
         }
     }
 

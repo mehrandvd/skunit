@@ -26,7 +26,7 @@ What is the tallest mountain?
 ## [ASSISTANT]
 The tallest mountain is Everest! (OPTIONAL)
 
-### CHECK SemanticCondition
+### ASSERT Condition
 It mentions Mount Everest.
 ```
 
@@ -39,7 +39,8 @@ public async Task TestGreeting()
     var markdown = File.ReadAllText("greeting.md");
     var scenarios = ChatScenario.LoadFromText(markdown);
     
-    await ScenarioAssert.PassAsync(scenarios, myChatClient);
+    var runner = new ChatScenarioRunner(myChatClient);
+    await runner.RunAsync(scenarios, myChatClient);
 }
 ```
 
@@ -204,7 +205,8 @@ var chatClient = new ChatClientBuilder(baseChatClient)
     .UseFunctionInvocation()
     .Build();
 
-await ScenarioAssert.PassAsync(scenarios, chatClient);
+var runner = new ChatScenarioRunner(baseChatClient);
+await runner.RunAsync(scenarios, chatClient);
 ```
 
 ## 🚀 Installation & Setup
@@ -220,7 +222,7 @@ dotnet add package skUnit
 ```csharp
 public class MyChatTests
 {
-    private readonly ScenarioAssert _scenarioAssert;
+    private readonly ChatScenarioRunner _scenarioRunner;
     private readonly IChatClient _chatClient;
 
     public MyChatTests(ITestOutputHelper output)
@@ -230,7 +232,7 @@ public class MyChatTests
             .GetChatClient(deploymentName)
             .AsIChatClient();
             
-        _scenarioAssert = new ScenarioAssert(_chatClient, output.WriteLine);
+        _scenarioRunner = new ChatScenarioRunner(_chatClient, output.WriteLine);
     }
 
     [Fact]
@@ -239,7 +241,7 @@ public class MyChatTests
         var markdown = File.ReadAllText("scenario.md");
         var scenarios = ChatScenario.LoadFromText(markdown);
         
-        await _scenarioAssert.PassAsync(scenarios, _chatClient);
+        await _scenarioRunner.RunAsync(scenarios, _chatClient);
     }
 }
 ```
@@ -287,7 +289,8 @@ public async Task TestGreeting()
     var markdown = File.ReadAllText("greeting.md");
     var scenarios = ChatScenario.LoadFromText(markdown);
     
-    await ScenarioAssert.PassAsync(scenarios, myChatClient);
+    var runner = new ChatScenarioRunner(myChatClient);
+    await runner.RunAsync(scenarios, myChatClient);
 }
 ```
 
@@ -296,13 +299,13 @@ public async Task TestGreeting()
 [TestMethod]
 public async Task TestGreeting()
 {
-    var scenarioAssert = new ScenarioAssert(myChatClient, TestContext.WriteLine);
+    var scenarioRunner = new ChatScenarioRunner(myChatClient, TestContext.WriteLine);
     
     var scenarios = await ChatScenario.LoadFromResourceAsync(
         "MyProject.Scenarios.greeting.md", 
         typeof(MyTestClass).Assembly);
         
-    await scenarioAssert.PassAsync(scenarios);
+    await scenarioRunner.RunAsync(scenarios);
 }
 ```
 
@@ -314,7 +317,8 @@ public async Task TestGreeting()
     var markdown = File.ReadAllText("greeting.md");
     var scenarios = ChatScenario.LoadFromText(markdown);
     
-    await ScenarioAssert.PassAsync(scenarios, myChatClient);
+    var runner = new ChatScenarioRunner(myChatClient);
+    await runner.RunAsync(scenarios, myChatClient);
 }
 ```
 
@@ -349,7 +353,8 @@ var options = new ScenarioRunOptions
     MinSuccessRate = 0.67 // At least 2 of 3 runs must pass
 };
 
-await ScenarioAssert.PassAsync(scenarios, chatClient, options: options);
+var runner = new ChatScenarioRunner(chatClient);
+await runner.RunAsync(scenarios, chatClient, options: options);
 ```
 
 Recommended starting points:
