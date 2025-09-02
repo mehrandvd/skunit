@@ -41,13 +41,9 @@ public class ParseChatScenarioTests
                 
                 """;
 
-        var scenarios = ChatScenario.LoadFromText(scenarioText);
+        var scenario = ChatScenario.LoadFromText(scenarioText);
 
-        Assert.NotEmpty(scenarios);
-
-        var first = scenarios.First();
-
-        Assert.Equal(6, first.ChatItems.Count);
+        Assert.Equal(6, scenario.ChatItems.Count);
     }
 
     [Fact]
@@ -85,13 +81,13 @@ public class ParseChatScenarioTests
                 
                 """;
 
-        var scenarios = ChatScenario.LoadFromText(scenarioText);
+        var scenario = ChatScenario.LoadFromText(scenarioText);
 
-        Assert.NotEmpty(scenarios);
 
-        var first = scenarios.First();
 
-        Assert.Equal(6, first.ChatItems.Count);
+        // Direct access to scenario now;
+
+        Assert.Equal(6, scenario.ChatItems.Count);
     }
 
     [Fact]
@@ -145,19 +141,19 @@ public class ParseChatScenarioTests
                 
                 """;
 
-        var scenarios = ChatScenario.LoadFromText(scenarioText);
+        var scenario = ChatScenario.LoadFromText(scenarioText);
 
-        Assert.NotEmpty(scenarios);
 
-        var first = scenarios.First();
 
-        Assert.Equal(2, first.ChatItems.Count);
+        // Direct access to scenario now;
 
-        var userChatItem = first.ChatItems.ElementAt(0);
+        Assert.Equal(2, scenario.ChatItems.Count);
+
+        var userChatItem = scenario.ChatItems.ElementAt(0);
         Assert.Single(userChatItem.FunctionCalls);
         Assert.Equal(2, userChatItem.FunctionCalls.First().Assertions.Count);
 
-        var agentChatItem = first.ChatItems.ElementAt(1);
+        var agentChatItem = scenario.ChatItems.ElementAt(1);
         Assert.Equal(2, agentChatItem.Assertions.Count);
         Assert.Equal("Content", agentChatItem.FunctionCalls.First().PluginName);
         Assert.Equal("GetIntent", agentChatItem.FunctionCalls.First().FunctionName);
@@ -184,15 +180,15 @@ public class ParseChatScenarioTests
                            ```
                            """;
 
-        var scenarios = ChatScenario.LoadFromText(scenarioText);
+        var scenario = ChatScenario.LoadFromText(scenarioText);
 
-        Assert.NotEmpty(scenarios);
 
-        var first = scenarios.First();
 
-        Assert.Equal(2, first.ChatItems.Count);
+        // Direct access to scenario now;
 
-        var lastChatItem = first.ChatItems.Last();
+        Assert.Equal(2, scenario.ChatItems.Count);
+
+        var lastChatItem = scenario.ChatItems.Last();
         Assert.Equal(
             "GetCurrentTime",
             lastChatItem.Assertions
@@ -224,14 +220,14 @@ public class ParseChatScenarioTests
                            There are 2 scenarios in the picture
                            """;
 
-        var scenarios = ChatScenario.LoadFromText(scenarioText);
+        var scenario = ChatScenario.LoadFromText(scenarioText);
 
-        Assert.NotEmpty(scenarios);
 
-        var first = scenarios.First();
-        Assert.Equal(2, first.ChatItems.Count);
 
-        var userChatItem = first.ChatItems.First();
+        // Direct access to scenario now;
+        Assert.Equal(2, scenario.ChatItems.Count);
+
+        var userChatItem = scenario.ChatItems.First();
         Assert.Equal(3, userChatItem.Contents.Count);
 
         // Check first text part
@@ -250,7 +246,7 @@ public class ParseChatScenarioTests
         Assert.Contains("How many scenarios", secondTextContent.Text);
 
         // Check agent response (should be plain text)
-        var agentChatItem = first.ChatItems[1];
+        var agentChatItem = scenario.ChatItems[1];
         Assert.Single(agentChatItem.Contents);
         var agentTextContent = agentChatItem.Contents[0] as TextContent;
         Assert.NotNull(agentTextContent);
@@ -271,14 +267,14 @@ public class ParseChatScenarioTests
                            I can see the image.
                            """;
 
-        var scenarios = ChatScenario.LoadFromText(scenarioText);
+        var scenario = ChatScenario.LoadFromText(scenarioText);
 
-        Assert.NotEmpty(scenarios);
 
-        var first = scenarios.First();
-        Assert.Equal(2, first.ChatItems.Count);
 
-        var userChatItem = first.ChatItems.First();
+        // Direct access to scenario now;
+        Assert.Equal(2, scenario.ChatItems.Count);
+
+        var userChatItem = scenario.ChatItems.First();
         Assert.Single(userChatItem.Contents);
 
         var imageContent = userChatItem.Contents[0] as UriContent;
@@ -299,14 +295,14 @@ public class ParseChatScenarioTests
                            Plain text response
                            """;
 
-        var scenarios = ChatScenario.LoadFromText(scenarioText);
+        var scenario = ChatScenario.LoadFromText(scenarioText);
 
-        Assert.NotEmpty(scenarios);
 
-        var first = scenarios.First();
-        Assert.Equal(2, first.ChatItems.Count);
 
-        var userChatItem = first.ChatItems.First();
+        // Direct access to scenario now;
+        Assert.Equal(2, scenario.ChatItems.Count);
+
+        var userChatItem = scenario.ChatItems.First();
         Assert.Single(userChatItem.Contents);
 
         var textContent = userChatItem.Contents[0] as TextContent;
@@ -332,9 +328,9 @@ public class ParseChatScenarioTests
                            What do you see?
                            """;
 
-        var scenarios = ChatScenario.LoadFromText(scenarioText);
-        var first = scenarios.First();
-        var userChatItem = first.ChatItems.First();
+        var scenario = ChatScenario.LoadFromText(scenarioText);
+        // Direct access to scenario now;
+        var userChatItem = scenario.ChatItems.First();
 
         // Test conversion to Microsoft.Extensions.AI ChatMessage
         var chatMessage = userChatItem.ToChatMessage();
@@ -371,10 +367,8 @@ public class ParseChatScenarioTests
                            It mentions Paris as the capital.
                            """;
 
-        var scenarios = ChatScenario.LoadFromText(scenarioText);
+        var scenario = ChatScenario.LoadFromText(scenarioText);
 
-        Assert.Single(scenarios);
-        var scenario = scenarios[0];
         Assert.Equal(2, scenario.ChatItems.Count);
 
         // Check USER item
@@ -408,10 +402,8 @@ public class ParseChatScenarioTests
                            I'm doing well, thank you!
                            """;
 
-        var scenarios = ChatScenario.LoadFromText(scenarioText);
+        var scenario = ChatScenario.LoadFromText(scenarioText);
 
-        Assert.Single(scenarios);
-        var scenario = scenarios[0];
         Assert.Equal(4, scenario.ChatItems.Count);
 
         // Both AGENT and ASSISTANT should map to ChatRole.Assistant
@@ -425,7 +417,7 @@ public class ParseChatScenarioTests
     }
 
     [Fact]
-    public void ParseScenario_MultipleScenarios_AgentAndAssistant_MustWork()
+    public void ParseScenario_Single_AgentRole_MustWork()
     {
         var scenarioText = """
                            # SCENARIO Agent Test
@@ -435,34 +427,13 @@ public class ParseChatScenarioTests
 
                            ## [AGENT]
                            Hi, how can I help you?
-
-                           -----
-
-                           # SCENARIO Assistant Test
-
-                           ## [USER]  
-                           What's the weather like?
-
-                           ## [ASSISTANT]
-                           It's sunny and warm today!
                            """;
 
-        var scenarios = ChatScenario.LoadFromText(scenarioText);
+        var scenario = ChatScenario.LoadFromText(scenarioText);
 
-        Assert.Equal(2, scenarios.Count);
-
-        // First scenario with [AGENT]
-        var agentScenario = scenarios[0];
-        Assert.Equal(2, agentScenario.ChatItems.Count);
-        Assert.Equal(ChatRole.User, agentScenario.ChatItems[0].Role);
-        Assert.Equal(ChatRole.Assistant, agentScenario.ChatItems[1].Role);
-        Assert.Equal("Hi, how can I help you?", agentScenario.ChatItems[1].Content);
-
-        // Second scenario with [ASSISTANT]
-        var assistantScenario = scenarios[1];
-        Assert.Equal(2, assistantScenario.ChatItems.Count);
-        Assert.Equal(ChatRole.User, assistantScenario.ChatItems[0].Role);
-        Assert.Equal(ChatRole.Assistant, assistantScenario.ChatItems[1].Role);
-        Assert.Equal("It's sunny and warm today!", assistantScenario.ChatItems[1].Content);
+        Assert.Equal(2, scenario.ChatItems.Count);
+        Assert.Equal(ChatRole.User, scenario.ChatItems[0].Role);
+        Assert.Equal(ChatRole.Assistant, scenario.ChatItems[1].Role);
+        Assert.Equal("Hi, how can I help you?", scenario.ChatItems[1].Content);
     }
 }

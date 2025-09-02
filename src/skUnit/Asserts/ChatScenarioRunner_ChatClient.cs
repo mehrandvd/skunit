@@ -167,39 +167,8 @@ namespace skUnit
         /// <param name="chatClient"></param>
         /// <param name="getAnswerFunc"></param>
         /// <param name="chatHistory"></param>
-        /// <returns></returns>
-        /// <exception cref="InvalidOperationException">If the AI client was unable to generate a valid response.</exception>
-        public async Task RunAsync(List<ChatScenario> scenarios, IChatClient? chatClient = null, Func<IList<ChatMessage>, Task<ChatResponse>>? getAnswerFunc = null, IList<ChatMessage>? chatHistory = null, ScenarioRunOptions? options = null)
-        {
-            foreach (var scenario in scenarios)
-            {
-                await RunAsync(scenario, chatClient, getAnswerFunc, chatHistory, options);
-                Log();
-                Log("----------------------------------");
-                Log();
-            }
-        }
-
-        /// <summary>
-        /// Runs all of the <paramref name="scenarios"/> against the given <paramref name="kernel"/>
-        /// using its ChatCompletionService.
-        /// If you want to test using something other than ChatCompletionService (for example using your own function),
-        /// pass <paramref name="getAnswerFunc"/> and specify how do you want the answer be created from chat history like:
-        /// <code>
-        /// getAnswerFunc = async history =>
-        ///     await AnswerChatFunction.InvokeAsync(kernel, new KernelArguments()
-        ///     {
-        ///         ["history"] = history,
-        ///     });
-        /// </code>
-        /// </summary>
-        /// <param name="scenarios"></param>
-        /// <param name="kernel"></param>
-        /// <param name="chatHistory"></param>
-        /// <returns></returns>
-        /// <exception cref="InvalidOperationException">If the AI client was unable to generate a valid response.</exception>
         [Experimental("SKEXP0001")]
-        public async Task RunAsync(List<ChatScenario> scenarios, Kernel kernel, IList<ChatMessage>? chatHistory = null, ScenarioRunOptions? options = null)
+        public async Task RunAsync(ChatScenario scenario, Kernel kernel, IList<ChatMessage>? chatHistory = null, ScenarioRunOptions? options = null)
         {
             var completionService = kernel.GetRequiredService<IChatCompletionService>();
             var innerClient = completionService.AsChatClient();
@@ -217,13 +186,7 @@ namespace skUnit
 
             var chatClient = builder.Build();
 
-            await RunAsync(scenarios, chatClient, null, chatHistory, options);
-        }
-
-        [Experimental("SKEXP0001")]
-        public async Task RunAsync(ChatScenario scenarios, Kernel kernel, IList<ChatMessage>? chatHistory = null, ScenarioRunOptions? options = null)
-        {
-            await RunAsync([scenarios], kernel, chatHistory, options);
+            await RunAsync(scenario, chatClient, null, chatHistory, options);
         }
     }
 }
