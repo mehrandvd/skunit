@@ -33,13 +33,12 @@ namespace skUnit.Tests.AssertionTests
             var parser = new ChatScenarioParser();
 
             // Act
-            var scenarios = parser.Parse(scenarioText);
+            var scenario = parser.Parse(scenarioText);
 
             // Assert
-            Assert.Single(scenarios);
-            Assert.Equal("Simple Greeting Test", scenarios[0].Description);
+            Assert.Equal("Simple Greeting Test", scenario.Description);
 
-            var assistantItem = scenarios[0].ChatItems.First(x => x.Role == ChatRole.Assistant);
+            var assistantItem = scenario.ChatItems.First(x => x.Role == ChatRole.Assistant);
             Assert.Equal(3, assistantItem.Assertions.Count);
 
             // Verify different assertion types work

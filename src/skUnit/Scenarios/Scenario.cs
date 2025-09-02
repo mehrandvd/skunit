@@ -10,14 +10,14 @@ namespace skUnit.Scenarios
 {
     public class Scenario<TScenario, TScenarioParser> where TScenarioParser : IScenarioParser<TScenario>, new()
     {
-        public static List<TScenario> LoadFromText(string text)
+        public static TScenario LoadFromText(string text)
         {
             var parser = new TScenarioParser();
             var scenario = parser.Parse(text);
             return scenario;
         }
 
-        public static async Task<List<TScenario>> LoadFromResourceAsync(string resource, Assembly assembly)
+        public static async Task<TScenario> LoadFromResourceAsync(string resource, Assembly assembly)
         {
             await using Stream? stream = assembly.GetManifestResourceStream(resource);
 
