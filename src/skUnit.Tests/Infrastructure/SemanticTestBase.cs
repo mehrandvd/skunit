@@ -62,7 +62,7 @@ public class SemanticTestBase
             .Build();
     }
 
-    protected async Task<List<ChatScenario>> LoadChatScenarioAsync(string scenario)
+    protected async Task<ChatScenario> LoadChatScenarioAsync(string scenario)
     {
         return await ChatScenario.LoadFromResourceAsync($"skUnit.Tests.ScenarioAssertTests.Samples.{scenario}.md", Assembly.GetExecutingAssembly());
     }

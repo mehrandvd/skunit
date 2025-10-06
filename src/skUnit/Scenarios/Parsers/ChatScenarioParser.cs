@@ -15,96 +15,89 @@ namespace skUnit.Scenarios.Parsers
         /// </summary>
         /// <param name="text"></param>
         /// <returns></returns>
-        public List<ChatScenario> Parse(string text)
+        public ChatScenario Parse(string text)
         {
-            var scenarioTexts = Regex.Split(text, Environment.NewLine + @"-{5,}" + Environment.NewLine, RegexOptions.Multiline);
-            var scenarios = new List<ChatScenario>();
-            foreach (var testText in scenarioTexts)
+            string? currentBlock = null;
+            string? key = null;
+            var scenario = new ChatScenario() { RawText = text };
+            var specialId = "";
+
+            var md = Markdown.Parse(text);
+            var contentBuilder = new StringBuilder();
+
+            foreach (var block in md)
             {
-                string? currentBlock = null;
-                string? key = null;
-                var testCase = new ChatScenario() { RawText = testText };
-                scenarios.Add(testCase);
-                var specialId = "";
+                var blockContent = text.Substring(block.Span.Start, block.Span.Length);
 
-                var md = Markdown.Parse(testText);
-                var contentBuilder = new StringBuilder();
-
-                foreach (var block in md)
+                if (block is HeadingBlock)
                 {
-                    var blockContent = testText.Substring(block.Span.Start, block.Span.Length);
-
-                    if (block is HeadingBlock)
+                    var testInfoMatch = Regex.Match(blockContent, @$"#{{1,}}\s*(?<specialId>.*)?\s*SCENARIO\s*(?<description>.*)");
+                    if (testInfoMatch.Success)
                     {
-                        var testInfoMatch = Regex.Match(blockContent, @$"#{{1,}}\s*(?<specialId>.*)?\s*SCENARIO\s*(?<description>.*)");
-                        if (testInfoMatch.Success)
-                        {
-                            specialId = testInfoMatch.Groups["specialId"].Value.Trim();
-                            PackBlock(testCase, "SCENARIO", ref currentBlock, key, contentBuilder);
-                            contentBuilder.Append(testInfoMatch.Groups["description"].Value);
-                            continue;
-                        }
-
-                        var userMatch = Regex.Match(blockContent, @$"#{{1,}}\s*{specialId}\s*\[USER\]\s*(?<name>.*)");
-                        if (userMatch.Success)
-                        {
-                            PackBlock(testCase, "USER", ref currentBlock, key, contentBuilder);
-                            //key = promptMatch.Groups["name"].Value;
-                            continue;
-                        }
-
-                        var agentMatch = Regex.Match(blockContent, @$"#{{1,}}\s*{specialId}\s*\[(AGENT|ASSISTANT)\]\s*(?<name>.*)");
-                        if (agentMatch.Success)
-                        {
-                            var blockType = agentMatch.Groups[1].Value; // Gets "AGENT" or "ASSISTANT"
-                            PackBlock(testCase, blockType, ref currentBlock, key, contentBuilder);
-                            //key = promptMatch.Groups["name"].Value;
-                            continue;
-                        }
-
-                        var callMatch = Regex.Match(blockContent, @$"#{{1,}}\s*{specialId}\s*CALL\s*(?<functionCall>.*)");
-                        if (callMatch.Success)
-                        {
-                            PackBlock(testCase, "CALL", ref currentBlock, key, contentBuilder);
-                            key = callMatch.Groups["functionCall"].Value;
-                            continue;
-                        }
-
-                        var checkMatch = Regex.Match(blockContent, @$"#{{1,}}\s*{specialId}\s*CHECK\s*(?<type>.*)");
-                        if (checkMatch.Success)
-                        {
-                            PackBlock(testCase, "CHECK", ref currentBlock, key, contentBuilder);
-                            key = checkMatch.Groups["type"].Value;
-                            if (string.IsNullOrWhiteSpace(key))
-                            {
-                                key = null;
-                            }
-
-                            continue;
-                        }
-
-                        var assertMatch = Regex.Match(blockContent, @$"#{{1,}}\s*{specialId}\s*ASSERT\s*(?<type>.*)");
-                        if (assertMatch.Success)
-                        {
-                            PackBlock(testCase, "ASSERT", ref currentBlock, key, contentBuilder);
-                            key = assertMatch.Groups["type"].Value;
-                            if (string.IsNullOrWhiteSpace(key))
-                            {
-                                key = null;
-                            }
-
-                            continue;
-                        }
+                        specialId = testInfoMatch.Groups["specialId"].Value.Trim();
+                        PackBlock(scenario, "SCENARIO", ref currentBlock, key, contentBuilder);
+                        contentBuilder.Append(testInfoMatch.Groups["description"].Value);
+                        continue;
                     }
 
-                    contentBuilder.AppendLine(blockContent);
+                    var userMatch = Regex.Match(blockContent, @$"#{{1,}}\s*{specialId}\s*\[USER\]\s*(?<name>.*)");
+                    if (userMatch.Success)
+                    {
+                        PackBlock(scenario, "USER", ref currentBlock, key, contentBuilder);
+                        //key = promptMatch.Groups["name"].Value;
+                        continue;
+                    }
+
+                    var agentMatch = Regex.Match(blockContent, @$"#{{1,}}\s*{specialId}\s*\[(AGENT|ASSISTANT)\]\s*(?<name>.*)");
+                    if (agentMatch.Success)
+                    {
+                        var blockType = agentMatch.Groups[1].Value; // Gets "AGENT" or "ASSISTANT"
+                        PackBlock(scenario, blockType, ref currentBlock, key, contentBuilder);
+                        //key = promptMatch.Groups["name"].Value;
+                        continue;
+                    }
+
+                    var callMatch = Regex.Match(blockContent, @$"#{{1,}}\s*{specialId}\s*CALL\s*(?<functionCall>.*)");
+                    if (callMatch.Success)
+                    {
+                        PackBlock(scenario, "CALL", ref currentBlock, key, contentBuilder);
+                        key = callMatch.Groups["functionCall"].Value;
+                        continue;
+                    }
+
+                    var checkMatch = Regex.Match(blockContent, @$"#{{1,}}\s*{specialId}\s*CHECK\s*(?<type>.*)");
+                    if (checkMatch.Success)
+                    {
+                        PackBlock(scenario, "CHECK", ref currentBlock, key, contentBuilder);
+                        key = checkMatch.Groups["type"].Value;
+                        if (string.IsNullOrWhiteSpace(key))
+                        {
+                            key = null;
+                        }
+
+                        continue;
+                    }
+
+                    var assertMatch = Regex.Match(blockContent, @$"#{{1,}}\s*{specialId}\s*ASSERT\s*(?<type>.*)");
+                    if (assertMatch.Success)
+                    {
+                        PackBlock(scenario, "ASSERT", ref currentBlock, key, contentBuilder);
+                        key = assertMatch.Groups["type"].Value;
+                        if (string.IsNullOrWhiteSpace(key))
+                        {
+                            key = null;
+                        }
+
+                        continue;
+                    }
                 }
 
-                PackBlock(testCase, "END", ref currentBlock, key, contentBuilder);
-
+                contentBuilder.AppendLine(blockContent);
             }
 
-            return scenarios;
+            PackBlock(scenario, "END", ref currentBlock, key, contentBuilder);
+
+            return scenario;
         }
 
         private static bool PackBlock(ChatScenario scenario, string newBlock, ref string? currentBlock, string? key, StringBuilder content)
