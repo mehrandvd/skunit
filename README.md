@@ -59,7 +59,7 @@ That's it! skUnit handles the conversation, calls your AI, and verifies the resp
 
 ## Key Features
 
-### 1. Start Simple: Basic Chat Scenarios
+### 1. Basic Chat Scenarios
 
 Test single interactions with basic checks:
 
@@ -76,7 +76,7 @@ mountain
 It mentions the mountain
 ```
 
-### 2. Level Up: JSON Validation
+### 2. JSON Validation
 
 Test structured responses with powerful JSON assertions:
 
@@ -99,7 +99,7 @@ Give me the most expensive product info as a JSON like this:
 }
 ```
 
-### 3. Advanced: Function Call Testing
+### 3. Function Call Testing
 
 Verify your AI calls the right functions (MCP maybe) with the right parameters:
 
@@ -158,19 +158,7 @@ It agrees that Everest is tall or expresses a positive sentiment.
 
 Each scenario can contain multiple sub-scenarios (conversation turns), and each response can have multiple ASSERT statements to verify different aspects of the AI's behavior.
 
-### 5. Readable Markdown Scenarios
-
-Your test scenarios are just **valid Markdown files** - easy to read, write, and review:
-
-![Markdown Scenario Example](https://github.com/mehrandvd/skunit/assets/5070766/53d009a9-4a0b-44dc-91e0-b0be81b4c5a7)
-
-### 6. Live Test Results
-
-Watch your tests run in real-time with beautiful, readable output:
-
-![Live Test Results](https://github.com/mehrandvd/skunit/assets/5070766/f3ef8a37-ceab-444f-b6f4-098557b61bfa)
-
-### 7. MCP Server Testing
+### 5. MCP Server Testing
 
 Test [Model Context Protocol](https://modelcontextprotocol.io/) servers to ensure your tools work correctly:
 
@@ -210,7 +198,7 @@ ScenarioRunner = new ChatScenarioRunner(assertionClient);
 await ScenarioRunner.RunAsync(scenarios, chatClient);
 ```
 
-### 8. Mitigating Hallucinations with ScenarioRunOptions
+### 6. Mitigating Hallucinations with ScenarioRunOptions
 
 LLM outputs can vary between runs. A single spurious response shouldn't fail your build if the model normally behaves correctly.
 
@@ -244,6 +232,18 @@ Only 40% of rounds passed, which is below the required success rate of 80%
 Indicates a systematic issue (not just randomness) – investigate prompt, model settings, or assertions.
 
 See full guide: [Scenario Run Options](docs/scenario-run-options.md)
+
+### 7. Readable Markdown Scenarios
+
+Your test scenarios are just **valid Markdown files** - easy to read, write, and review:
+
+![Markdown Scenario Example](https://github.com/mehrandvd/skunit/assets/5070766/53d009a9-4a0b-44dc-91e0-b0be81b4c5a7)
+
+### 8. Live Test Results
+
+Watch your tests run in real-time with beautiful, readable output:
+
+![Live Test Results](https://github.com/mehrandvd/skunit/assets/5070766/f3ef8a37-ceab-444f-b6f4-098557b61bfa)
 
 ## Installation & Setup
 
