@@ -6,14 +6,14 @@
 **skUnit** is a semantic testing framework for .NET that makes it easy to test AI-powered applications using simple, readable Markdown scenarios.
 
 Test anything that talks to AI:
-- 🤖 **IChatClient** implementations (Azure OpenAI, OpenAI, Anthropic, etc.)
-- 🧠 **SemanticKernel** applications and plugins  
-- 🔧 **MCP (Model Context Protocol) servers**
-- 🛠️ **Custom AI integrations**
+- **IChatClient** implementations (Azure OpenAI, OpenAI, Anthropic, etc.)
+- **SemanticKernel** applications and plugins  
+- **MCP (Model Context Protocol) servers**
+- **Custom AI integrations**
 
 Write your tests in **Markdown**, run them with **any test framework** (xUnit, NUnit, MSTest), and get **live, readable results**.
 
-## ⚡ Quick Start
+## Quick Start
 
 Here's a simple test scenario in Markdown:
 
@@ -55,9 +55,9 @@ What is the tallest mountain?
 It mentions Mount Everest.
 ```
 
-That's it! ✨ skUnit handles the conversation, calls your AI, and verifies the response makes sense.
+That's it! skUnit handles the conversation, calls your AI, and verifies the response makes sense.
 
-## 🎯 Key Features
+## Key Features
 
 ### 1. Start Simple: Basic Chat Scenarios
 
@@ -210,7 +210,42 @@ ScenarioRunner = new ChatScenarioRunner(assertionClient);
 await ScenarioRunner.RunAsync(scenarios, chatClient);
 ```
 
-## 🚀 Installation & Setup
+### 8. Mitigating Hallucinations with ScenarioRunOptions
+
+LLM outputs can vary between runs. A single spurious response shouldn't fail your build if the model normally behaves correctly.
+
+Use `ScenarioRunOptions` to execute each scenario multiple times and require only a percentage to pass. This adds statistical robustness without eliminating genuine regressions.
+
+```csharp
+var options = new ScenarioRunOptions
+{
+    TotalRuns = 3,        // Run the whole scenario three times
+    MinSuccessRate = 0.67 // At least 2 of 3 runs must pass
+};
+
+// In your test class constructor:
+var assertionClient = /* assertion/evaluation model */;
+ScenarioRunner = new ChatScenarioRunner(assertionClient);
+
+// In your test:
+await ScenarioRunner.RunAsync(scenarios, systemUnderTestClient, options: options);
+```
+
+Recommended starting points:
+- Deterministic / low-temp prompts: `TotalRuns = 1`, `MinSuccessRate = 1.0`
+- Function / tool invocation: `TotalRuns = 3`, `MinSuccessRate = 0.67`
+- Creative generation: `TotalRuns = 5`, `MinSuccessRate = 0.6`
+- Critical CI gating: `TotalRuns = 5`, `MinSuccessRate = 0.8`
+
+Failure message example:
+```
+Only 40% of rounds passed, which is below the required success rate of 80%
+```
+Indicates a systematic issue (not just randomness) – investigate prompt, model settings, or assertions.
+
+See full guide: [Scenario Run Options](docs/scenario-run-options.md)
+
+## Installation & Setup
 
 ### 1. Install the Package
 
@@ -259,7 +294,7 @@ Set up your AI provider credentials:
 }
 ```
 
-## 🧪 Testing Multiple MCP Servers
+## Testing Multiple MCP Servers
 
 Test complex scenarios involving multiple MCP servers working together:
 
@@ -278,7 +313,7 @@ var chatClient = new ChatClientBuilder(baseChatClient)
     .Build();
 ```
 
-## 🧪 Works with Any Test Framework
+## Works with Any Test Framework
 
 skUnit is completely test-framework agnostic! Here's the same test with different frameworks:
 
@@ -364,7 +399,7 @@ The core difference is just the logging integration - use `TestContext.WriteLine
 - **System Under Test Client**: The client whose behavior you're testing, passed to `RunAsync`
 
 
-## 📚 Documentation
+## Documentation
 
 - **[Chat Scenario Spec](docs/chat-scenario-spec.md)** - Complete guide to writing chat scenarios
 - **[ASSERT Statement Spec](docs/check-statements-spec.md)** - All available assertion types
@@ -373,58 +408,19 @@ The core difference is just the logging integration - use `TestContext.WriteLine
 - **[Multi-Modal Support](docs/multi-modal-support.md)** - Working with images and other media
 - **[Scenario Run Options](docs/scenario-run-options.md)** - Mitigate hallucinations with multi-run success thresholds
 
-## 📋 Requirements
+## Requirements
 
 - **.NET 8.0** or higher
 - **AI Provider** (Azure OpenAI, OpenAI, Anthropic, etc.) for semantic assertions
 - **Test Framework** (xUnit, NUnit, MSTest - your choice!)
 
-## 🔒 Advanced: Mitigating Hallucinations with ScenarioRunOptions
-
-LLM outputs can vary between runs. A single spurious response shouldn't fail your build if the model normally behaves correctly.
-
-Use `ScenarioRunOptions` to execute each scenario multiple times and require only a percentage to pass. This adds statistical robustness without eliminating genuine regressions.
-
-```csharp
-var options = new ScenarioRunOptions
-{
-    TotalRuns = 3,        // Run the whole scenario three times
-    MinSuccessRate = 0.67 // At least 2 of 3 runs must pass
-};
-
-// In your test class constructor:
-var assertionClient = /* assertion/evaluation model */;
-ScenarioRunner = new ChatScenarioRunner(assertionClient);
-
-// In your test:
-await ScenarioRunner.RunAsync(scenarios, systemUnderTestClient, options: options);
-```
-
-Recommended starting points:
-- Deterministic / low-temp prompts: `TotalRuns = 1`, `MinSuccessRate = 1.0`
-- Function / tool invocation: `TotalRuns = 3`, `MinSuccessRate = 0.67`
-- Creative generation: `TotalRuns = 5`, `MinSuccessRate = 0.6`
-- Critical CI gating: `TotalRuns = 5`, `MinSuccessRate = 0.8`
-
-Failure message example:
-```
-Only 40% of rounds passed, which is below the required success rate of 80%
-```
-Indicates a systematic issue (not just randomness) – investigate prompt, model settings, or assertions.
-
-See full guide: [Scenario Run Options](docs/scenario-run-options.md)
-
-## 🤝 Contributing
+## Contributing
 
 We welcome contributions! Check out our [issues](https://github.com/mehrandvd/skunit/issues) or submit a PR.
 
-## ⭐ Examples
+## Examples
 
 Check out the `/demos` folder for complete examples:
 - **Demo.TddRepl** - Interactive chat application testing
 - **Demo.TddMcp** - MCP server integration testing  
 - **Demo.TddShop** - Complex e-commerce chat scenarios
-
----
-
-Start testing your AI applications with confidence! 🎯
