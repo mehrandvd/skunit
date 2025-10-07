@@ -118,8 +118,9 @@ It's currently 2:30 PM
 }
 ```
 
-Even you can assert the called parameters:
+Even you can **assert the passed parameters**:
 
+```md
 ### ASSERT FunctionCall
 {
   "function_name": "GetFoodMenu",
@@ -127,7 +128,7 @@ Even you can assert the called parameters:
     "mood": ["Equals", "Happy"]
   }
 }
-
+```
 
 ### 4. Multi-Turn Conversations
 
