@@ -2,6 +2,7 @@
 [![Build and Deploy](https://github.com/mehrandvd/skUnit/actions/workflows/build.yml/badge.svg)](https://github.com/mehrandvd/skUnit/actions/workflows/build.yml)
 [![NuGet version (skUnit)](https://img.shields.io/nuget/v/skUnit.svg?style=flat)](https://www.nuget.org/packages/skUnit/)
 [![NuGet downloads](https://img.shields.io/nuget/dt/skUnit.svg?style=flat)](https://www.nuget.org/packages/skUnit)
+[![Ask DeepWiki](https://deepwiki.com/badge.svg)](https://deepwiki.com/mehrandvd/skunit)
 
 **skUnit** is a semantic testing framework for .NET that makes it easy to test AI-powered applications using simple, readable Markdown scenarios.
 
