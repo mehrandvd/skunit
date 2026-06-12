@@ -1,4 +1,5 @@
 ﻿using Microsoft.Extensions.AI;
+using skUnit.Exceptions;
 using skUnit.Tests.Infrastructure;
 using System.ComponentModel;
 using Xunit.Abstractions;
@@ -17,6 +18,17 @@ namespace skUnit.Tests.ScenarioAssertTests
         {
             var scenarios = await LoadChatScenarioAsync("EiffelTallChat");
             await ScenarioRunner.RunAsync(scenarios, SystemUnderTestClient);
+        }
+
+        [Fact]
+        public async Task EiffelTallChatWrong_ShouldThrow()
+        {
+            var scenarios = await LoadChatScenarioAsync("EiffelTallChatWrong");
+
+            await Assert.ThrowsAsync<SemanticAssertException>(async () =>
+            {
+                await ScenarioRunner.RunAsync(scenarios, SystemUnderTestClient);
+            });
         }
 
 

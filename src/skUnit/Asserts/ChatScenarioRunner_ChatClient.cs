@@ -78,11 +78,13 @@ namespace skUnit
                 }
             }
 
-            if (exceptions.Count * 1f / options.TotalRuns > options.MinSuccessRate)
+            var successRate = 1 - (exceptions.Count * 1f / options.TotalRuns);
+
+            if (successRate < options.MinSuccessRate)
             {
-                var message = $"Only {(options.TotalRuns - exceptions.Count) * 100 / options.TotalRuns}% of rounds passed, which is below the required success rate of {options.MinSuccessRate * 100}%";
+                var message = $"Only {(successRate * 100):F2}% of rounds passed, which is below the required success rate of {(options.MinSuccessRate * 100):F2}%";
                 Log(message);
-                throw new Exception(message);
+                throw new SemanticAssertException(message);
             }
         }
 
