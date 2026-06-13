@@ -11,12 +11,12 @@
   </PropertyGroup>
 
   <ItemGroup>
-    <EmbeddedResource Include="ScenarioAssertTests/Samples/EiffelTallChatWrong.md" />
-    <EmbeddedResource Include="ScenarioAssertTests/Samples/EiffelTallChat.md" />
-    <EmbeddedResource Include="ScenarioAssertTests/Samples/GetCurrentTimeMcp.md" />
-    <EmbeddedResource Include="ScenarioAssertTests/Samples/GetCurrentTimeChat.md" />
-    <EmbeddedResource Include="ScenarioAssertTests/Samples/GetFoodMenuChatJson.md" />
-    <EmbeddedResource Include="ScenarioAssertTests/Samples/GetFoodMenuChat.md" />
+    <EmbeddedResource Include="RunnerTests\Samples\EiffelTallChatWrong.md" />
+    <EmbeddedResource Include="RunnerTests\Samples\EiffelAndMouseChat.md" />
+    <EmbeddedResource Include="RunnerTests\Samples\GetCurrentTimeMcp.md" />
+    <EmbeddedResource Include="RunnerTests\Samples\GetFoodMenuChatJsonWrong.md" />
+    <EmbeddedResource Include="RunnerTests\Samples\GetFoodMenuChatJson.md" />
+    <EmbeddedResource Include="RunnerTests\Samples\GetFoodMenuChat.md" />
   </ItemGroup>
 
   <ItemGroup>

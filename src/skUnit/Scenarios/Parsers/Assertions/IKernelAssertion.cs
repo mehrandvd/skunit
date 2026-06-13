@@ -13,7 +13,7 @@ namespace skUnit.Scenarios.Parsers.Assertions
     /// <summary>
     /// An assertion that can be applied to the input returned by a kernel.
     /// </summary>
-    public interface IKernelAssertion
+    public interface IChatAssertion
     {
         /// <summary>
         /// Checks if the <paramref name="response"/> can pass the assertion using <paramref name="semantic"/>

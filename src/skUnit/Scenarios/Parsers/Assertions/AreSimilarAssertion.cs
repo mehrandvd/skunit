@@ -8,7 +8,7 @@ namespace skUnit.Scenarios.Parsers.Assertions;
 /// <summary>
 /// Checks if the answer is similar to ExpectedAnswer
 /// </summary>
-public class AreSimilarAssertion : IKernelAssertion
+public class AreSimilarAssertion : IChatAssertion
 {
     /// <summary>
     /// The expected answer that the actual answer should compared with.

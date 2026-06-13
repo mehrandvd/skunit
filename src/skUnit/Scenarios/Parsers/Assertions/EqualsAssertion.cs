@@ -13,7 +13,7 @@ namespace skUnit.Scenarios.Parsers.Assertions
     /// <summary>
     /// Checks if the input is equal to ExpectedAnswer
     /// </summary>
-    public class EqualsAssertion : IKernelAssertion
+    public class EqualsAssertion : IChatAssertion
     {
         /// <summary>
         /// The expected input.

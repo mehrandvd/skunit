@@ -6,7 +6,7 @@ using Microsoft.Extensions.AI;
 
 namespace skUnit.Scenarios.Parsers.Assertions
 {
-    public class JsonCheckAssertion : IKernelAssertion
+    public class JsonCheckAssertion : IChatAssertion
     {
         /// <summary>
         /// The expected conditions for a json answer.

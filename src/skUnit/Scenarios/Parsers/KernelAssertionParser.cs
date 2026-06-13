@@ -14,7 +14,7 @@ namespace skUnit.Scenarios.Parsers
         /// <param name="type"></param>
         /// <returns></returns>
         /// <exception cref="InvalidOperationException"></exception>
-        public static IKernelAssertion Parse(string text, string type)
+        public static IChatAssertion Parse(string text, string type)
         {
             return type.Trim().ToLower() switch
             {

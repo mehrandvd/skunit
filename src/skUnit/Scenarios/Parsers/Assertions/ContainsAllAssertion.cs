@@ -8,7 +8,7 @@ namespace skUnit.Scenarios.Parsers.Assertions;
 /// <summary>
 /// Checks if the input contains all of Texts
 /// </summary>
-public class ContainsAllAssertion : IKernelAssertion
+public class ContainsAllAssertion : IChatAssertion
 {
     /// <summary>
     /// The texts that should be available within the input.

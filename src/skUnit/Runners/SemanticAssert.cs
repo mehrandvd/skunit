@@ -97,7 +97,7 @@ namespace skUnit
 
             if (result is null)
             {
-                throw new SemanticAssertException("Unable to accomplish the semantic assert.");
+                throw new Exception("Unable to accomplish the semantic assert.");
             }
 
             if (result.IsValid)

@@ -8,7 +8,7 @@ namespace skUnit.Scenarios.Parsers.Assertions;
 /// <summary>
 /// Checks whether the input has the condition semantically.
 /// </summary>
-public class HasConditionAssertion : IKernelAssertion
+public class HasConditionAssertion : IChatAssertion
 {
     public required string Condition { get; set; }
 

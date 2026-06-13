@@ -8,7 +8,7 @@ namespace skUnit.Scenarios.Parsers.Assertions;
 /// <summary>
 /// Checks if the answer is not empty
 /// </summary>
-public class NotEmptyAssertion : IKernelAssertion
+public class NotEmptyAssertion : IChatAssertion
 {
     /// <summary>
     /// Checks if the <paramref name="answer"/> is not empty/>.

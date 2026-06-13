@@ -3,30 +3,11 @@
 ## [USER]
 Is Eiffel tall?
 
-## CALL MyPlugin.GetIntent
-```json
-{
-	"options": "Happy,Question,Sarcastic"
-}
-```
-
-## ASSERT ContainsAny
-Question
-
 ## [ASSISTANT]
 Yes it is
 
 ### ASSERT SemanticCondition
 Approves that eiffel tower is tall or is positive about it.
-
-## CALL MyPlugin.GetIntent
-```json
-{
-	"options": "Positive,Negative,Neutral"
-}
-```
-## ASSERT ContainsAny
-Neutral,Positive
 
 ## [USER]
 What about everest mountain?

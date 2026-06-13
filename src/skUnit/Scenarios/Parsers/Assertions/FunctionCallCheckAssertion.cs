@@ -9,7 +9,7 @@ using Markdig.Helpers;
 
 namespace skUnit.Scenarios.Parsers.Assertions
 {
-    public class FunctionCallAssertion : IKernelAssertion
+    public class FunctionCallAssertion : IChatAssertion
     {
         // private readonly ArgumentConditionFactory factory = new();
 
@@ -23,7 +23,7 @@ namespace skUnit.Scenarios.Parsers.Assertions
 
         public string? FunctionName { get; set; }
 
-        public Dictionary<string, IKernelAssertion> FunctionArguments { get; set; } = new();
+        public Dictionary<string, IChatAssertion> FunctionArguments { get; set; } = new();
 
         public FunctionCallAssertion SetJsonAssertText(string jsonAssertText)
         {

@@ -16,7 +16,7 @@ public class SemanticTestBase
     protected readonly string ApiKey;
     protected readonly string Endpoint;
     protected readonly string DeploymentName;
-    protected IChatClient SystemUnderTestClient { get; set; }
+    protected IChatClient BaseChatClient { get; set; }
     protected ChatScenarioRunner ScenarioRunner { get; set; }
     protected SemanticAssert SemanticAssert { get; set; }
 
@@ -58,12 +58,12 @@ public class SemanticTestBase
             new System.ClientModel.ApiKeyCredential(ApiKey)
         ).GetChatClient(DeploymentName).AsIChatClient();
 
-        SystemUnderTestClient = new ChatClientBuilder(openAI)
+        BaseChatClient = new ChatClientBuilder(openAI)
             .Build();
     }
 
     protected async Task<List<ChatScenario>> LoadChatScenarioAsync(string scenario)
     {
-        return await ChatScenario.LoadFromResourceAsync($"skUnit.Tests.ScenarioAssertTests.Samples.{scenario}.md", Assembly.GetExecutingAssembly());
+        return await ChatScenario.LoadFromResourceAsync($"skUnit.Tests.RunnerTests.Samples.{scenario}.md", Assembly.GetExecutingAssembly());
     }
 }

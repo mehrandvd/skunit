@@ -13,7 +13,7 @@ namespace skUnit.Scenarios.Parsers.Assertions
     /// <summary>
     /// Checks if the input is empty
     /// </summary>
-    public class EmptyAssertion : IKernelAssertion
+    public class EmptyAssertion : IChatAssertion
     {
         /// <summary>
         /// Checks if the <paramref name="answer"/> is empty/>.

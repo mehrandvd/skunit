@@ -103,20 +103,6 @@ public class ParseChatScenarioTests
                 ## [USER]
                 Is Eiffel tall?
 
-                ## CALL Content.GetIntent
-                ```json
-                {
-                    "input": "$input",
-                    "options": "Order,Question"
-                }
-                ```
-                
-                ### CHECK SemanticCondition
-                It is order
-
-                ### CHECK SemanticCondition
-                It is food
-
                 ## [AGENT]
                 Yes it is
 
@@ -125,23 +111,6 @@ public class ParseChatScenarioTests
 
                 ### CHECK SemanticCondition
                 Approves that eiffel tower is tall or is positive about it.
-
-                ## CALL Content.GetIntent
-                ```json
-                {
-                    "input": "$input",
-                    "options": "Order,Question"
-                }
-                ```
-
-                ### CHECK SemanticCondition
-                It is order
-
-                ### CHECK SemanticCondition
-                It is food
-
-                ### CHECK SemanticCondition
-                It is Json
                 
                 """;
 
@@ -153,15 +122,8 @@ public class ParseChatScenarioTests
 
         Assert.Equal(2, first.ChatItems.Count);
 
-        var userChatItem = first.ChatItems.ElementAt(0);
-        Assert.Single(userChatItem.FunctionCalls);
-        Assert.Equal(2, userChatItem.FunctionCalls.First().Assertions.Count);
-
         var agentChatItem = first.ChatItems.ElementAt(1);
         Assert.Equal(2, agentChatItem.Assertions.Count);
-        Assert.Equal("Content", agentChatItem.FunctionCalls.First().PluginName);
-        Assert.Equal("GetIntent", agentChatItem.FunctionCalls.First().FunctionName);
-        Assert.Equal(3, agentChatItem.FunctionCalls.First().Assertions.Count);
     }
 
     [Fact]

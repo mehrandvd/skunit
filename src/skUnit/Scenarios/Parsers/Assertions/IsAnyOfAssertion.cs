@@ -7,7 +7,7 @@ namespace skUnit.Scenarios.Parsers.Assertions;
 /// <summary>
 /// Checks if the input equals to any of Texts
 /// </summary>
-public class IsAnyOfAssertion : IKernelAssertion
+public class IsAnyOfAssertion : IChatAssertion
 {
     /// <summary>
     /// The texts that should be available within the input.
