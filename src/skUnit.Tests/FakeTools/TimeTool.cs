@@ -1,13 +1,10 @@
 ﻿using System.ComponentModel;
 using System.Globalization;
-using Markdig.Helpers;
-using Microsoft.SemanticKernel;
 
-namespace skUnit.Tests.ScenarioAssertTests.Plugins
+namespace skUnit.Tests.FakeTools
 {
-    public class TimePlugin
+    public class TimeTool   
     {
-        [KernelFunction]
         [Description("Gets the current time.")]
         public string GetCurrentTime()
         {

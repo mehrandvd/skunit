@@ -1,15 +1,16 @@
-﻿using SemanticValidation;
-using skUnit.Exceptions;
+﻿using skUnit.Exceptions;
 using System.Text.Json.Nodes;
-using SemanticValidation.Utils;
+using Google.Protobuf.Reflection;
 using Microsoft.Extensions.AI;
 using FunctionCallContent = Microsoft.Extensions.AI.FunctionCallContent;
 using FunctionResultContent = Microsoft.Extensions.AI.FunctionResultContent;
 using Markdig.Helpers;
+using skUnit.Utils;
+using skUnit.Runners;
 
 namespace skUnit.Scenarios.Parsers.Assertions
 {
-    public class FunctionCallAssertion : IKernelAssertion
+    public class FunctionCallAssertion : IChatAssertion
     {
         // private readonly ArgumentConditionFactory factory = new();
 
@@ -23,7 +24,7 @@ namespace skUnit.Scenarios.Parsers.Assertions
 
         public string? FunctionName { get; set; }
 
-        public Dictionary<string, IKernelAssertion> FunctionArguments { get; set; } = new();
+        public Dictionary<string, IChatAssertion> FunctionArguments { get; set; } = new();
 
         public FunctionCallAssertion SetJsonAssertText(string jsonAssertText)
         {
@@ -98,7 +99,7 @@ namespace skUnit.Scenarios.Parsers.Assertions
         /// <param name="history"></param>
         /// <returns></returns>
         /// <exception cref="SemanticAssertException"></exception>
-        public async Task Assert(Semantic semantic, ChatResponse response, IList<ChatMessage>? history = null)
+        public async Task Assert(SemanticAgent semantic, ChatResponse response, IList<ChatMessage>? history = null)
         {
             if (FunctionName is null)
                 throw new InvalidOperationException("FunctionCall Name is null");

@@ -1,14 +1,14 @@
 ﻿using System.Collections;
 using Microsoft.Extensions.AI;
-using SemanticValidation;
 using skUnit.Exceptions;
+using skUnit.Runners;
 
 namespace skUnit.Scenarios.Parsers.Assertions;
 
 /// <summary>
 /// Checks whether the input has the condition semantically.
 /// </summary>
-public class HasConditionAssertion : IKernelAssertion
+public class HasConditionAssertion : IChatAssertion
 {
     public required string Condition { get; set; }
 
@@ -19,7 +19,7 @@ public class HasConditionAssertion : IKernelAssertion
     /// <param name="response"></param>
     /// <param name="history"></param>
     /// <returns></returns>
-    public async Task Assert(Semantic semantic, ChatResponse response, IList<ChatMessage>? history = null)
+    public async Task Assert(SemanticAgent semantic, ChatResponse response, IList<ChatMessage>? history = null)
     {
         var result = await semantic.HasConditionAsync(response.Text, Condition);
 

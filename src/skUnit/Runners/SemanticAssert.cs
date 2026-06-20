@@ -1,8 +1,9 @@
 ﻿using System.Text.Json;
 using System.Text.Json.Nodes;
+using Google.Protobuf.Reflection;
 using Microsoft.Extensions.AI;
-using SemanticValidation;
 using skUnit.Exceptions;
+using skUnit.Runners;
 
 namespace skUnit
 {
@@ -12,7 +13,7 @@ namespace skUnit
 	/// </summary>
     public class SemanticAssert
     {
-        private Semantic Semantic { get; set; }
+        private SemanticAgent Semantic { get; set; }
 
         /// <summary>
         /// This class needs a SemanticKernel chatClient to work.
@@ -21,7 +22,7 @@ namespace skUnit
         /// <param name="chatClient"></param>
         public SemanticAssert(IChatClient chatClient)
         {
-            Semantic = new Semantic(chatClient);
+            Semantic = new SemanticAgent(chatClient);
 
         }
 
@@ -97,7 +98,7 @@ namespace skUnit
 
             if (result is null)
             {
-                throw new SemanticAssertException("Unable to accomplish the semantic assert.");
+                throw new Exception("Unable to accomplish the semantic assert.");
             }
 
             if (result.IsValid)

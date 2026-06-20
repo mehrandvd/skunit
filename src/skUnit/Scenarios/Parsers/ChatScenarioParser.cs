@@ -3,7 +3,6 @@ using Markdig;
 using System.Text;
 using System.Text.Json.Nodes;
 using System.Text.RegularExpressions;
-using SemanticValidation.Utils;
 using Microsoft.Extensions.AI;
 
 namespace skUnit.Scenarios.Parsers
@@ -142,73 +141,6 @@ namespace skUnit.Scenarios.Parsers
             {
                 scenario.Description = contentText;
             }
-            else if (currentBlock == "CALL")
-            {
-                //var match = Regex.Match(key, @"(?<function>.*)\((?<args>.*)\)");
-
-                //if (!match.Success)
-                //    throw new InvalidOperationException($"Call is not valid: {key}");
-
-                var functionText = key;
-
-                if (string.IsNullOrWhiteSpace(functionText))
-                {
-                    throw new InvalidOperationException($"CALL function name is null");
-                }
-
-                var callParts = functionText.Split('.');
-                if (callParts.Length != 2)
-                {
-                    throw new InvalidOperationException($"""
-                        Invalid function call. It should be in Plugin.Function format:
-                        {functionText} 
-                        """);
-                }
-
-                var plugin = callParts[0];
-                var function = callParts[1];
-
-                var arguments = new List<FunctionCallArgument>();
-
-                if (!string.IsNullOrWhiteSpace(contentText))
-                {
-                    var argsJson = SemanticUtils.PowerParseJson<JsonObject>(contentText);
-
-                    if (argsJson is null)
-                        throw new InvalidOperationException($"""
-                                Unable to parse CALL JSON:
-                                {contentText} 
-                                """);
-
-                    foreach (var prop in argsJson)
-                    {
-                        var argument = new FunctionCallArgument()
-                        {
-                            Name = prop.Key,
-                        };
-                        var propValue = prop.Value?.GetValue<string>() ?? "";
-
-                        if (propValue.StartsWith("$"))
-                        {
-                            argument.InputVariable = propValue.Trim('$', ' ');
-                        }
-                        else
-                        {
-                            argument.LiteralValue = propValue;
-                        }
-
-                        arguments.Add(argument);
-                    }
-                }
-
-                scenario.ChatItems.Last().FunctionCalls.Add(new FunctionCall()
-                {
-                    PluginName = plugin,
-                    FunctionName = function,
-                    Arguments = arguments,
-                    ArgumentsText = contentText
-                });
-            }
             else if (currentBlock == "CHECK" || currentBlock == "ASSERT")
             {
                 var chatItem = scenario.ChatItems.Last();
@@ -220,18 +152,9 @@ namespace skUnit.Scenarios.Parsers
                     checkText = chatItem.Content;
                 }
 
-                var lastFunctionCall = chatItem.FunctionCalls.LastOrDefault();
-
                 var assertion = KernelAssertionParser.Parse(checkText, checkType);
 
-                if (lastFunctionCall != null)
-                {
-                    lastFunctionCall.Assertions.Add(assertion);
-                }
-                else
-                {
-                    chatItem.Assertions.Add(assertion);
-                }
+                chatItem.Assertions.Add(assertion);
             }
 
             currentBlock = newBlock;

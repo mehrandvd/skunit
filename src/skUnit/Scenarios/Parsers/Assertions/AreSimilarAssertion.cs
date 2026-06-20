@@ -1,14 +1,14 @@
 ﻿using System.Collections;
 using Microsoft.Extensions.AI;
-using SemanticValidation;
 using skUnit.Exceptions;
+using skUnit.Runners;
 
 namespace skUnit.Scenarios.Parsers.Assertions;
 
 /// <summary>
 /// Checks if the answer is similar to ExpectedAnswer
 /// </summary>
-public class AreSimilarAssertion : IKernelAssertion
+public class AreSimilarAssertion : IChatAssertion
 {
     /// <summary>
     /// The expected answer that the actual answer should compared with.
@@ -23,7 +23,7 @@ public class AreSimilarAssertion : IKernelAssertion
     /// <param name="history"></param>
     /// <returns></returns>
     /// <exception cref="SemanticAssertException"></exception>
-    public async Task Assert(Semantic semantic, ChatResponse response, IList<ChatMessage>? history = null)
+    public async Task Assert(SemanticAgent semantic, ChatResponse response, IList<ChatMessage>? history = null)
     {
         var result = await semantic.AreSimilarAsync(response.Text, ExpectedAnswer);
 

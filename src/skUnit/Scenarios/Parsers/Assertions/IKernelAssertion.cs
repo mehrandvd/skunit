@@ -6,14 +6,14 @@ using System.Text;
 using System.Threading.Tasks;
 using Markdig.Helpers;
 using Microsoft.Extensions.AI;
-using SemanticValidation;
+using skUnit.Runners;
 
 namespace skUnit.Scenarios.Parsers.Assertions
 {
     /// <summary>
     /// An assertion that can be applied to the input returned by a kernel.
     /// </summary>
-    public interface IKernelAssertion
+    public interface IChatAssertion
     {
         /// <summary>
         /// Checks if the <paramref name="response"/> can pass the assertion using <paramref name="semantic"/>
@@ -22,7 +22,7 @@ namespace skUnit.Scenarios.Parsers.Assertions
         /// <param name="response"></param>
         /// <param name="history"></param>
         /// <returns></returns>
-        Task Assert(Semantic semantic, ChatResponse response, IList<ChatMessage>? history = null);
+        Task Assert(SemanticAgent semantic, ChatResponse response, IList<ChatMessage>? history = null);
         string AssertionType { get; }
         string Description { get; }
     }
