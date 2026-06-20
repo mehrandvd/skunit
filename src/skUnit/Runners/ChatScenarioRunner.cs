@@ -1,4 +1,3 @@
-using SemanticValidation;
 using skUnit.Exceptions;
 using skUnit.Scenarios;
 using System;
@@ -92,7 +91,7 @@ namespace skUnit
         /// <param name="scenario"></param>
         /// <param name="chatClient"></param>
         /// <param name="getAnswerFunc"></param>
-        /// <param name="chatHistory"></param>
+        /// <param name="initialMessages"></param>
         /// <param name="options"></param>
         /// <returns></returns>
         /// <exception cref="InvalidOperationException">If the AI client was unable to generate a valid response.</exception>
@@ -100,7 +99,7 @@ namespace skUnit
             ChatScenario scenario,
             IChatClient? chatClient = null,
             Func<IList<ChatMessage>, Task<ChatResponse>>? getAnswerFunc = null,
-            IList<ChatMessage>? chatHistory = null,
+            IList<ChatMessage>? initialMessages = null,
             ScenarioRunOptions? options = null
         )
         {
@@ -109,7 +108,7 @@ namespace skUnit
 
             options ??= new ScenarioRunOptions();
 
-            chatHistory ??= [];
+            initialMessages ??= [];
 
             Log($"# SCENARIO {scenario.Description}");
             Log("");
@@ -118,7 +117,7 @@ namespace skUnit
 
             for (var round = 0; round < options.TotalRuns; round++)
             {
-                var roundChatHistory = new List<ChatMessage>(chatHistory);
+                var roundChatHistory = new List<ChatMessage>(initialMessages);
                 if (options.TotalRuns > 1)
                 {
                     Log($"# ROUND {round + 1}");
@@ -226,14 +225,14 @@ namespace skUnit
         /// <param name="scenarios"></param>
         /// <param name="chatClient"></param>
         /// <param name="getAnswerFunc"></param>
-        /// <param name="chatHistory"></param>
+        /// <param name="initialMessages"></param>
         /// <returns></returns>
         /// <exception cref="InvalidOperationException">If the AI client was unable to generate a valid response.</exception>
-        public async Task RunAsync(List<ChatScenario> scenarios, IChatClient? chatClient = null, Func<IList<ChatMessage>, Task<ChatResponse>>? getAnswerFunc = null, IList<ChatMessage>? chatHistory = null, ScenarioRunOptions? options = null)
+        public async Task RunAsync(List<ChatScenario> scenarios, IChatClient? chatClient = null, Func<IList<ChatMessage>, Task<ChatResponse>>? getAnswerFunc = null, IList<ChatMessage>? initialMessages = null, ScenarioRunOptions? options = null)
         {
             foreach (var scenario in scenarios)
             {
-                await RunAsync(scenario, chatClient, getAnswerFunc, chatHistory, options);
+                await RunAsync(scenario, chatClient, getAnswerFunc, initialMessages, options);
                 Log();
                 Log("----------------------------------");
                 Log();
