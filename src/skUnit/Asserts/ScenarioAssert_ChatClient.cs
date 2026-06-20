@@ -67,48 +67,12 @@ namespace skUnit
         /// <param name="scenarios"></param>
         /// <param name="chatClient"></param>
         /// <param name="getAnswerFunc"></param>
-        /// <param name="chatHistory"></param>
-        /// <returns></returns>
-        /// <exception cref="InvalidOperationException">If the OpenAI was unable to generate a valid response.</exception>
-        [Obsolete("Use ChatScenarioRunner.RunAsync instead. This method will be removed in a future version.", false)]
-        public async Task PassAsync(List<ChatScenario> scenarios, IChatClient? chatClient = null, Func<IList<ChatMessage>, Task<ChatResponse>>? getAnswerFunc = null, IList<ChatMessage>? chatHistory = null, ScenarioRunOptions? options = null)
-        {
-            await _runner.RunAsync(scenarios, chatClient, getAnswerFunc, chatHistory, options);
-        }
-
-        /// <summary>
-        /// Checks whether all of the <paramref name="scenarios"/> passes on the given <paramref name="kernel"/>
-        /// using its ChatCompletionService.
-        /// If you want to test the kernel using something other than ChatCompletionService (for example using your own function),
-        /// pass <paramref name="getAnswerFunc"/> and specify how do you want the answer be created from chat history like:
-        /// <code>
-        /// getAnswerFunc = async history =>
-        ///     await AnswerChatFunction.InvokeAsync(kernel, new KernelArguments()
-        ///     {
-        ///         ["history"] = history,
-        ///     });
-        /// </code>
-        /// </summary>
-        /// <param name="scenarios"></param>
-        /// <param name="kernel"></param>
-        /// <param name="chatHistory"></param>
-        /// <returns></returns>
-        /// <exception cref="InvalidOperationException">If the OpenAI was unable to generate a valid response.</exception>
         [Experimental("SKEXP0001")]
         [Obsolete("Use ChatScenarioRunner.RunAsync instead. This method will be removed in a future version.", false)]
-        public async Task PassAsync(List<ChatScenario> scenarios, Kernel kernel, IList<ChatMessage>? chatHistory = null, ScenarioRunOptions? options = null)
+        public async Task PassAsync(ChatScenario scenario, Kernel kernel, IList<ChatMessage>? chatHistory = null, ScenarioRunOptions? options = null)
         {
 #pragma warning disable SKEXP0001
-            await _runner.RunAsync(scenarios, kernel, chatHistory, options);
-#pragma warning restore SKEXP0001
-        }
-
-        [Experimental("SKEXP0001")]
-        [Obsolete("Use ChatScenarioRunner.RunAsync instead. This method will be removed in a future version.", false)]
-        public async Task PassAsync(ChatScenario scenarios, Kernel kernel, IList<ChatMessage>? chatHistory = null, ScenarioRunOptions? options = null)
-        {
-#pragma warning disable SKEXP0001
-            await _runner.RunAsync(scenarios, kernel, chatHistory, options);
+            await _runner.RunAsync(scenario, kernel, chatHistory, options);
 #pragma warning restore SKEXP0001
         }
     }

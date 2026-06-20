@@ -27,14 +27,13 @@ namespace skUnit.Tests.ParseTests
             var parser = new ChatScenarioParser();
 
             // Act
-            var scenarios = parser.Parse(scenarioText);
+            var scenario = parser.Parse(scenarioText);
 
             // Assert
-            Assert.Single(scenarios);
-            Assert.Equal("Simple Assert Test", scenarios[0].Description);
-            Assert.Equal(2, scenarios[0].ChatItems.Count);
+            Assert.Equal("Simple Assert Test", scenario.Description);
+            Assert.Equal(2, scenario.ChatItems.Count);
 
-            var assistantItem = scenarios[0].ChatItems.First(x => x.Role == ChatRole.Assistant);
+            var assistantItem = scenario.ChatItems.First(x => x.Role == ChatRole.Assistant);
             Assert.Single(assistantItem.Assertions);
             Assert.Equal("Condition", assistantItem.Assertions[0].AssertionType);
         }
@@ -62,11 +61,10 @@ namespace skUnit.Tests.ParseTests
             var parser = new ChatScenarioParser();
 
             // Act
-            var scenarios = parser.Parse(scenarioText);
+            var scenario = parser.Parse(scenarioText);
 
             // Assert
-            Assert.Single(scenarios);
-            var assistantItem = scenarios[0].ChatItems.First(x => x.Role == ChatRole.Assistant);
+            var assistantItem = scenario.ChatItems.First(x => x.Role == ChatRole.Assistant);
             Assert.Equal(2, assistantItem.Assertions.Count);
 
             Assert.Equal("ContainsAll", assistantItem.Assertions[0].AssertionType);

@@ -20,10 +20,8 @@ Hi there! How can I help you today?
 ### CHECK SemanticCondition
 It's a friendly greeting response";
 
-            var scenarios = ChatScenario.LoadFromText(markdown);
+            var scenario = ChatScenario.LoadFromText(markdown);
 
-            Assert.Single(scenarios);
-            var scenario = scenarios[0];
             Assert.Equal(2, scenario.ChatItems.Count);
 
             // Check first chat item (USER)
@@ -56,10 +54,8 @@ Give me user info as JSON
   ""city"": [""SemanticCondition"", ""It's a real city name""]
 }";
 
-            var scenarios = ChatScenario.LoadFromText(markdown);
+            var scenario = ChatScenario.LoadFromText(markdown);
 
-            Assert.Single(scenarios);
-            var scenario = scenarios[0];
             Assert.Equal(2, scenario.ChatItems.Count);
 
             var agentChatItem = scenario.ChatItems[1];
