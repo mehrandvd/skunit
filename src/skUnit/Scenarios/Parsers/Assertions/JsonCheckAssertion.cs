@@ -1,8 +1,9 @@
-﻿using SemanticValidation;
-using skUnit.Exceptions;
+﻿using skUnit.Exceptions;
 using System.Text.Json.Nodes;
-using SemanticValidation.Utils;
+using Google.Protobuf.Reflection;
 using Microsoft.Extensions.AI;
+using skUnit.Runners;
+using skUnit.Utils;
 
 namespace skUnit.Scenarios.Parsers.Assertions
 {
@@ -39,7 +40,7 @@ namespace skUnit.Scenarios.Parsers.Assertions
         /// <param name="answer"></param>
         /// <returns></returns>
         /// <exception cref="SemanticAssertException"></exception>
-        public async Task Assert(Semantic semantic, ChatResponse response, IList<ChatMessage>? history = null)
+        public async Task Assert(SemanticAgent semantic, ChatResponse response, IList<ChatMessage>? history = null)
         {
             var answerJson = SemanticUtils.PowerParseJson<JsonObject>(response.Text)
                              ?? throw new InvalidOperationException($"""
@@ -104,7 +105,7 @@ namespace skUnit.Scenarios.Parsers.Assertions
             }
         }
 
-        public async Task Assert(Semantic semantic, string answer, IList<ChatMessage>? history = null)
+        public async Task Assert(SemanticAgent semantic, string answer, IList<ChatMessage>? history = null)
         {
             await Assert(semantic, new ChatResponse(new ChatMessage(ChatRole.Assistant, answer)), history);
         }

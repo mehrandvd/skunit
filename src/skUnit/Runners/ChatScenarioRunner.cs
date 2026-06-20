@@ -1,16 +1,16 @@
+using Microsoft.Extensions.AI;
+using Microsoft.Extensions.Logging;
+using Microsoft.Extensions.Logging.Abstractions;
 using skUnit.Exceptions;
+using skUnit.Runners;
 using skUnit.Scenarios;
+using skUnit.Scenarios.Parsers.Assertions;
 using System;
 using System.Collections.Generic;
 using System.Diagnostics.CodeAnalysis;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
-using Microsoft.Extensions.AI;
-using Microsoft.Extensions.Logging;
-using Microsoft.Extensions.Logging.Abstractions;
-using OpenAI.Chat;
-using skUnit.Scenarios.Parsers.Assertions;
 using ChatMessage = Microsoft.Extensions.AI.ChatMessage;
 using FunctionCallContent = Microsoft.Extensions.AI.FunctionCallContent;
 using FunctionResultContent = Microsoft.Extensions.AI.FunctionResultContent;
@@ -20,7 +20,7 @@ namespace skUnit
     public class ChatScenarioRunner
     {
         private readonly ILogger<ChatScenarioRunner> _logger;
-        private Semantic Semantic { get; set; }
+        private SemanticAgent Semantic { get; set; }
 
         /// <summary>
         /// Creates a new ChatScenarioRunner with an assertion client and logger.
@@ -29,7 +29,7 @@ namespace skUnit
         /// <param name="logger">Optional logger for test execution output</param>
         public ChatScenarioRunner(IChatClient assertionClient, ILogger<ChatScenarioRunner>? logger = null)
         {
-            Semantic = new Semantic(assertionClient);
+            Semantic = new SemanticAgent(assertionClient);
             _logger = logger ?? NullLogger<ChatScenarioRunner>.Instance;
         }
 
@@ -40,7 +40,7 @@ namespace skUnit
         /// <param name="onLog">Optional action for logging test execution output</param>
         public ChatScenarioRunner(IChatClient assertionClient, Action<string>? onLog)
         {
-            Semantic = new Semantic(assertionClient);
+            Semantic = new SemanticAgent(assertionClient);
             _logger = onLog != null ? new DelegateLoggerAdapter<ChatScenarioRunner>(onLog) : NullLogger<ChatScenarioRunner>.Instance;
         }
 

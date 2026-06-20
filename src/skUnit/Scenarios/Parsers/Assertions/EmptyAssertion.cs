@@ -1,5 +1,4 @@
-﻿using SemanticValidation;
-using skUnit.Exceptions;
+﻿using skUnit.Exceptions;
 using System;
 using System.Collections;
 using System.Collections.Generic;
@@ -7,6 +6,7 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 using Microsoft.Extensions.AI;
+using skUnit.Runners;
 
 namespace skUnit.Scenarios.Parsers.Assertions
 {
@@ -23,7 +23,7 @@ namespace skUnit.Scenarios.Parsers.Assertions
         /// <param name="history"></param>
         /// <returns></returns>
         /// <exception cref="SemanticAssertException"></exception>
-        public Task Assert(Semantic semantic, ChatResponse response, IList<ChatMessage>? history = null)
+        public Task Assert(SemanticAgent semantic, ChatResponse response, IList<ChatMessage>? history = null)
         {
             if (!string.IsNullOrWhiteSpace(response.Text))
             {

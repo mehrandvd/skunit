@@ -1,5 +1,4 @@
 ﻿using Microsoft.Extensions.AI;
-using SemanticValidation;
 using skUnit.Exceptions;
 using System;
 using System.Collections;
@@ -7,6 +6,7 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
+using skUnit.Runners;
 
 namespace skUnit.Scenarios.Parsers.Assertions
 {
@@ -28,7 +28,7 @@ namespace skUnit.Scenarios.Parsers.Assertions
         /// <param name="historytory"></param>
         /// <returns></returns>
         /// <exception cref="SemanticAssertException"></exception>
-        public Task Assert(Semantic semantic, ChatResponse response, IList<ChatMessage>? history)
+        public Task Assert(SemanticAgent semantic, ChatResponse response, IList<ChatMessage>? history)
         {
             if (response.Text.Trim() != ExpectedAnswer.Trim())
                 throw new SemanticAssertException($"Expected input is: '{ExpectedAnswer}' while actual is : '{response.Text}'");

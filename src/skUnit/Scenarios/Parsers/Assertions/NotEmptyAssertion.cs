@@ -1,6 +1,6 @@
 ﻿using System.Collections;
 using Microsoft.Extensions.AI;
-using SemanticValidation;
+using skUnit.Runners;
 using skUnit.Exceptions;
 
 namespace skUnit.Scenarios.Parsers.Assertions;
@@ -19,7 +19,7 @@ public class NotEmptyAssertion : IChatAssertion
     /// <param name="answer"></param>
     /// <returns></returns>
     /// <exception cref="SemanticAssertException"></exception>
-    public Task Assert(Semantic semantic, ChatResponse response, IList<ChatMessage>? history = null)
+    public Task Assert(SemanticAgent semantic, ChatResponse response, IList<ChatMessage>? history = null)
     {
         if (string.IsNullOrWhiteSpace(response.Text))
         {

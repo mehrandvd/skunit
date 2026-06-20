@@ -1,6 +1,6 @@
 ﻿using Microsoft.Extensions.AI;
-using SemanticValidation;
 using skUnit.Exceptions;
+using skUnit.Runners;
 
 namespace skUnit.Scenarios.Parsers.Assertions;
 
@@ -26,7 +26,7 @@ public class IsAnyOfAssertion : IChatAssertion
     /// <param name="history"></param>
     /// <returns></returns>
     /// <exception cref="SemanticAssertException"></exception>
-    public Task Assert(Semantic semantic, ChatResponse response, IList<ChatMessage>? history = null)
+    public Task Assert(SemanticAgent semantic, ChatResponse response, IList<ChatMessage>? history = null)
     {
         if (Texts.Any(text => text == response.Text))
             return Task.CompletedTask;
