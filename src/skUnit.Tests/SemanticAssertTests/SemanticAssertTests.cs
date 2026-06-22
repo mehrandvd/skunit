@@ -3,7 +3,6 @@ using Microsoft.Extensions.AI;
 using Microsoft.Extensions.Configuration;
 using skUnit.Exceptions;
 using skUnit.Tests.Infrastructure;
-using Xunit.Abstractions;
 
 namespace skUnit.Tests.SemanticAssertTests
 {
