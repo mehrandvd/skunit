@@ -2,7 +2,6 @@
 using Microsoft.Extensions.AI;
 using skUnit.Exceptions;
 using skUnit.Tests.Infrastructure;
-using Xunit.Abstractions;
 
 namespace skUnit.Tests.RunnerTests
 {

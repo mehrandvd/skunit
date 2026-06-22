@@ -1,4 +1,5 @@
 ﻿using System.Reflection;
+using Azure;
 using Azure.AI.OpenAI;
 using Markdig.Helpers;
 using Microsoft.Extensions.AI;
@@ -7,7 +8,6 @@ using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Logging;
 using skUnit.Scenarios;
 using skUnit.Scenarios.Parsers;
-using Xunit.Abstractions;
 
 namespace skUnit.Tests.Infrastructure;
 
@@ -45,7 +45,7 @@ public class SemanticTestBase
         // Create assertion client for semantic evaluations
         var assertionClient = new AzureOpenAIClient(
             new Uri(Endpoint),
-            new System.ClientModel.ApiKeyCredential(ApiKey)
+            new AzureKeyCredential(ApiKey)
             ).GetChatClient(DeploymentName).AsIChatClient();
 
         ScenarioRunner = new ChatScenarioRunner(assertionClient, message => Output.WriteLine(message));
@@ -55,7 +55,7 @@ public class SemanticTestBase
         // Create system under test client
         var openAI = new AzureOpenAIClient(
             new Uri(Endpoint),
-            new System.ClientModel.ApiKeyCredential(ApiKey)
+            new AzureKeyCredential(ApiKey)
         ).GetChatClient(DeploymentName).AsIChatClient();
 
         BaseChatClient = new ChatClientBuilder(openAI)

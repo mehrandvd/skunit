@@ -1,7 +1,6 @@
 ﻿using System.ComponentModel;
 using Microsoft.Extensions.AI;
 using skUnit.Tests.Infrastructure;
-using Xunit.Abstractions;
 
 namespace skUnit.Tests.RunnerTests
 {
