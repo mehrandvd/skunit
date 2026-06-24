@@ -99,11 +99,6 @@ namespace skUnit
             }
         }
 
-        public Task RunAsync(ChatScenario scenario)
-        {
-            throw new InvalidOperationException("At least one of chatClient, agent, or getAnswerFunc must be specified.");
-        }
-
         /// <summary>
         /// Runs the <paramref name="scenario"/> against the given <paramref name="chatClient"/>
         /// using its ChatCompletionService.
