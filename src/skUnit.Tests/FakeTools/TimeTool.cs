@@ -3,7 +3,7 @@ using System.Globalization;
 
 namespace skUnit.Tests.FakeTools
 {
-    public class TimeTool   
+    public class TimeTool
     {
         [Description("Gets the current time.")]
         public string GetCurrentTime()

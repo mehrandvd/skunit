@@ -1,7 +1,9 @@
+using Microsoft.Agents.AI;
 using Microsoft.Extensions.AI;
 using Microsoft.Extensions.Logging;
 using Xunit;
 using skUnit.Scenarios;
+using System.Text.Json;
 
 namespace skUnit.Tests.AssertionTests
 {
@@ -58,10 +60,71 @@ namespace skUnit.Tests.AssertionTests
             var scenario = new ChatScenario { RawText = "" };
 
             // Act & Assert
-            var exception = await Assert.ThrowsAsync<InvalidOperationException>(
-                () => runner.RunAsync(scenario, (IChatClient?)null, null));
+            var exception = await Assert.ThrowsAsync<ArgumentNullException>(() => runner.RunAsync(scenario, (IChatClient)null));
 
-            Assert.Contains("Both chatClient and getAnswerFunc can not be null", exception.Message);
+            Assert.Contains("Value cannot be null", exception.Message);
+        }
+
+        [Fact]
+        public async Task ChatScenarioRunner_RunAsync_WithGetAnswerFunc_Works()
+        {
+            var runner = new ChatScenarioRunner(CreateMockChatClient());
+            var scenario = new ChatScenario
+            {
+                Description = "GetAnswerFunc scenario",
+                RawText = "GetAnswerFunc scenario",
+                ChatItems =
+                [
+                    new ChatItem(ChatRole.User, "Hello"),
+                    new ChatItem(ChatRole.Assistant, "Hello there")
+                ]
+            };
+
+            var sawUserMessage = false;
+
+            await runner.RunAsync(
+                scenario,
+                async history =>
+                {
+                    sawUserMessage = history.Count == 1 && history[0].Role == ChatRole.User && history[0].Text == "Hello";
+                    return new ChatResponse(new ChatMessage(ChatRole.Assistant, "Hello there"));
+                });
+
+            Assert.True(sawUserMessage);
+        }
+
+        [Fact]
+        public void ChatScenarioRunner_Constructor_WithAIAgentAssertionAgent_Works()
+        {
+            var runner = new ChatScenarioRunner(new TestAIAgent());
+
+            Assert.NotNull(runner);
+        }
+
+        [Fact]
+        public async Task ChatScenarioRunner_RunAsync_WithAIAgentSystemUnderTest_Works()
+        {
+            var runner = new ChatScenarioRunner(CreateMockChatClient());
+            var scenario = new ChatScenario
+            {
+                Description = "AIAgent scenario",
+                RawText = "AIAgent scenario",
+                ChatItems =
+                [
+                    new ChatItem(ChatRole.User, "Hello"),
+                    new ChatItem(ChatRole.Assistant, "Hello there")
+                ]
+            };
+
+            await runner.RunAsync(scenario, new TestAIAgent("Hello there"));
+        }
+
+        [Fact]
+        public void SemanticAssert_Constructor_WithAIAgent_Works()
+        {
+            var semanticAssert = new SemanticAssert(new TestAIAgent());
+
+            Assert.NotNull(semanticAssert);
         }
 
         private static IChatClient CreateMockChatClient()
@@ -87,6 +150,54 @@ namespace skUnit.Tests.AssertionTests
             public TService? GetService<TService>(object? key = null) where TService : class => null;
             public object? GetService(Type serviceType, object? key = null) => null;
             public void Dispose() { }
+        }
+
+        private class TestAIAgent : AIAgent
+        {
+            private readonly string _responseText;
+
+            public TestAIAgent(string responseText = "Test response")
+            {
+                _responseText = responseText;
+            }
+
+            protected override Task<AgentResponse> RunCoreAsync(IEnumerable<ChatMessage> messages, AgentSession? session, AgentRunOptions? options, CancellationToken cancellationToken)
+            {
+                return Task.FromResult(new AgentResponse(new ChatMessage(ChatRole.Assistant, _responseText)));
+            }
+
+            protected override async IAsyncEnumerable<AgentResponseUpdate> RunCoreStreamingAsync(IEnumerable<ChatMessage> messages, AgentSession? session, AgentRunOptions? options, [System.Runtime.CompilerServices.EnumeratorCancellation] CancellationToken cancellationToken)
+            {
+                await Task.CompletedTask;
+                yield break;
+            }
+
+            protected override ValueTask<AgentSession> CreateSessionCoreAsync(CancellationToken cancellationToken)
+            {
+                return ValueTask.FromResult<AgentSession>(new TestAgentSession());
+            }
+
+            protected override ValueTask<JsonElement> SerializeSessionCoreAsync(AgentSession session, JsonSerializerOptions? options, CancellationToken cancellationToken)
+            {
+                return ValueTask.FromResult(JsonSerializer.SerializeToElement(new { }));
+            }
+
+            protected override ValueTask<AgentSession> DeserializeSessionCoreAsync(JsonElement document, JsonSerializerOptions? options, CancellationToken cancellationToken)
+            {
+                return ValueTask.FromResult<AgentSession>(new TestAgentSession());
+            }
+
+            public override string Name => "TestAgent";
+            public override string Description => "Test agent";
+            protected override string IdCore => "test-agent";
+        }
+
+        private sealed class TestAgentSession : AgentSession
+        {
+            public TestAgentSession()
+                : base(new AgentSessionStateBag())
+            {
+            }
         }
 
         private class TestLogger<T> : ILogger<T>

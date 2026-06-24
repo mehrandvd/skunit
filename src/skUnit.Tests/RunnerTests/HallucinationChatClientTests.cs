@@ -34,13 +34,7 @@ namespace skUnit.Tests.RunnerTests
             var scenarios = await LoadChatScenarioAsync("GetFoodMenuChat");
             await ScenarioRunner.RunAsync(
                 scenarios,
-                BaseChatClient,
-                options: new ScenarioRunOptions
-                {
-                    TotalRuns = 3,
-                    MinSuccessRate = .6
-                },
-                getAnswerFunc: async history =>
+                async history =>
             {
                 AIFunction getFoodMenu = AIFunctionFactory.Create(GetFoodMenu);
 
@@ -53,7 +47,12 @@ namespace skUnit.Tests.RunnerTests
 
                 var answer = result;
                 return answer;
-            });
+            },
+                options: new ScenarioRunOptions
+                {
+                    TotalRuns = 3,
+                    MinSuccessRate = .6
+                });
         }
 
         [Fact]

@@ -1,6 +1,7 @@
 ﻿using System.Text.Json;
 using System.Text.Json.Nodes;
 using Google.Protobuf.Reflection;
+using Microsoft.Agents.AI;
 using Microsoft.Extensions.AI;
 using skUnit.Exceptions;
 using skUnit.Runners;
@@ -23,7 +24,16 @@ namespace skUnit
         public SemanticAssert(IChatClient chatClient)
         {
             Semantic = new SemanticAgent(chatClient);
+        }
 
+        /// <summary>
+        /// This class needs a Microsoft Agent Framework AI agent to work.
+        /// Pass your pre-configured agent to this constructor.
+        /// </summary>
+        /// <param name="agent">The AI agent used for semantic evaluations and assertions.</param>
+        public SemanticAssert(AIAgent agent)
+        {
+            Semantic = new SemanticAgent(agent);
         }
 
         /// <summary>
