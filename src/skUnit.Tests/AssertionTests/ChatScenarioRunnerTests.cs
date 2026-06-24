@@ -67,6 +67,34 @@ namespace skUnit.Tests.AssertionTests
         }
 
         [Fact]
+        public async Task ChatScenarioRunner_RunAsync_WithGetAnswerFunc_Works()
+        {
+            var runner = new ChatScenarioRunner(CreateMockChatClient());
+            var scenario = new ChatScenario
+            {
+                Description = "GetAnswerFunc scenario",
+                RawText = "GetAnswerFunc scenario",
+                ChatItems =
+                [
+                    new ChatItem(ChatRole.User, "Hello"),
+                    new ChatItem(ChatRole.Assistant, "Hello there")
+                ]
+            };
+
+            var sawUserMessage = false;
+
+            await runner.RunAsync(
+                scenario,
+                async history =>
+                {
+                    sawUserMessage = history.Count == 1 && history[0].Role == ChatRole.User && history[0].Text == "Hello";
+                    return new ChatResponse(new ChatMessage(ChatRole.Assistant, "Hello there"));
+                });
+
+            Assert.True(sawUserMessage);
+        }
+
+        [Fact]
         public void ChatScenarioRunner_Constructor_WithAIAgentAssertionAgent_Works()
         {
             var runner = new ChatScenarioRunner(new TestAIAgent());

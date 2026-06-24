@@ -8,6 +8,7 @@ using skUnit.Scenarios;
 using skUnit.Scenarios.Parsers.Assertions;
 using System;
 using System.Collections.Generic;
+using System.Diagnostics;
 using System.Diagnostics.CodeAnalysis;
 using System.Linq;
 using System.Text;
@@ -98,6 +99,11 @@ namespace skUnit
             }
         }
 
+        public Task RunAsync(ChatScenario scenario)
+        {
+            throw new InvalidOperationException("At least one of chatClient, agent, or getAnswerFunc must be specified.");
+        }
+
         /// <summary>
         /// Runs the <paramref name="scenario"/> against the given <paramref name="chatClient"/>
         /// using its ChatCompletionService.
@@ -129,43 +135,7 @@ namespace skUnit
             if (chatClient is null && getAnswerFunc is null)
                 throw new InvalidOperationException("Both chatClient and getAnswerFunc cannot be null. One of them should be specified");
 
-            options ??= new ScenarioRunOptions();
-
-            initialMessages ??= [];
-
-            Log($"# SCENARIO {scenario.Description}");
-            Log("");
-
-            List<Exception> exceptions = [];
-
-            for (var round = 0; round < options.TotalRuns; round++)
-            {
-                var roundChatHistory = new List<ChatMessage>(initialMessages);
-                if (options.TotalRuns > 1)
-                {
-                    Log($"# ROUND {round + 1}");
-                    Log();
-                }
-
-                try
-                {
-                    await RunCoreAsync(scenario, chatClient, null, getAnswerFunc, roundChatHistory);
-                }
-                catch (Exception ex)
-                {
-                    Log($"❌ Exception: {ex.Message}");
-                    exceptions.Add(ex);
-                }
-            }
-
-            var successRate = 1 - (exceptions.Count * 1f / options.TotalRuns);
-
-            if (successRate < options.MinSuccessRate)
-            {
-                var message = $"Only {(successRate * 100):F2}% of rounds passed, which is below the required success rate of {(options.MinSuccessRate * 100):F2}%";
-                Log(message);
-                throw new SemanticAssertException(message);
-            }
+            await RunScenarioAsync(scenario, CreatePopulateAnswer(chatClient, null, getAnswerFunc), initialMessages, options);
         }
 
         /// <summary>
@@ -189,6 +159,32 @@ namespace skUnit
             if (agent is null && getAnswerFunc is null)
                 throw new InvalidOperationException("Both agent and getAnswerFunc cannot be null. One of them should be specified");
 
+            await RunScenarioAsync(scenario, CreatePopulateAnswer(null, agent, getAnswerFunc), initialMessages, options);
+        }
+
+        /// <summary>
+        /// Runs the <paramref name="scenario"/> using the supplied custom response function.
+        /// </summary>
+        /// <param name="scenario">The chat scenario to execute.</param>
+        /// <param name="getAnswerFunc">The custom function that generates responses from chat history.</param>
+        /// <param name="initialMessages">Optional initial chat history that should be present before the scenario starts.</param>
+        /// <param name="options">Optional configuration for scenario execution.</param>
+        /// <returns></returns>
+        public async Task RunAsync(
+            ChatScenario scenario,
+            Func<IList<ChatMessage>, Task<ChatResponse>>? getAnswerFunc = null,
+            IList<ChatMessage>? initialMessages = null,
+            ScenarioRunOptions? options = null
+        )
+        {
+            if (getAnswerFunc is null)
+                throw new InvalidOperationException("getAnswerFunc cannot be null");
+
+            await RunScenarioAsync(scenario, getAnswerFunc, initialMessages, options);
+        }
+
+        private async Task RunScenarioAsync(ChatScenario scenario, Func<IList<ChatMessage>, Task<ChatResponse>> populateAnswer, IList<ChatMessage>? initialMessages, ScenarioRunOptions? options)
+        {
             options ??= new ScenarioRunOptions();
 
             initialMessages ??= [];
@@ -209,7 +205,7 @@ namespace skUnit
 
                 try
                 {
-                    await RunCoreAsync(scenario, null, agent, getAnswerFunc, roundChatHistory);
+                    await RunCoreAsync(scenario, populateAnswer, roundChatHistory);
                 }
                 catch (Exception ex)
                 {
@@ -228,7 +224,32 @@ namespace skUnit
             }
         }
 
-        private async Task RunCoreAsync(ChatScenario scenario, IChatClient? chatClient, AIAgent? agent, Func<IList<ChatMessage>, Task<ChatResponse>>? getAnswerFunc, IList<ChatMessage> chatHistory)
+        private static Func<IList<ChatMessage>, Task<ChatResponse>> CreatePopulateAnswer(IChatClient? chatClient, AIAgent? agent, Func<IList<ChatMessage>, Task<ChatResponse>>? getAnswerFunc)
+        {
+            if (getAnswerFunc != null)
+            {
+                return getAnswerFunc;
+            }
+
+            if (chatClient != null)
+            {
+                return history => chatClient.GetResponseAsync(history);
+            }
+
+            if (agent != null)
+            {
+                return async history =>
+                {
+                    var result = await agent.RunAsync(history);
+                    return new ChatResponse(new ChatMessage(ChatRole.Assistant, result.Text));
+                };
+            }
+
+            Debug.Assert(false, "At least one of chatClient, agent, or getAnswerFunc must be specified.");
+            return _ => Task.FromResult(new ChatResponse(new ChatMessage(ChatRole.Assistant, string.Empty)));
+        }
+
+        private async Task RunCoreAsync(ChatScenario scenario, Func<IList<ChatMessage>, Task<ChatResponse>> populateAnswer, IList<ChatMessage> chatHistory)
         {
             var queue = new Queue<ChatItem>(scenario.ChatItems);
 
@@ -255,33 +276,6 @@ namespace skUnit
                     Log($"## [EXPECTED ANSWER]");
                     Log(chatItem.Content);
                     Log();
-
-                    Func<IList<ChatMessage>, Task<ChatResponse>> populateAnswer;
-
-                    if (getAnswerFunc != null)
-                    {
-                        populateAnswer = getAnswerFunc;
-                    }
-                    else if (chatClient != null)
-                    {
-                        populateAnswer = async history =>
-                        {
-                            var result = await chatClient.GetResponseAsync(history);
-                            return result;
-                        };
-                    }
-                    else if (agent != null)
-                    {
-                        populateAnswer = async history =>
-                        {
-                            var result = await agent.RunAsync(history);
-                            return new ChatResponse(new ChatMessage(ChatRole.Assistant, result.Text));
-                        };
-                    }
-                    else
-                    {
-                        throw new InvalidOperationException("Both chatClient, agent and getAnswerFunc cannot be null. One of them should be specified");
-                    }
 
                     var response = await populateAnswer(chatHistory);
 
