@@ -8,13 +8,23 @@ using System.Threading.Tasks;
 
 namespace skUnit.Runners
 {
-    public class SemanticAgent(IChatClient chatClient)
+    public class SemanticAgent
     {
-        public AIAgent Agent { get; set; } = chatClient.AsAIAgent(
-            instructions:
-            """
+        public SemanticAgent(IChatClient chatClient)
+        {
+            Agent = chatClient.AsAIAgent(
+                instructions:
+                """
 
-            """);
+                """);
+        }
+
+        public SemanticAgent(AIAgent agent)
+        {
+            Agent = agent;
+        }
+
+        public AIAgent Agent { get; set; }
 
         public async Task<SemanticValidationResult> AreSimilarAsync(string first, string second)
         {

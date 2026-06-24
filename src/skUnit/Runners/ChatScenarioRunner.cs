@@ -1,3 +1,4 @@
+using Microsoft.Agents.AI;
 using Microsoft.Extensions.AI;
 using Microsoft.Extensions.Logging;
 using Microsoft.Extensions.Logging.Abstractions;
@@ -34,6 +35,17 @@ namespace skUnit
         }
 
         /// <summary>
+        /// Creates a new ChatScenarioRunner with an assertion agent and logger.
+        /// </summary>
+        /// <param name="assertionAgent">The AI agent used for semantic evaluations and assertions (not the system under test)</param>
+        /// <param name="logger">Optional logger for test execution output</param>
+        public ChatScenarioRunner(AIAgent assertionAgent, ILogger<ChatScenarioRunner>? logger = null)
+        {
+            Semantic = new SemanticAgent(assertionAgent);
+            _logger = logger ?? NullLogger<ChatScenarioRunner>.Instance;
+        }
+
+        /// <summary>
         /// Creates a new ChatScenarioRunner with an assertion client and action-based logging.
         /// </summary>
         /// <param name="assertionClient">The chat client used for semantic evaluations and assertions (not the system under test)</param>
@@ -41,6 +53,17 @@ namespace skUnit
         public ChatScenarioRunner(IChatClient assertionClient, Action<string>? onLog)
         {
             Semantic = new SemanticAgent(assertionClient);
+            _logger = onLog != null ? new DelegateLoggerAdapter<ChatScenarioRunner>(onLog) : NullLogger<ChatScenarioRunner>.Instance;
+        }
+
+        /// <summary>
+        /// Creates a new ChatScenarioRunner with an assertion agent and action-based logging.
+        /// </summary>
+        /// <param name="assertionAgent">The AI agent used for semantic evaluations and assertions (not the system under test)</param>
+        /// <param name="onLog">Optional action for logging test execution output</param>
+        public ChatScenarioRunner(AIAgent assertionAgent, Action<string>? onLog)
+        {
+            Semantic = new SemanticAgent(assertionAgent);
             _logger = onLog != null ? new DelegateLoggerAdapter<ChatScenarioRunner>(onLog) : NullLogger<ChatScenarioRunner>.Instance;
         }
 
@@ -104,7 +127,7 @@ namespace skUnit
         )
         {
             if (chatClient is null && getAnswerFunc is null)
-                throw new InvalidOperationException("Both chatClient and getAnswerFunc can not be null. One of them should be specified");
+                throw new InvalidOperationException("Both chatClient and getAnswerFunc cannot be null. One of them should be specified");
 
             options ??= new ScenarioRunOptions();
 
@@ -126,7 +149,7 @@ namespace skUnit
 
                 try
                 {
-                    await RunCoreAsync(scenario, chatClient, getAnswerFunc, roundChatHistory);
+                    await RunCoreAsync(scenario, chatClient, null, getAnswerFunc, roundChatHistory);
                 }
                 catch (Exception ex)
                 {
@@ -145,7 +168,67 @@ namespace skUnit
             }
         }
 
-        private async Task RunCoreAsync(ChatScenario scenario, IChatClient? chatClient, Func<IList<ChatMessage>, Task<ChatResponse>>? getAnswerFunc, IList<ChatMessage> chatHistory)
+        /// <summary>
+        /// Runs the <paramref name="scenario"/> against the given <paramref name="agent"/>
+        /// using its agent execution flow.
+        /// </summary>
+        /// <param name="scenario">The chat scenario to execute.</param>
+        /// <param name="agent">The AI agent to test.</param>
+        /// <param name="getAnswerFunc">Optional custom function for generating responses from chat history.</param>
+        /// <param name="initialMessages">Optional initial chat history that should be present before the scenario starts.</param>
+        /// <param name="options">Optional configuration for scenario execution.</param>
+        /// <returns></returns>
+        public async Task RunAsync(
+            ChatScenario scenario,
+            AIAgent? agent = null,
+            Func<IList<ChatMessage>, Task<ChatResponse>>? getAnswerFunc = null,
+            IList<ChatMessage>? initialMessages = null,
+            ScenarioRunOptions? options = null
+        )
+        {
+            if (agent is null && getAnswerFunc is null)
+                throw new InvalidOperationException("Both agent and getAnswerFunc cannot be null. One of them should be specified");
+
+            options ??= new ScenarioRunOptions();
+
+            initialMessages ??= [];
+
+            Log($"# SCENARIO {scenario.Description}");
+            Log("");
+
+            List<Exception> exceptions = [];
+
+            for (var round = 0; round < options.TotalRuns; round++)
+            {
+                var roundChatHistory = new List<ChatMessage>(initialMessages);
+                if (options.TotalRuns > 1)
+                {
+                    Log($"# ROUND {round + 1}");
+                    Log();
+                }
+
+                try
+                {
+                    await RunCoreAsync(scenario, null, agent, getAnswerFunc, roundChatHistory);
+                }
+                catch (Exception ex)
+                {
+                    Log($"❌ Exception: {ex.Message}");
+                    exceptions.Add(ex);
+                }
+            }
+
+            var successRate = 1 - (exceptions.Count * 1f / options.TotalRuns);
+
+            if (successRate < options.MinSuccessRate)
+            {
+                var message = $"Only {(successRate * 100):F2}% of rounds passed, which is below the required success rate of {(options.MinSuccessRate * 100):F2}%";
+                Log(message);
+                throw new SemanticAssertException(message);
+            }
+        }
+
+        private async Task RunCoreAsync(ChatScenario scenario, IChatClient? chatClient, AIAgent? agent, Func<IList<ChatMessage>, Task<ChatResponse>>? getAnswerFunc, IList<ChatMessage> chatHistory)
         {
             var queue = new Queue<ChatItem>(scenario.ChatItems);
 
@@ -187,9 +270,17 @@ namespace skUnit
                             return result;
                         };
                     }
+                    else if (agent != null)
+                    {
+                        populateAnswer = async history =>
+                        {
+                            var result = await agent.RunAsync(history);
+                            return new ChatResponse(new ChatMessage(ChatRole.Assistant, result.Text));
+                        };
+                    }
                     else
                     {
-                        throw new InvalidOperationException("Both chatClient and getAnswerFunc can not be null. One of them should be specified");
+                        throw new InvalidOperationException("Both chatClient, agent and getAnswerFunc cannot be null. One of them should be specified");
                     }
 
                     var response = await populateAnswer(chatHistory);
@@ -233,6 +324,27 @@ namespace skUnit
             foreach (var scenario in scenarios)
             {
                 await RunAsync(scenario, chatClient, getAnswerFunc, initialMessages, options);
+                Log();
+                Log("----------------------------------");
+                Log();
+            }
+        }
+
+        /// <summary>
+        /// Runs all of the <paramref name="scenarios"/> against the given <paramref name="agent"/>.
+        /// </summary>
+        /// <param name="scenarios">The list of chat scenarios to execute.</param>
+        /// <param name="agent">The AI agent to test.</param>
+        /// <param name="getAnswerFunc">Optional custom function for generating responses from chat history.</param>
+        /// <param name="initialMessages">Optional initial chat history that should be present before the scenarios start.</param>
+        /// <param name="options">Optional configuration for scenario execution.</param>
+        /// <returns></returns>
+        /// <exception cref="InvalidOperationException">If the AI agent was unable to generate a valid response.</exception>
+        public async Task RunAsync(List<ChatScenario> scenarios, AIAgent? agent = null, Func<IList<ChatMessage>, Task<ChatResponse>>? getAnswerFunc = null, IList<ChatMessage>? initialMessages = null, ScenarioRunOptions? options = null)
+        {
+            foreach (var scenario in scenarios)
+            {
+                await RunAsync(scenario, agent, getAnswerFunc, initialMessages, options);
                 Log();
                 Log("----------------------------------");
                 Log();
