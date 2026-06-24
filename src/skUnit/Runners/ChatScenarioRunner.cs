@@ -121,16 +121,13 @@ namespace skUnit
         /// <exception cref="InvalidOperationException">If the AI client was unable to generate a valid response.</exception>
         public async Task RunAsync(
             ChatScenario scenario,
-            IChatClient? chatClient = null,
-            Func<IList<ChatMessage>, Task<ChatResponse>>? getAnswerFunc = null,
+            IChatClient chatClient,
             IList<ChatMessage>? initialMessages = null,
             ScenarioRunOptions? options = null
         )
         {
-            if (chatClient is null && getAnswerFunc is null)
-                throw new InvalidOperationException("Both chatClient and getAnswerFunc cannot be null. One of them should be specified");
-
-            await RunScenarioAsync(scenario, CreatePopulateAnswer(chatClient, null, getAnswerFunc), initialMessages, options);
+            ArgumentNullException.ThrowIfNull(chatClient);
+            await RunScenarioAsync(scenario, CreatePopulateAnswer(chatClient, null, null), initialMessages, options);
         }
 
         /// <summary>
@@ -145,16 +142,13 @@ namespace skUnit
         /// <returns></returns>
         public async Task RunAsync(
             ChatScenario scenario,
-            AIAgent? agent = null,
-            Func<IList<ChatMessage>, Task<ChatResponse>>? getAnswerFunc = null,
+            AIAgent agent,
             IList<ChatMessage>? initialMessages = null,
             ScenarioRunOptions? options = null
         )
         {
-            if (agent is null && getAnswerFunc is null)
-                throw new InvalidOperationException("Both agent and getAnswerFunc cannot be null. One of them should be specified");
-
-            await RunScenarioAsync(scenario, CreatePopulateAnswer(null, agent, getAnswerFunc), initialMessages, options);
+            ArgumentNullException.ThrowIfNull(agent);
+            await RunScenarioAsync(scenario, CreatePopulateAnswer(null, agent, null), initialMessages, options);
         }
 
         /// <summary>
@@ -167,14 +161,12 @@ namespace skUnit
         /// <returns></returns>
         public async Task RunAsync(
             ChatScenario scenario,
-            Func<IList<ChatMessage>, Task<ChatResponse>>? getAnswerFunc = null,
+            Func<IList<ChatMessage>, Task<ChatResponse>> getAnswerFunc,
             IList<ChatMessage>? initialMessages = null,
             ScenarioRunOptions? options = null
         )
         {
-            if (getAnswerFunc is null)
-                throw new InvalidOperationException("getAnswerFunc cannot be null");
-
+            ArgumentNullException.ThrowIfNull(getAnswerFunc);
             await RunScenarioAsync(scenario, getAnswerFunc, initialMessages, options);
         }
 
@@ -308,11 +300,32 @@ namespace skUnit
         /// <param name="initialMessages"></param>
         /// <returns></returns>
         /// <exception cref="InvalidOperationException">If the AI client was unable to generate a valid response.</exception>
-        public async Task RunAsync(List<ChatScenario> scenarios, IChatClient? chatClient = null, Func<IList<ChatMessage>, Task<ChatResponse>>? getAnswerFunc = null, IList<ChatMessage>? initialMessages = null, ScenarioRunOptions? options = null)
+        public async Task RunAsync(List<ChatScenario> scenarios, IChatClient chatClient, IList<ChatMessage>? initialMessages = null, ScenarioRunOptions? options = null)
         {
+            ArgumentNullException.ThrowIfNull(chatClient);
             foreach (var scenario in scenarios)
             {
-                await RunAsync(scenario, chatClient, getAnswerFunc, initialMessages, options);
+                await RunAsync(scenario, chatClient, initialMessages, options);
+                Log();
+                Log("----------------------------------");
+                Log();
+            }
+        }
+
+        /// <summary>
+        /// Runs all of the <paramref name="scenarios"/> using the supplied custom response function.
+        /// </summary>
+        /// <param name="scenarios">The list of chat scenarios to execute.</param>
+        /// <param name="getAnswerFunc">The custom function that generates responses from chat history.</param>
+        /// <param name="initialMessages">Optional initial chat history that should be present before the scenarios start.</param>
+        /// <param name="options">Optional configuration for scenario execution.</param>
+        /// <returns></returns>
+        public async Task RunAsync(List<ChatScenario> scenarios, Func<IList<ChatMessage>, Task<ChatResponse>> getAnswerFunc, IList<ChatMessage>? initialMessages = null, ScenarioRunOptions? options = null)
+        {
+            ArgumentNullException.ThrowIfNull(getAnswerFunc);
+            foreach (var scenario in scenarios)
+            {
+                await RunAsync(scenario, getAnswerFunc, initialMessages, options);
                 Log();
                 Log("----------------------------------");
                 Log();
@@ -329,11 +342,12 @@ namespace skUnit
         /// <param name="options">Optional configuration for scenario execution.</param>
         /// <returns></returns>
         /// <exception cref="InvalidOperationException">If the AI agent was unable to generate a valid response.</exception>
-        public async Task RunAsync(List<ChatScenario> scenarios, AIAgent? agent = null, Func<IList<ChatMessage>, Task<ChatResponse>>? getAnswerFunc = null, IList<ChatMessage>? initialMessages = null, ScenarioRunOptions? options = null)
+        public async Task RunAsync(List<ChatScenario> scenarios, AIAgent agent, IList<ChatMessage>? initialMessages = null, ScenarioRunOptions? options = null)
         {
+            ArgumentNullException.ThrowIfNull(agent);
             foreach (var scenario in scenarios)
             {
-                await RunAsync(scenario, agent, getAnswerFunc, initialMessages, options);
+                await RunAsync(scenario, agent, initialMessages, options);
                 Log();
                 Log("----------------------------------");
                 Log();
