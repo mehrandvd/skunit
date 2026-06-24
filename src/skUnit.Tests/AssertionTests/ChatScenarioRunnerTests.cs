@@ -60,7 +60,7 @@ namespace skUnit.Tests.AssertionTests
             var scenario = new ChatScenario { RawText = "" };
 
             // Act & Assert
-            var exception = await Assert.ThrowsAsync<ArgumentNullException>(async () => await runner.RunAsync(scenario, (IChatClient)null!));
+            var exception = await Assert.ThrowsAsync<ArgumentNullException>(() => runner.RunAsync(scenario, (IChatClient)null));
 
             Assert.Contains("Value cannot be null", exception.Message);
         }

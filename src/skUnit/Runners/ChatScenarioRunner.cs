@@ -158,7 +158,9 @@ namespace skUnit
         /// <param name="getAnswerFunc">The custom function that generates responses from chat history.</param>
         /// <param name="initialMessages">Optional initial chat history that should be present before the scenario starts.</param>
         /// <param name="options">Optional configuration for scenario execution.</param>
-        /// <returns></returns>
+        /// <returns>A task that completes when the scenario execution finishes.</returns>
+        /// <exception cref="ArgumentNullException">If <paramref name="getAnswerFunc"/> is null.</exception>
+        /// <exception cref="SemanticAssertException">If the scenario assertions fail.</exception>
         public async Task RunAsync(
             ChatScenario scenario,
             Func<IList<ChatMessage>, Task<ChatResponse>> getAnswerFunc,
@@ -283,23 +285,18 @@ namespace skUnit
 
         /// <summary>
         /// Runs all of the <paramref name="scenarios"/> against the given <paramref name="chatClient"/>
-        /// using its ChatCompletionService.
-        /// If you want to test using something other than ChatCompletionService (for example using your own function),
-        /// pass <paramref name="getAnswerFunc"/> and specify how do you want the answer be created from chat history like:
-        /// <code>
-        /// getAnswerFunc = async history =>
-        ///     await AnswerChatFunction.InvokeAsync(kernel, new KernelArguments()
-        ///     {
-        ///         ["history"] = history,
-        ///     });
-        /// </code>
+        /// using its chat completion functionality.
         /// </summary>
-        /// <param name="scenarios"></param>
-        /// <param name="chatClient"></param>
-        /// <param name="getAnswerFunc"></param>
-        /// <param name="initialMessages"></param>
-        /// <returns></returns>
-        /// <exception cref="InvalidOperationException">If the AI client was unable to generate a valid response.</exception>
+        /// <param name="scenarios">The list of chat scenarios to execute.</param>
+        /// <param name="chatClient">The chat client to test.</param>
+        /// <param name="initialMessages">Optional initial chat history that should be present before the scenarios start.</param>
+        /// <param name="options">Optional configuration for scenario execution.</param>
+        /// <returns>A task that completes when all scenarios have been executed.</returns>
+        /// <exception cref="ArgumentNullException">If <paramref name="chatClient"/> is null.</exception>
+        /// <exception cref="SemanticAssertException">If any scenario assertion fails.</exception>
+        /// <remarks>
+        /// Use the custom-function overload when you want to generate responses from chat history with your own logic.
+        /// </remarks>
         public async Task RunAsync(List<ChatScenario> scenarios, IChatClient chatClient, IList<ChatMessage>? initialMessages = null, ScenarioRunOptions? options = null)
         {
             ArgumentNullException.ThrowIfNull(chatClient);
@@ -319,7 +316,12 @@ namespace skUnit
         /// <param name="getAnswerFunc">The custom function that generates responses from chat history.</param>
         /// <param name="initialMessages">Optional initial chat history that should be present before the scenarios start.</param>
         /// <param name="options">Optional configuration for scenario execution.</param>
-        /// <returns></returns>
+        /// <returns>A task that completes when all scenarios have been executed.</returns>
+        /// <exception cref="ArgumentNullException">If <paramref name="getAnswerFunc"/> is null.</exception>
+        /// <exception cref="SemanticAssertException">If any scenario assertion fails.</exception>
+        /// <remarks>
+        /// Use this overload when you need to generate answers from chat history with your own logic instead of a chat client or agent.
+        /// </remarks>
         public async Task RunAsync(List<ChatScenario> scenarios, Func<IList<ChatMessage>, Task<ChatResponse>> getAnswerFunc, IList<ChatMessage>? initialMessages = null, ScenarioRunOptions? options = null)
         {
             ArgumentNullException.ThrowIfNull(getAnswerFunc);
@@ -337,11 +339,11 @@ namespace skUnit
         /// </summary>
         /// <param name="scenarios">The list of chat scenarios to execute.</param>
         /// <param name="agent">The AI agent to test.</param>
-        /// <param name="getAnswerFunc">Optional custom function for generating responses from chat history.</param>
         /// <param name="initialMessages">Optional initial chat history that should be present before the scenarios start.</param>
         /// <param name="options">Optional configuration for scenario execution.</param>
-        /// <returns></returns>
-        /// <exception cref="InvalidOperationException">If the AI agent was unable to generate a valid response.</exception>
+        /// <returns>A task that completes when all scenarios have been executed.</returns>
+        /// <exception cref="ArgumentNullException">If <paramref name="agent"/> is null.</exception>
+        /// <exception cref="SemanticAssertException">If any scenario assertion fails.</exception>
         public async Task RunAsync(List<ChatScenario> scenarios, AIAgent agent, IList<ChatMessage>? initialMessages = null, ScenarioRunOptions? options = null)
         {
             ArgumentNullException.ThrowIfNull(agent);
