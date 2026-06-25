@@ -36,21 +36,21 @@ public class ChatScenarioRunnerLoggingTests
     }
 
     [Fact]
-    public void Constructor_WithActionDelegate_CreatesAdapter()
+    public void Constructor_WithActionDelegate_IsMarkedObsolete()
     {
         // Arrange
-        var loggedMessages = new List<string>();
-        Action<string> onLog = message => loggedMessages.Add(message);
-        var chatClient = CreateMockChatClient();
+        var constructor = typeof(ChatScenarioRunner).GetConstructor([typeof(IChatClient), typeof(Action<string>)]);
 
         // Act
-        var scenarioRunner = new ChatScenarioRunner(chatClient, onLog);
+        var obsoleteAttribute = constructor?.GetCustomAttributes(typeof(ObsoleteAttribute), false)
+            .OfType<ObsoleteAttribute>()
+            .FirstOrDefault();
 
         // Assert
-        Assert.NotNull(scenarioRunner);
-        // The constructor should have created a DelegateLoggerAdapter internally
+        Assert.NotNull(constructor);
+        Assert.NotNull(obsoleteAttribute);
+        Assert.Contains("ILogger<ChatScenarioRunner>", obsoleteAttribute!.Message);
     }
-
 
     private static IChatClient CreateMockChatClient()
     {
