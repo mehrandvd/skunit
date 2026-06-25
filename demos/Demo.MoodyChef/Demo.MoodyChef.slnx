@@ -1,0 +1,4 @@
+<Solution>
+  <Project Path="Demo.MoodyChef.Console/Demo.MoodyChef.Console.csproj" />
+  <Project Path="Demo.MoodyChef.Tests/Demo.MoodyChef.Tests.csproj" />
+</Solution>
