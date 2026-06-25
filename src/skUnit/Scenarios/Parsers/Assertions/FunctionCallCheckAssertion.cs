@@ -66,7 +66,8 @@ namespace skUnit.Scenarios.Parsers.Assertions
 
                             var checkValues = checkArray
                                               .Skip(1)
-                                              .Select(value => value.GetValue<string>());
+                                              .Where(value => value is not null)
+                                              .Select(value => value?.GetValue<string>());
 
                             checkValuesText = string.Join(", ", checkValues);
                         }

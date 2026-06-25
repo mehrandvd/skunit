@@ -114,7 +114,6 @@ namespace skUnit
         /// </summary>
         /// <param name="scenario"></param>
         /// <param name="chatClient"></param>
-        /// <param name="getAnswerFunc"></param>
         /// <param name="initialMessages"></param>
         /// <param name="options"></param>
         /// <returns></returns>
@@ -136,7 +135,6 @@ namespace skUnit
         /// </summary>
         /// <param name="scenario">The chat scenario to execute.</param>
         /// <param name="agent">The AI agent to test.</param>
-        /// <param name="getAnswerFunc">Optional custom function for generating responses from chat history.</param>
         /// <param name="initialMessages">Optional initial chat history that should be present before the scenario starts.</param>
         /// <param name="options">Optional configuration for scenario execution.</param>
         /// <returns></returns>

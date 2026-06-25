@@ -15,6 +15,7 @@
   </PropertyGroup>
 
   <ItemGroup>
+    <PackageReference Include="FakeItEasy" Version="9.0.1" />
     <PackageReference Include="Markdig" Version="1.2.0" />
     <PackageReference Include="Microsoft.Agents.AI" Version="1.10.0" />
     <PackageReference Include="Microsoft.Extensions.AI" Version="10.7.0" />

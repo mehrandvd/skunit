@@ -3,7 +3,9 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
+using FakeItEasy;
 using skUnit.Exceptions;
+using skUnit.Runners;
 using skUnit.Scenarios.Parsers.Assertions;
 
 namespace skUnit.Tests.AssertionTests
@@ -24,12 +26,14 @@ namespace skUnit.Tests.AssertionTests
 
             Assert.NotNull(assertion.JsonCheck);
 
-            await assertion.Assert(null, """
-                                         {
-                                             "name": "Mehran",
-                                             "address": "The address is in Vanak area of Tehran"
-                                         }
-                                         """);
+            await assertion.Assert(
+                A.Fake<SemanticAgent>(),
+                """
+                {
+                    "name": "Mehran",
+                    "address": "The address is in Vanak area of Tehran"
+                }
+                """);
         }
 
         [Fact]
@@ -48,12 +52,14 @@ namespace skUnit.Tests.AssertionTests
 
             Assert.NotNull(assertion.JsonCheck);
 
-            await assertion.Assert(null, """
-                                         {
-                                             "name": "Mehran",
-                                             "address": "The address is in Vanak area of Tehran"
-                                         }
-                                         """);
+            await assertion.Assert(
+                A.Fake<SemanticAgent>(),
+                """
+                {
+                    "name": "Mehran",
+                    "address": "The address is in Vanak area of Tehran"
+                }
+                """);
         }
 
         [Fact]
@@ -70,7 +76,9 @@ namespace skUnit.Tests.AssertionTests
 
             Assert.NotNull(assertion.JsonCheck);
 
-            await Assert.ThrowsAsync<SemanticAssertException>(() => assertion.Assert(null, """
+            await Assert.ThrowsAsync<SemanticAssertException>(() => assertion.Assert(
+                A.Fake<SemanticAgent>(), 
+                """
                 {
                     "name": "Mehran",
                     "address": "The address is in Vanak area of Tehran"
@@ -92,7 +100,9 @@ namespace skUnit.Tests.AssertionTests
 
             Assert.NotNull(assertion.JsonCheck);
 
-            await Assert.ThrowsAsync<SemanticAssertException>(() => assertion.Assert(null, """
+            await Assert.ThrowsAsync<SemanticAssertException>(() => assertion.Assert(
+                A.Fake<SemanticAgent>(), 
+                """
                 {
                     "name": "Mehran",
                 }
@@ -113,7 +123,9 @@ namespace skUnit.Tests.AssertionTests
 
             Assert.NotNull(assertion.JsonCheck);
 
-            await Assert.ThrowsAsync<InvalidOperationException>(() => assertion.Assert(null, """
+            await Assert.ThrowsAsync<InvalidOperationException>(() => assertion.Assert(
+                A.Fake<SemanticAgent>(),
+                """
                 {
                     "name": "Mehran",
                 }

@@ -52,20 +52,6 @@ namespace skUnit.Tests.AssertionTests
         }
 
         [Fact]
-        public async Task ChatScenarioRunner_RunAsync_ThrowsWhenBothClientAndFuncAreNull()
-        {
-            // Arrange
-            var mockChatClient = CreateMockChatClient();
-            var runner = new ChatScenarioRunner(mockChatClient);
-            var scenario = new ChatScenario { RawText = "" };
-
-            // Act & Assert
-            var exception = await Assert.ThrowsAsync<ArgumentNullException>(() => runner.RunAsync(scenario, (IChatClient)null));
-
-            Assert.Contains("Value cannot be null", exception.Message);
-        }
-
-        [Fact]
         public async Task ChatScenarioRunner_RunAsync_WithGetAnswerFunc_Works()
         {
             var runner = new ChatScenarioRunner(CreateMockChatClient());

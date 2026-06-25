@@ -1,5 +1,7 @@
-﻿using Microsoft.Extensions.AI;
+﻿using FakeItEasy;
+using Microsoft.Extensions.AI;
 using skUnit.Exceptions;
+using skUnit.Runners;
 using skUnit.Scenarios.Parsers.Assertions;
 
 namespace skUnit.Tests.AssertionTests
@@ -71,7 +73,7 @@ namespace skUnit.Tests.AssertionTests
                                         ```
                                         """);
 
-            await assertion.Assert(null, new ChatResponse(history), history);
+            await assertion.Assert(A.Fake<SemanticAgent>(), new ChatResponse(history), history);
 
             Assert.Single(assertion.FunctionArguments);
             Assert.Equal(typeof(EqualsAssertion), assertion.FunctionArguments["arg1"].GetType());
@@ -108,7 +110,7 @@ namespace skUnit.Tests.AssertionTests
                 ```
                 """);
 
-            await assertion.Assert(null, new ChatResponse(history), history);
+            await assertion.Assert(A.Fake<SemanticAgent>(), new ChatResponse(history), history);
 
             Assert.Single(assertion.FunctionArguments);
             Assert.Equal(typeof(IsAnyOfAssertion), assertion.FunctionArguments["arg1"].GetType());
@@ -149,7 +151,7 @@ namespace skUnit.Tests.AssertionTests
                 ```
                 """);
 
-            await assertion.Assert(null, new ChatResponse(history), history);
+            await assertion.Assert(A.Fake<SemanticAgent>(), new ChatResponse(history), history);
 
             Assert.Equal(expected: 3, assertion.FunctionArguments.Count);
             Assert.Equal(typeof(IsAnyOfAssertion), assertion.FunctionArguments["arg1"].GetType());
@@ -190,7 +192,7 @@ namespace skUnit.Tests.AssertionTests
 
             var exception = await Assert.ThrowsAsync<SemanticAssertException>(() =>
             {
-                return assertion.Assert(null, new ChatResponse(history), history);
+                return assertion.Assert(A.Fake<SemanticAgent>(), new ChatResponse(history), history);
             });
 
             Assert.Equal("Text is not equal to any of these: 'value1, value2, value3'", exception.Message);

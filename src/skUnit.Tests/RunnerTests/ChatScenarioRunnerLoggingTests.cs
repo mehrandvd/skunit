@@ -35,23 +35,6 @@ public class ChatScenarioRunnerLoggingTests
         // Should not throw even with null logger due to NullLogger fallback
     }
 
-    [Fact]
-    public void Constructor_WithActionDelegate_IsMarkedObsolete()
-    {
-        // Arrange
-        var constructor = typeof(ChatScenarioRunner).GetConstructor([typeof(IChatClient), typeof(Action<string>)]);
-
-        // Act
-        var obsoleteAttribute = constructor?.GetCustomAttributes(typeof(ObsoleteAttribute), false)
-            .OfType<ObsoleteAttribute>()
-            .FirstOrDefault();
-
-        // Assert
-        Assert.NotNull(constructor);
-        Assert.NotNull(obsoleteAttribute);
-        Assert.Contains("ILogger<ChatScenarioRunner>", obsoleteAttribute!.Message);
-    }
-
     private static IChatClient CreateMockChatClient()
     {
         return new TestChatClient();
