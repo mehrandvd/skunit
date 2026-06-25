@@ -24,7 +24,7 @@ namespace skUnit.Tests.AssertionTests
         }
 
         [Fact]
-        public void ChatScenarioRunner_Constructor_WithActionLog_Works()
+        public void ChatScenarioRunner_Constructor_WithObsoleteActionLog_Works()
         {
             // Arrange
             var mockChatClient = CreateMockChatClient();

@@ -48,7 +48,10 @@ public class SemanticTestBase
             new AzureKeyCredential(ApiKey)
             ).GetChatClient(DeploymentName).AsIChatClient();
 
-        ScenarioRunner = new ChatScenarioRunner(assertionClient, message => Output.WriteLine(message));
+        var loggerFactory = LoggerFactory.Create(builder => builder.AddProvider(new TestOutputLoggerProvider(Output)));
+        var logger = loggerFactory.CreateLogger<ChatScenarioRunner>();
+
+        ScenarioRunner = new ChatScenarioRunner(assertionClient, logger);
 
         SemanticAssert = new SemanticAssert(assertionClient);
 
@@ -65,5 +68,40 @@ public class SemanticTestBase
     protected async Task<List<ChatScenario>> LoadChatScenarioAsync(string scenario)
     {
         return await ChatScenario.LoadFromResourceAsync($"skUnit.Tests.RunnerTests.Samples.{scenario}.md", Assembly.GetExecutingAssembly());
+    }
+
+    private sealed class TestOutputLoggerProvider(ITestOutputHelper output) : ILoggerProvider
+    {
+        public ILogger CreateLogger(string categoryName) => new TestOutputLogger(output, categoryName);
+
+        public void Dispose()
+        {
+        }
+    }
+
+    private sealed class TestOutputLogger(ITestOutputHelper output, string categoryName) : ILogger
+    {
+        public IDisposable? BeginScope<TState>(TState state) where TState : notnull => NullScope.Instance;
+
+        public bool IsEnabled(LogLevel logLevel) => true;
+
+        public void Log<TState>(LogLevel logLevel, EventId eventId, TState state, Exception? exception, Func<TState, Exception?, string> formatter)
+        {
+            if (!IsEnabled(logLevel))
+            {
+                return;
+            }
+
+            output.WriteLine($"[{logLevel}] {categoryName}: {formatter(state, exception)}");
+        }
+    }
+
+    private sealed class NullScope : IDisposable
+    {
+        public static NullScope Instance { get; } = new();
+
+        public void Dispose()
+        {
+        }
     }
 }

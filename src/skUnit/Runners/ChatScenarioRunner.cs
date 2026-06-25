@@ -51,6 +51,7 @@ namespace skUnit
         /// </summary>
         /// <param name="assertionClient">The chat client used for semantic evaluations and assertions (not the system under test)</param>
         /// <param name="onLog">Optional action for logging test execution output</param>
+        [Obsolete("Use the ILogger<ChatScenarioRunner> constructor instead. This overload will be removed in a future release.")]
         public ChatScenarioRunner(IChatClient assertionClient, Action<string>? onLog)
         {
             Semantic = new SemanticAgent(assertionClient);
@@ -62,6 +63,7 @@ namespace skUnit
         /// </summary>
         /// <param name="assertionAgent">The AI agent used for semantic evaluations and assertions (not the system under test)</param>
         /// <param name="onLog">Optional action for logging test execution output</param>
+        [Obsolete("Use the ILogger<ChatScenarioRunner> constructor instead. This overload will be removed in a future release.")]
         public ChatScenarioRunner(AIAgent assertionAgent, Action<string>? onLog)
         {
             Semantic = new SemanticAgent(assertionAgent);
