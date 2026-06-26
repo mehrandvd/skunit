@@ -82,7 +82,7 @@ The answer mentions that the account balance is $1,234.56.
 }
 ````
 
-You can also assert on the **arguments** passed to the function — using exact or semantic matching:
+You can also assert on the **arguments** passed to the function, using exact or semantic matching:
 
 ```json
 {
@@ -229,14 +229,13 @@ public class BankAccountTests
             .GetChatClient(deploymentName)
             .AsIChatClient();
 
-        systemUnderTestClient = /* the client/agent you are testing */
-
         ScenarioRunner = new ChatScenarioRunner(assertionClient, output.WriteLine);
     }
 
     [Fact]
     public async Task TestBalance()
     {
+        var agentUnderTest = /* the client/agent you are testing */
         var scenarios = ChatScenario.Parse(File.ReadAllText("balance-test.md"));
         await ScenarioRunner.RunAsync(scenarios, systemUnderTestClient);
     }
@@ -245,7 +244,7 @@ public class BankAccountTests
 
 Two clients, two roles:
 - **`assertionClient`** — evaluates semantic assertions (`SemanticCondition`, `SemanticSimilar`, etc.)
-- **`systemUnderTestClient`** — the agent/client whose behavior you are testing
+- **`agentUnderTest`** — the agent/client whose behavior you are testing
 
 > **MSTest / NUnit:** Replace `ITestOutputHelper.WriteLine` with `TestContext.WriteLine`. Everything else stays the same. See [Test Framework Integration](docs/test-framework-integration.md).
 
@@ -265,9 +264,10 @@ Two clients, two roles:
 ## Examples
 
 See the `/demos` folder for complete, runnable projects:
-- **Demo.TddRepl** — Interactive chat application testing
-- **Demo.TddMcp** — MCP server integration testing
-- **Demo.TddShop** — Complex multi-scenario chat testing
+- **[Demo.MoodyChef](demos/Demo.MoodyChef)**: Multi-turn chat testing with semantic assertions
+- **[Demo.TddRepl](demos/Demo.TddRepl)**: Interactive chat application testing
+- **[Demo.TddMcp](demos/Demo.TddMcp)**: MCP server integration testing
+- **[Demo.TddShop](demos/Demo.TddShop)**: Complex multi-scenario chat testing
 
 ## Requirements
 
