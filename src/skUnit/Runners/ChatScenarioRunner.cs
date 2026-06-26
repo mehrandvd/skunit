@@ -295,9 +295,10 @@ namespace skUnit
         /// <remarks>
         /// Use the custom-function overload when you want to generate responses from chat history with your own logic.
         /// </remarks>
-        public async Task RunAsync(List<ChatScenario> scenarios, IChatClient chatClient, IList<ChatMessage>? initialMessages = null, ScenarioRunOptions? options = null)
+        public async Task RunAsync(IEnumerable<ChatScenario> scenarios, IChatClient chatClient, IList<ChatMessage>? initialMessages = null, ScenarioRunOptions? options = null)
         {
             ArgumentNullException.ThrowIfNull(chatClient);
+            ArgumentNullException.ThrowIfNull(scenarios);
             foreach (var scenario in scenarios)
             {
                 await RunAsync(scenario, chatClient, initialMessages, options);
@@ -320,9 +321,10 @@ namespace skUnit
         /// <remarks>
         /// Use this overload when you need to generate answers from chat history with your own logic instead of a chat client or agent.
         /// </remarks>
-        public async Task RunAsync(List<ChatScenario> scenarios, Func<IList<ChatMessage>, Task<ChatResponse>> getAnswerFunc, IList<ChatMessage>? initialMessages = null, ScenarioRunOptions? options = null)
+        public async Task RunAsync(IEnumerable<ChatScenario> scenarios, Func<IList<ChatMessage>, Task<ChatResponse>> getAnswerFunc, IList<ChatMessage>? initialMessages = null, ScenarioRunOptions? options = null)
         {
             ArgumentNullException.ThrowIfNull(getAnswerFunc);
+            ArgumentNullException.ThrowIfNull(scenarios);
             foreach (var scenario in scenarios)
             {
                 await RunAsync(scenario, getAnswerFunc, initialMessages, options);
@@ -342,9 +344,10 @@ namespace skUnit
         /// <returns>A task that completes when all scenarios have been executed.</returns>
         /// <exception cref="ArgumentNullException">If <paramref name="agent"/> is null.</exception>
         /// <exception cref="SemanticAssertException">If any scenario assertion fails.</exception>
-        public async Task RunAsync(List<ChatScenario> scenarios, AIAgent agent, IList<ChatMessage>? initialMessages = null, ScenarioRunOptions? options = null)
+        public async Task RunAsync(IEnumerable<ChatScenario> scenarios, AIAgent agent, IList<ChatMessage>? initialMessages = null, ScenarioRunOptions? options = null)
         {
             ArgumentNullException.ThrowIfNull(agent);
+            ArgumentNullException.ThrowIfNull(scenarios);
             foreach (var scenario in scenarios)
             {
                 await RunAsync(scenario, agent, initialMessages, options);

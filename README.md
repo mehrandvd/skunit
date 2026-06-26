@@ -58,6 +58,25 @@ It mentions Mount Everest.
 
 That's it! skUnit handles the conversation, calls your AI, and verifies the response makes sense.
 
+### Ergonomic scenario execution
+
+You can run scenarios directly from the client or agent that you want to test, without constructing a `ChatScenarioRunner` manually:
+
+```csharp
+using skUnit.Scenarios;
+
+await systemUnderTestClient.RunChatScenarioAsync(scenario);
+await agent.RunChatScenarioAsync(scenario);
+
+await scenario.RunAsync(systemUnderTestClient);
+await scenario.RunAsync(agent);
+
+await scenarios.RunAsync(systemUnderTestClient);
+await scenarios.RunAsync(agent);
+```
+
+If you want to use a different assertion model, pass it as the optional `assertionClient` or `assertionAgent` argument.
+
 ## Key Features
 
 ### 1. Basic Chat Scenarios
