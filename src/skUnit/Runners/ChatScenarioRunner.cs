@@ -21,9 +21,14 @@ namespace skUnit
 {
     public class ChatScenarioRunner
     {
-        private readonly ILogger<ChatScenarioRunner> _logger;
+        private readonly ILogger _logger;
         private SemanticAgent Semantic { get; set; }
 
+        /// <summary>
+        /// Gets or sets the default logger for all instances of ChatScenarioRunner that do not have a specific logger provided.
+        /// </summary>
+        private static ILogger? DefaultLogger { get; set; }
+        
         /// <summary>
         /// Creates a new ChatScenarioRunner with an assertion client and logger.
         /// </summary>
@@ -32,7 +37,7 @@ namespace skUnit
         public ChatScenarioRunner(IChatClient assertionClient, ILogger<ChatScenarioRunner>? logger = null)
         {
             Semantic = new SemanticAgent(assertionClient);
-            _logger = logger ?? NullLogger<ChatScenarioRunner>.Instance;
+            _logger = logger ?? DefaultLogger ?? NullLogger<ChatScenarioRunner>.Instance;
         }
 
         /// <summary>
@@ -66,6 +71,24 @@ namespace skUnit
         {
             Semantic = new SemanticAgent(assertionAgent);
             _logger = onLog != null ? new DelegateLoggerAdapter<ChatScenarioRunner>(onLog) : NullLogger<ChatScenarioRunner>.Instance;
+        }
+
+        /// <summary>
+        /// Sets the default logger for all instances of ChatScenarioRunner that do not have a specific logger provided.
+        /// </summary>
+        /// <param name="logger">The logger to set as the default</param>
+        public void SetDefaultLogger(ILogger logger)
+        {
+            DefaultLogger = logger;
+        }
+
+        /// <summary>
+        /// Sets the default logger for all instances of ChatScenarioRunner that do not have a specific logger provided.
+        /// </summary>
+        /// <param name="onLog">The action to set as the default logger</param>
+        public void SetDefaultLogger(Action<string> onLog)
+        {
+            DefaultLogger = new DelegateLoggerAdapter<ChatScenarioRunner>(onLog);
         }
 
         private void Log(string? message = "")
