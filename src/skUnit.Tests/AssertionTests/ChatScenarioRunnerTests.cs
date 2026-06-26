@@ -3,6 +3,7 @@ using Microsoft.Extensions.AI;
 using Microsoft.Extensions.Logging;
 using Xunit;
 using skUnit.Scenarios;
+using skUnit.Scenarios.Parsers.Assertions;
 using System.Text.Json;
 
 namespace skUnit.Tests.AssertionTests
@@ -106,6 +107,42 @@ namespace skUnit.Tests.AssertionTests
         }
 
         [Fact]
+        public async Task IChatClient_RunChatScenarioAsync_UsesClientAsAssertionClientByDefault()
+        {
+            var chatClient = CreateMockChatClient("Hello there");
+            var scenario = CreateScenario("IChatClient extension", "Hello there");
+
+            await chatClient.RunChatScenarioAsync(scenario);
+        }
+
+        [Fact]
+        public async Task AIAgent_RunChatScenarioAsync_UsesAgentAsAssertionAgentByDefault()
+        {
+            var agent = new TestAIAgent("Hello there");
+            var scenario = CreateScenario("AIAgent extension", "Hello there");
+
+            await agent.RunChatScenarioAsync(scenario);
+        }
+
+        [Fact]
+        public async Task ChatScenario_RunAsync_WithChatClient_Works()
+        {
+            var chatClient = CreateMockChatClient("Hello there");
+            var scenario = CreateScenario("ChatScenario extension", "Hello there");
+
+            await scenario.RunAsync(chatClient);
+        }
+
+        [Fact]
+        public async Task IEnumerableChatScenario_RunAsync_WithAgent_Works()
+        {
+            var agent = new TestAIAgent("Hello there");
+            var scenario = CreateScenario("IEnumerable extension", "Hello there");
+
+            await new[] { scenario }.RunAsync(agent);
+        }
+
+        [Fact]
         public void SemanticAssert_Constructor_WithAIAgent_Works()
         {
             var semanticAssert = new SemanticAssert(new TestAIAgent());
@@ -113,18 +150,35 @@ namespace skUnit.Tests.AssertionTests
             Assert.NotNull(semanticAssert);
         }
 
-        private static IChatClient CreateMockChatClient()
+        private static ChatScenario CreateScenario(string description, string expectedResponse)
         {
-            return new TestChatClient();
+            return new ChatScenario
+            {
+                Description = description,
+                RawText = description,
+                ChatItems =
+                [
+                    new ChatItem(ChatRole.User, "Hello"),
+                    new ChatItem(ChatRole.Assistant, "Hello there")
+                    {
+                        Assertions = [new EqualsAssertion { ExpectedAnswer = expectedResponse }]
+                    }
+                ]
+            };
         }
 
-        private class TestChatClient : IChatClient
+        private static IChatClient CreateMockChatClient(string? responseText = null)
+        {
+            return new TestChatClient(responseText ?? "Test response");
+        }
+
+        private class TestChatClient(string responseText) : IChatClient
         {
             public ChatClientMetadata Metadata => new("Test");
 
             public Task<ChatResponse> GetResponseAsync(IEnumerable<ChatMessage> chatMessages, ChatOptions? options = null, CancellationToken cancellationToken = default)
             {
-                return Task.FromResult(new ChatResponse(new ChatMessage(ChatRole.Assistant, "Test response")));
+                return Task.FromResult(new ChatResponse(new ChatMessage(ChatRole.Assistant, responseText)));
             }
 
             public async IAsyncEnumerable<ChatResponseUpdate> GetStreamingResponseAsync(IEnumerable<ChatMessage> chatMessages, ChatOptions? options = null, [System.Runtime.CompilerServices.EnumeratorCancellation] CancellationToken cancellationToken = default)
