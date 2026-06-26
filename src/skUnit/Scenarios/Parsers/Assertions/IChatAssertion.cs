@@ -1,10 +1,3 @@
-﻿using System;
-using System.Collections;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
-using Markdig.Helpers;
 using Microsoft.Extensions.AI;
 using skUnit.Runners;
 
@@ -18,11 +11,16 @@ namespace skUnit.Scenarios.Parsers.Assertions
         /// <summary>
         /// Checks if the <paramref name="response"/> can pass the assertion using <paramref name="semantic"/>
         /// </summary>
-        /// <param name="semantic"></param>
+        /// <param name="semanticEvaluator"></param>
         /// <param name="response"></param>
         /// <param name="history"></param>
+        /// <param name="cancellationToken"></param>
         /// <returns></returns>
-        Task Assert(SemanticAgent semantic, ChatResponse response, IList<ChatMessage>? history = null);
+        Task Assert(
+            SemanticEvaluator semanticEvaluator,
+            ChatResponse response,
+            IReadOnlyList<ChatMessage>? history = null,
+            CancellationToken cancellationToken = default);
         string AssertionType { get; }
         string Description { get; }
     }

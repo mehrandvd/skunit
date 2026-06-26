@@ -122,8 +122,8 @@ src/
 
 ### Adding New Assertion Types
 1. Create new assertion class in `src/skUnit/Scenarios/Parsers/Assertions/`
-2. Implement `IKernelAssertion` interface
-3. Add parsing logic to `KernelAssertionParser.cs`
+2. Implement `IChatAssertion` interface
+3. Add parsing logic to `ChatAssertionParser.cs`
 4. Create unit tests in `src/skUnit.Tests/AssertionTests/`
 5. Add integration tests in scenario .md files
 

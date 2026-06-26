@@ -71,10 +71,10 @@ namespace skUnit.Tests.AssertionTests
 
             await runner.RunAsync(
                 scenario,
-                async history =>
+                (history, cancellationToken) =>
                 {
                     sawUserMessage = history.Count == 1 && history[0].Role == ChatRole.User && history[0].Text == "Hello";
-                    return new ChatResponse(new ChatMessage(ChatRole.Assistant, "Hello there"));
+                    return ValueTask.FromResult(new ChatResponse(new ChatMessage(ChatRole.Assistant, "Hello there")));
                 });
 
             Assert.True(sawUserMessage);

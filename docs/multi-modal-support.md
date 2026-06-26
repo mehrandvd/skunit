@@ -66,7 +66,7 @@ Plain text response
 When using multi-modal scenarios in your tests, the content is automatically converted to the appropriate format for the underlying AI service:
 
 ```csharp
-var scenarios = ChatScenario.LoadFromText(scenarioText);
+var scenarios = ChatScenario.Parse(scenarioText);
 var chatItem = scenarios.First().ChatItems.First();
 
 // Access individual content parts

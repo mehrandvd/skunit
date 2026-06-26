@@ -73,7 +73,7 @@ namespace Demo.TddMcp
             var systemUnderTestClient = builder.Build();
 
             var scenarioText = await File.ReadAllTextAsync("TestScenario.md");
-            var scenario = ChatScenario.LoadFromText(scenarioText);
+            var scenario = ChatScenario.Parse(scenarioText);
             await ScenarioRunner.RunAsync(scenario, systemUnderTestClient);
         }
     }

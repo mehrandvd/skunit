@@ -8,7 +8,7 @@ namespace skUnit.Scenarios.Parsers.Assertions;
 /// <summary>
 /// Checks if the answer is similar to ExpectedAnswer
 /// </summary>
-public class AreSimilarAssertion : IChatAssertion
+public class SemanticSimilarityAssertion : IChatAssertion
 {
     /// <summary>
     /// The expected answer that the actual answer should compared with.
@@ -23,9 +23,9 @@ public class AreSimilarAssertion : IChatAssertion
     /// <param name="history"></param>
     /// <returns></returns>
     /// <exception cref="SemanticAssertException"></exception>
-    public async Task Assert(SemanticAgent semantic, ChatResponse response, IList<ChatMessage>? history = null)
+    public async Task Assert(SemanticEvaluator semanticEvaluator, ChatResponse response, IReadOnlyList<ChatMessage>? history = null, CancellationToken cancellationToken = default)
     {
-        var result = await semantic.AreSimilarAsync(response.Text, ExpectedAnswer);
+        var result = await semanticEvaluator.AreSimilarAsync(response.Text, ExpectedAnswer, cancellationToken);
 
         if (!result.IsValid)
             throw new SemanticAssertException(result.Reason ?? "No reason is provided.");

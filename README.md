@@ -38,7 +38,7 @@ And here's how to test it with just a few lines of C#:
 public async Task SimpleTest()
 {
     var markdown = File.ReadAllText("mountain-chat.md");
-    var scenarios = ChatScenario.LoadFromText(markdown);
+    var scenarios = ChatScenario.Parse(markdown);
 
     await ScenarioRunner.RunAsync(scenarios, systemUnderTestClient);
 }
@@ -65,17 +65,13 @@ You can run scenarios directly from the client or agent that you want to test, w
 ```csharp
 using skUnit.Scenarios;
 
-await systemUnderTestClient.RunChatScenarioAsync(scenario);
-await agent.RunChatScenarioAsync(scenario);
-
-await scenario.RunAsync(systemUnderTestClient);
-await scenario.RunAsync(agent);
-
-await scenarios.RunAsync(systemUnderTestClient);
-await scenarios.RunAsync(agent);
+await systemUnderTestClient.ExecuteScenarioAsync(scenario);
+await agent.ExecuteScenarioAsync(scenario, assertionClient);
+await systemUnderTestClient.ExecuteScenarioAsync(scenarios);
+await agent.ExecuteScenarioAsync(scenarios, assertionClient);
 ```
 
-If you want to use a different assertion model, pass it as the optional `assertionClient` or `assertionAgent` argument.
+If you want to use a different assertion model for `IChatClient`, pass `assertionClient`; for `AIAgent`, `assertionClient` is required.
 
 ## Key Features
 
@@ -296,7 +292,7 @@ public class MyChatTests
     public async Task TestChat()
     {
         var markdown = File.ReadAllText("scenario.md");
-        var scenarios = ChatScenario.LoadFromText(markdown);
+        var scenarios = ChatScenario.Parse(markdown);
         
         await _scenarioRunner.RunAsync(scenarios, _chatClient);
     }
@@ -356,7 +352,7 @@ public class GreetingTests
     public async Task TestGreeting()
     {
         var markdown = File.ReadAllText("greeting.md");
-        var scenarios = ChatScenario.LoadFromText(markdown);
+        var scenarios = ChatScenario.Parse(markdown);
 
         await ScenarioRunner.RunAsync(scenarios, systemUnderTestClient);
     }
@@ -380,7 +376,7 @@ public class GreetingTests : TestClass
     [TestMethod]
     public async Task TestGreeting()
     {
-        var scenarios = await ChatScenario.LoadFromResourceAsync(
+        var scenarios = await ChatScenario.ParseFromResourceAsync(
             "MyProject.Scenarios.greeting.md", 
             typeof(GreetingTests).Assembly);
             
@@ -407,7 +403,7 @@ public class GreetingTests
     public async Task TestGreeting()
     {
         var markdown = File.ReadAllText("greeting.md");
-        var scenarios = ChatScenario.LoadFromText(markdown);
+        var scenarios = ChatScenario.Parse(markdown);
 
         await ScenarioRunner.RunAsync(scenarios, systemUnderTestClient);
     }

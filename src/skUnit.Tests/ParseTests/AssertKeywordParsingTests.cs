@@ -36,7 +36,7 @@ namespace skUnit.Tests.ParseTests
 
             var assistantItem = scenarios[0].ChatItems.First(x => x.Role == ChatRole.Assistant);
             Assert.Single(assistantItem.Assertions);
-            Assert.Equal("Condition", assistantItem.Assertions[0].AssertionType);
+            Assert.Equal("SemanticCondition", assistantItem.Assertions[0].AssertionType);
         }
 
         [Fact]
@@ -70,7 +70,7 @@ namespace skUnit.Tests.ParseTests
             Assert.Equal(2, assistantItem.Assertions.Count);
 
             Assert.Equal("ContainsAll", assistantItem.Assertions[0].AssertionType);
-            Assert.Equal("Condition", assistantItem.Assertions[1].AssertionType);
+            Assert.Equal("SemanticCondition", assistantItem.Assertions[1].AssertionType);
         }
 
 

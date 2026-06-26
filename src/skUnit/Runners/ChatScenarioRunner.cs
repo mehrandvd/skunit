@@ -6,381 +6,285 @@ using skUnit.Exceptions;
 using skUnit.Runners;
 using skUnit.Scenarios;
 using skUnit.Scenarios.Parsers.Assertions;
-using System;
-using System.Collections.Generic;
-using System.Diagnostics;
-using System.Diagnostics.CodeAnalysis;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
-using ChatMessage = Microsoft.Extensions.AI.ChatMessage;
-using FunctionCallContent = Microsoft.Extensions.AI.FunctionCallContent;
-using FunctionResultContent = Microsoft.Extensions.AI.FunctionResultContent;
 
-namespace skUnit
+namespace skUnit;
+
+public class ChatScenarioRunner
 {
-    public class ChatScenarioRunner
+    private readonly ILogger _logger;
+    private readonly SemanticEvaluator _semanticEvaluator;
+
+    public ChatScenarioRunner(IChatClient assertionClient, ILogger<ChatScenarioRunner>? logger = null)
     {
-        private readonly ILogger _logger;
-        private SemanticAgent Semantic { get; set; }
+        ArgumentNullException.ThrowIfNull(assertionClient);
+        _semanticEvaluator = new SemanticEvaluator(assertionClient);
+        _logger = logger ?? NullLogger<ChatScenarioRunner>.Instance;
+    }
 
-        /// <summary>
-        /// Gets or sets the default logger for all instances of ChatScenarioRunner that do not have a specific logger provided.
-        /// </summary>
-        private static AsyncLocal<ILogger?> DefaultLogger { get; } = new AsyncLocal<ILogger?>();
+    public ChatScenarioRunner(IChatClient assertionClient, Action<string> onLog)
+    {
+        ArgumentNullException.ThrowIfNull(assertionClient);
+        ArgumentNullException.ThrowIfNull(onLog);
+        _semanticEvaluator = new SemanticEvaluator(assertionClient);
+        _logger = new DelegateLoggerAdapter(onLog);
+    }
 
-        private static AsyncLocal<IChatClient?> DefaultChatClient { get; } = new AsyncLocal<IChatClient?>();
+    public Task RunAsync(
+        ChatScenario scenario,
+        IChatClient chatClient,
+        IReadOnlyList<ChatMessage>? initialMessages = null,
+        ScenarioRunOptions? options = null,
+        CancellationToken cancellationToken = default)
+    {
+        ArgumentNullException.ThrowIfNull(chatClient);
+        return RunScenarioAsync(
+            scenario,
+            CreateResponseProvider(chatClient: chatClient),
+            initialMessages,
+            options,
+            cancellationToken);
+    }
 
-        /// <summary>
-        /// Creates a new ChatScenarioRunner with an assertion client and logger.
-        /// </summary>
-        /// <param name="assertionClient">The chat client used for semantic evaluations and assertions (not the system under test)</param>
-        /// <param name="logger">Optional logger for test execution output</param>
-        public ChatScenarioRunner(IChatClient? assertionClient = null, ILogger<ChatScenarioRunner>? logger = null)
+    public Task RunAsync(
+        ChatScenario scenario,
+        AIAgent agent,
+        IReadOnlyList<ChatMessage>? initialMessages = null,
+        ScenarioRunOptions? options = null,
+        CancellationToken cancellationToken = default)
+    {
+        ArgumentNullException.ThrowIfNull(agent);
+        return RunScenarioAsync(
+            scenario,
+            CreateResponseProvider(agent: agent),
+            initialMessages,
+            options,
+            cancellationToken);
+    }
+
+    public Task RunAsync(
+        ChatScenario scenario,
+        Func<IReadOnlyList<ChatMessage>, CancellationToken, ValueTask<ChatResponse>> getResponseAsync,
+        IReadOnlyList<ChatMessage>? initialMessages = null,
+        ScenarioRunOptions? options = null,
+        CancellationToken cancellationToken = default)
+    {
+        ArgumentNullException.ThrowIfNull(getResponseAsync);
+        return RunScenarioAsync(scenario, getResponseAsync, initialMessages, options, cancellationToken);
+    }
+
+    public async Task RunAsync(
+        IEnumerable<ChatScenario> scenarios,
+        IChatClient chatClient,
+        IReadOnlyList<ChatMessage>? initialMessages = null,
+        ScenarioRunOptions? options = null,
+        CancellationToken cancellationToken = default)
+    {
+        ArgumentNullException.ThrowIfNull(chatClient);
+        ArgumentNullException.ThrowIfNull(scenarios);
+
+        foreach (var scenario in scenarios)
         {
-            var client = ResolveAssertionClient(assertionClient);
-
-            Semantic = new SemanticAgent(client);
-            _logger = logger ?? DefaultLogger.Value ?? NullLogger<ChatScenarioRunner>.Instance;
+            cancellationToken.ThrowIfCancellationRequested();
+            await RunAsync(scenario, chatClient, initialMessages, options, cancellationToken);
+            Log();
+            Log("----------------------------------");
+            Log();
         }
+    }
 
-        /// <summary>
-        /// Creates a new ChatScenarioRunner with an assertion client and action-based logging.
-        /// </summary>
-        /// <param name="assertionClient">The chat client used for semantic evaluations and assertions (not the system under test)</param>
-        /// <param name="onLog">The action for logging test execution output</param>
-        public ChatScenarioRunner(IChatClient? assertionClient, Action<string> onLog)
+    public async Task RunAsync(
+        IEnumerable<ChatScenario> scenarios,
+        AIAgent agent,
+        IReadOnlyList<ChatMessage>? initialMessages = null,
+        ScenarioRunOptions? options = null,
+        CancellationToken cancellationToken = default)
+    {
+        ArgumentNullException.ThrowIfNull(agent);
+        ArgumentNullException.ThrowIfNull(scenarios);
+
+        foreach (var scenario in scenarios)
         {
-            var client = ResolveAssertionClient(assertionClient);
-
-            Semantic = new SemanticAgent(client);
-            _logger = new DelegateLoggerAdapter(onLog);
+            cancellationToken.ThrowIfCancellationRequested();
+            await RunAsync(scenario, agent, initialMessages, options, cancellationToken);
+            Log();
+            Log("----------------------------------");
+            Log();
         }
+    }
 
+    public async Task RunAsync(
+        IEnumerable<ChatScenario> scenarios,
+        Func<IReadOnlyList<ChatMessage>, CancellationToken, ValueTask<ChatResponse>> getResponseAsync,
+        IReadOnlyList<ChatMessage>? initialMessages = null,
+        ScenarioRunOptions? options = null,
+        CancellationToken cancellationToken = default)
+    {
+        ArgumentNullException.ThrowIfNull(getResponseAsync);
+        ArgumentNullException.ThrowIfNull(scenarios);
 
-        /// <summary>
-        /// Sets the default logger for all instances of ChatScenarioRunner that do not have a specific logger provided.
-        /// </summary>
-        /// <param name="logger">The logger to set as the default</param>
-        /// <param name="chatClient">The chat client to use for semantic evaluations and assertions</param>
-        public static void Initialize(ILogger? logger = null, IChatClient? chatClient = null)
+        foreach (var scenario in scenarios)
         {
-            DefaultLogger.Value = logger;
-            DefaultChatClient.Value = chatClient;
+            cancellationToken.ThrowIfCancellationRequested();
+            await RunAsync(scenario, getResponseAsync, initialMessages, options, cancellationToken);
+            Log();
+            Log("----------------------------------");
+            Log();
         }
+    }
 
-        /// <summary>
-        /// Sets the default logger for all instances of ChatScenarioRunner that do not have a specific logger provided.
-        /// </summary>
-        /// <param name="onLog">The action to set as the default logger</param>
-        /// <param name="chatClient">The chat client to use for semantic evaluations and assertions</param>
-        public static void Initialize(Action<string> onLog, IChatClient? chatClient = null)
-        {
-            DefaultLogger.Value = new DelegateLoggerAdapter(onLog);
-            DefaultChatClient.Value = chatClient;
-        }
+    private async Task RunScenarioAsync(
+        ChatScenario scenario,
+        Func<IReadOnlyList<ChatMessage>, CancellationToken, ValueTask<ChatResponse>> getResponseAsync,
+        IReadOnlyList<ChatMessage>? initialMessages,
+        ScenarioRunOptions? options,
+        CancellationToken cancellationToken)
+    {
+        ArgumentNullException.ThrowIfNull(scenario);
+        ArgumentNullException.ThrowIfNull(getResponseAsync);
 
-        private void Log(string? message = "")
-        {
-            LoggerExtensions.LogInformation(_logger, "{Message}", message ?? "");
-        }
+        options ??= new ScenarioRunOptions();
+        var startHistory = initialMessages ?? [];
 
-        private void LogWarning(string message)
-        {
-            LoggerExtensions.LogWarning(_logger, "{Message}", message);
-        }
+        var scenarioDocument = scenario.ToDocument();
+        Log($"# SCENARIO {scenarioDocument.Description}");
+        Log();
 
-        private async Task CheckAssertionAsync(IChatAssertion assertion, ChatResponse response, IList<ChatMessage> chatHistory, string keyword = "ASSERT")
+        var exceptions = new List<Exception>();
+        for (var round = 0; round < options.TotalRuns; round++)
         {
-            Log($"### {keyword} {assertion.AssertionType}");
-            Log($"{assertion.Description}");
+            cancellationToken.ThrowIfCancellationRequested();
+            var roundChatHistory = new List<ChatMessage>(startHistory);
+
+            if (options.TotalRuns > 1)
+            {
+                Log($"# ROUND {round + 1}");
+                Log();
+            }
 
             try
             {
-                await assertion.Assert(Semantic, response, chatHistory);
-                Log($"✅ OK");
-                Log("");
+                await RunCoreAsync(scenarioDocument, getResponseAsync, roundChatHistory, cancellationToken);
             }
-            catch (SemanticAssertException exception)
+            catch (Exception ex)
             {
-                Log("❌ FAIL");
-                Log("Reason:");
-                Log(exception.Message);
+                Log($"❌ Exception: {ex.Message}");
+                exceptions.Add(ex);
+            }
+        }
+
+        var requiredSuccessRuns = options.RequiredSuccessRuns ?? options.TotalRuns;
+        if (options.RequiredSuccessRuns is not null &&
+            (options.RequiredSuccessRuns < 1 || options.RequiredSuccessRuns > options.TotalRuns))
+        {
+            throw new ArgumentOutOfRangeException(
+                nameof(options.RequiredSuccessRuns),
+                options.RequiredSuccessRuns,
+                $"Must be between 1 and {options.TotalRuns} when specified.");
+        }
+
+        var successfulRuns = options.TotalRuns - exceptions.Count;
+        if (successfulRuns < requiredSuccessRuns)
+        {
+            var message =
+                $"Only {successfulRuns} of {options.TotalRuns} runs passed, which is below the required success runs of {requiredSuccessRuns}.";
+            Log(message);
+            throw new SemanticAssertException(message);
+        }
+    }
+
+    private async Task RunCoreAsync(
+        ScenarioDocument scenario,
+        Func<IReadOnlyList<ChatMessage>, CancellationToken, ValueTask<ChatResponse>> getResponseAsync,
+        List<ChatMessage> chatHistory,
+        CancellationToken cancellationToken)
+    {
+        var queue = new Queue<ScenarioStep>(scenario.Steps);
+        while (queue.Count > 0)
+        {
+            cancellationToken.ThrowIfCancellationRequested();
+            var chatItem = queue.Dequeue();
+
+            if (chatItem.Role == ChatRole.System || chatItem.Role == ChatRole.User || chatItem.Role == ChatRole.Tool)
+            {
+                chatHistory.Add(chatItem.ToChatMessage());
+                Log($"## [{chatItem.Role.ToString().ToUpperInvariant()}]");
+                Log(chatItem.Text);
                 Log();
-                throw;
+                continue;
             }
-        }
 
-        /// <summary>
-        /// Runs the <paramref name="scenario"/> against the given <paramref name="chatClient"/>
-        /// <code>
-        /// getAnswerFunc = async history =>
-        ///     await AnswerChatFunction.InvokeAsync(kernel, new KernelArguments()
-        ///     {
-        ///         ["history"] = history,
-        ///     });
-        /// </code>
-        /// </summary>
-        /// <param name="scenario"></param>
-        /// <param name="chatClient"></param>
-        /// <param name="initialMessages"></param>
-        /// <param name="options"></param>
-        /// <returns></returns>
-        /// <exception cref="InvalidOperationException">If the AI client was unable to generate a valid response.</exception>
-        public async Task RunAsync(
-            ChatScenario scenario,
-            IChatClient chatClient,
-            IList<ChatMessage>? initialMessages = null,
-            ScenarioRunOptions? options = null
-        )
-        {
-            ArgumentNullException.ThrowIfNull(chatClient);
-            await RunScenarioAsync(scenario, CreatePopulateAnswer(chatClient, null, null), initialMessages, options);
-        }
-
-        /// <summary>
-        /// Runs the <paramref name="scenario"/> against the given <paramref name="agent"/>
-        /// using its agent execution flow.
-        /// </summary>
-        /// <param name="scenario">The chat scenario to execute.</param>
-        /// <param name="agent">The AI agent to test.</param>
-        /// <param name="initialMessages">Optional initial chat history that should be present before the scenario starts.</param>
-        /// <param name="options">Optional configuration for scenario execution.</param>
-        /// <returns></returns>
-        public async Task RunAsync(
-            ChatScenario scenario,
-            AIAgent agent,
-            IList<ChatMessage>? initialMessages = null,
-            ScenarioRunOptions? options = null
-        )
-        {
-            ArgumentNullException.ThrowIfNull(agent);
-            await RunScenarioAsync(scenario, CreatePopulateAnswer(null, agent, null), initialMessages, options);
-        }
-
-        /// <summary>
-        /// Runs the <paramref name="scenario"/> using the supplied custom response function.
-        /// </summary>
-        /// <param name="scenario">The chat scenario to execute.</param>
-        /// <param name="getAnswerFunc">The custom function that generates responses from chat history.</param>
-        /// <param name="initialMessages">Optional initial chat history that should be present before the scenario starts.</param>
-        /// <param name="options">Optional configuration for scenario execution.</param>
-        /// <returns>A task that completes when the scenario execution finishes.</returns>
-        /// <exception cref="ArgumentNullException">If <paramref name="getAnswerFunc"/> is null.</exception>
-        /// <exception cref="SemanticAssertException">If the scenario assertions fail.</exception>
-        public async Task RunAsync(
-            ChatScenario scenario,
-            Func<IList<ChatMessage>, Task<ChatResponse>> getAnswerFunc,
-            IList<ChatMessage>? initialMessages = null,
-            ScenarioRunOptions? options = null
-        )
-        {
-            ArgumentNullException.ThrowIfNull(getAnswerFunc);
-            await RunScenarioAsync(scenario, getAnswerFunc, initialMessages, options);
-        }
-
-        private async Task RunScenarioAsync(ChatScenario scenario, Func<IList<ChatMessage>, Task<ChatResponse>> populateAnswer, IList<ChatMessage>? initialMessages, ScenarioRunOptions? options)
-        {
-            options ??= new ScenarioRunOptions();
-
-            initialMessages ??= [];
-
-            Log($"# SCENARIO {scenario.Description}");
-            Log("");
-
-            List<Exception> exceptions = [];
-
-            for (var round = 0; round < options.TotalRuns; round++)
+            if (chatItem.Role != ChatRole.Assistant)
             {
-                var roundChatHistory = new List<ChatMessage>(initialMessages);
-                if (options.TotalRuns > 1)
-                {
-                    Log($"# ROUND {round + 1}");
-                    Log();
-                }
-
-                try
-                {
-                    await RunCoreAsync(scenario, populateAnswer, roundChatHistory);
-                }
-                catch (Exception ex)
-                {
-                    Log($"❌ Exception: {ex.Message}");
-                    exceptions.Add(ex);
-                }
+                continue;
             }
 
-            var requiredSuccessRuns = options.RequiredSuccessRuns ?? options.TotalRuns;
+            Log("## [EXPECTED ANSWER]");
+            Log(chatItem.Text);
+            Log();
 
-            if (options.RequiredSuccessRuns is not null && (options.RequiredSuccessRuns < 1 || options.RequiredSuccessRuns > options.TotalRuns))
+            var response = await getResponseAsync(chatHistory, cancellationToken);
+            chatHistory.Add(chatItem.ToChatMessage());
+
+            Log("### [ACTUAL ANSWER]");
+            Log(response.Text);
+            Log();
+
+            foreach (var assertion in chatItem.Assertions)
             {
-                throw new ArgumentOutOfRangeException(nameof(options.RequiredSuccessRuns), options.RequiredSuccessRuns, $"Must be between 1 and {options.TotalRuns} when specified.");
-            }
-
-            var successfulRuns = options.TotalRuns - exceptions.Count;
-
-            if (successfulRuns < requiredSuccessRuns)
-            {
-                var message = $"Only {successfulRuns} of {options.TotalRuns} runs passed, which is below the required success runs of {requiredSuccessRuns}.";
-                Log(message);
-                throw new SemanticAssertException(message);
+                await CheckAssertionAsync(assertion, response, chatHistory, cancellationToken);
             }
         }
+    }
 
-        private static Func<IList<ChatMessage>, Task<ChatResponse>> CreatePopulateAnswer(IChatClient? chatClient, AIAgent? agent, Func<IList<ChatMessage>, Task<ChatResponse>>? getAnswerFunc)
+    private async Task CheckAssertionAsync(
+        IChatAssertion assertion,
+        ChatResponse response,
+        IReadOnlyList<ChatMessage> chatHistory,
+        CancellationToken cancellationToken)
+    {
+        Log($"### ASSERT {assertion.AssertionType}");
+        Log(assertion.Description);
+
+        try
         {
-            if (getAnswerFunc != null)
-            {
-                return getAnswerFunc;
-            }
-
-            if (chatClient != null)
-            {
-                return history => chatClient.GetResponseAsync(history);
-            }
-
-            if (agent != null)
-            {
-                return async history =>
-                {
-                    var result = await agent.RunAsync(history);
-                    return new ChatResponse(new ChatMessage(ChatRole.Assistant, result.Text));
-                };
-            }
-
-            Debug.Assert(false, "At least one of chatClient, agent, or getAnswerFunc must be specified.");
-            return _ => Task.FromResult(new ChatResponse(new ChatMessage(ChatRole.Assistant, string.Empty)));
+            await assertion.Assert(_semanticEvaluator, response, chatHistory, cancellationToken);
+            Log("✅ OK");
+            Log();
         }
-
-        private async Task RunCoreAsync(ChatScenario scenario, Func<IList<ChatMessage>, Task<ChatResponse>> populateAnswer, IList<ChatMessage> chatHistory)
+        catch (SemanticAssertException exception)
         {
-            var queue = new Queue<ChatItem>(scenario.ChatItems);
-
-            while (queue.Count > 0)
-            {
-                var chatItem = queue.Dequeue();
-
-                if (chatItem.Role == ChatRole.System)
-                {
-                    chatHistory.Add(new ChatMessage(ChatRole.System, chatItem.Content));
-                    Log($"## [{chatItem.Role.ToString().ToUpper()}]");
-                    Log(chatItem.Content);
-                    Log();
-                }
-                else if (chatItem.Role == ChatRole.User)
-                {
-                    chatHistory.Add(new ChatMessage(ChatRole.User, chatItem.Content));
-                    Log($"## [{chatItem.Role.ToString().ToUpper()}]");
-                    Log(chatItem.Content);
-                    Log();
-                }
-                else if (chatItem.Role == ChatRole.Assistant)
-                {
-                    Log($"## [EXPECTED ANSWER]");
-                    Log(chatItem.Content);
-                    Log();
-
-                    var response = await populateAnswer(chatHistory);
-
-                    // To let chatHistory stay clean for getting the answer
-                    chatHistory.Add(new ChatMessage(ChatRole.Assistant, chatItem.Content));
-
-                    Log($"### [ACTUAL ANSWER]");
-                    Log(response.Text);
-                    Log();
-
-                    foreach (var assertion in chatItem.Assertions)
-                    {
-                        await CheckAssertionAsync(assertion, response, chatHistory, "ASSERT");
-                    }
-                }
-            }
+            Log("❌ FAIL");
+            Log("Reason:");
+            Log(exception.Message);
+            Log();
+            throw;
         }
+    }
 
-        /// <summary>
-        /// Runs all of the <paramref name="scenarios"/> against the given <paramref name="chatClient"/>
-        /// using its chat completion functionality.
-        /// </summary>
-        /// <param name="scenarios">The list of chat scenarios to execute.</param>
-        /// <param name="chatClient">The chat client to test.</param>
-        /// <param name="initialMessages">Optional initial chat history that should be present before the scenarios start.</param>
-        /// <param name="options">Optional configuration for scenario execution.</param>
-        /// <returns>A task that completes when all scenarios have been executed.</returns>
-        /// <exception cref="ArgumentNullException">If <paramref name="chatClient"/> is null.</exception>
-        /// <exception cref="SemanticAssertException">If any scenario assertion fails.</exception>
-        /// <remarks>
-        /// Use the custom-function overload when you want to generate responses from chat history with your own logic.
-        /// </remarks>
-        public async Task RunAsync(IEnumerable<ChatScenario> scenarios, IChatClient chatClient, IList<ChatMessage>? initialMessages = null, ScenarioRunOptions? options = null)
+    private static Func<IReadOnlyList<ChatMessage>, CancellationToken, ValueTask<ChatResponse>> CreateResponseProvider(
+        IChatClient? chatClient = null,
+        AIAgent? agent = null)
+    {
+        if (chatClient is not null)
         {
-            ArgumentNullException.ThrowIfNull(chatClient);
-            ArgumentNullException.ThrowIfNull(scenarios);
-            foreach (var scenario in scenarios)
-            {
-                await RunAsync(scenario, chatClient, initialMessages, options);
-                Log();
-                Log("----------------------------------");
-                Log();
-            }
+            return (history, cancellationToken) => new ValueTask<ChatResponse>(
+                chatClient.GetResponseAsync(history, cancellationToken: cancellationToken));
         }
 
-        /// <summary>
-        /// Runs all of the <paramref name="scenarios"/> using the supplied custom response function.
-        /// </summary>
-        /// <param name="scenarios">The list of chat scenarios to execute.</param>
-        /// <param name="getAnswerFunc">The custom function that generates responses from chat history.</param>
-        /// <param name="initialMessages">Optional initial chat history that should be present before the scenarios start.</param>
-        /// <param name="options">Optional configuration for scenario execution.</param>
-        /// <returns>A task that completes when all scenarios have been executed.</returns>
-        /// <exception cref="ArgumentNullException">If <paramref name="getAnswerFunc"/> is null.</exception>
-        /// <exception cref="SemanticAssertException">If any scenario assertion fails.</exception>
-        /// <remarks>
-        /// Use this overload when you need to generate answers from chat history with your own logic instead of a chat client or agent.
-        /// </remarks>
-        public async Task RunAsync(IEnumerable<ChatScenario> scenarios, Func<IList<ChatMessage>, Task<ChatResponse>> getAnswerFunc, IList<ChatMessage>? initialMessages = null, ScenarioRunOptions? options = null)
+        if (agent is not null)
         {
-            ArgumentNullException.ThrowIfNull(getAnswerFunc);
-            ArgumentNullException.ThrowIfNull(scenarios);
-            foreach (var scenario in scenarios)
+            return async (history, cancellationToken) =>
             {
-                await RunAsync(scenario, getAnswerFunc, initialMessages, options);
-                Log();
-                Log("----------------------------------");
-                Log();
-            }
+                var result = await agent.RunAsync(history, cancellationToken: cancellationToken);
+                return new ChatResponse(new ChatMessage(ChatRole.Assistant, result.Text));
+            };
         }
 
-        /// <summary>
-        /// Runs all of the <paramref name="scenarios"/> against the given <paramref name="agent"/>.
-        /// </summary>
-        /// <param name="scenarios">The list of chat scenarios to execute.</param>
-        /// <param name="agent">The AI agent to test.</param>
-        /// <param name="initialMessages">Optional initial chat history that should be present before the scenarios start.</param>
-        /// <param name="options">Optional configuration for scenario execution.</param>
-        /// <returns>A task that completes when all scenarios have been executed.</returns>
-        /// <exception cref="ArgumentNullException">If <paramref name="agent"/> is null.</exception>
-        /// <exception cref="SemanticAssertException">If any scenario assertion fails.</exception>
-        public async Task RunAsync(IEnumerable<ChatScenario> scenarios, AIAgent agent, IList<ChatMessage>? initialMessages = null, ScenarioRunOptions? options = null)
-        {
-            ArgumentNullException.ThrowIfNull(agent);
-            ArgumentNullException.ThrowIfNull(scenarios);
-            foreach (var scenario in scenarios)
-            {
-                await RunAsync(scenario, agent, initialMessages, options);
-                Log();
-                Log("----------------------------------");
-                Log();
-            }
-        }
+        throw new InvalidOperationException("A response provider source must be specified.");
+    }
 
-        private static IChatClient ResolveAssertionClient(IChatClient? assertionClient)
-        {
-            return assertionClient ?? DefaultChatClient.Value ?? throw new ArgumentNullException(
-                nameof(assertionClient),
-                """
-                No chat client provided for semantic evaluations and assertions.
-                Use `ChatScenarioRunner.Initialize` to set a default chat client, or provide one in the constructor.
-                """);
-        }
+    private void Log(string? message = "")
+    {
+        _logger.LogInformation("{Message}", message ?? "");
     }
 }

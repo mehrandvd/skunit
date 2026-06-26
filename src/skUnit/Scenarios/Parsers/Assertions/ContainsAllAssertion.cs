@@ -23,7 +23,7 @@ public class ContainsAllAssertion : IChatAssertion
     /// <param name="history"></param>
     /// <returns></returns>
     /// <exception cref="SemanticAssertException"></exception>
-    public Task Assert(SemanticAgent semantic, ChatResponse response, IList<ChatMessage>? history = null)
+    public Task Assert(SemanticEvaluator semanticEvaluator, ChatResponse response, IReadOnlyList<ChatMessage>? history = null, CancellationToken cancellationToken = default)
     {
         var notFounds = Texts.Where(t => !response.Text.Contains(t.Trim())).ToList();
 

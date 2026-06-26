@@ -14,7 +14,7 @@ namespace skUnit.Scenarios.Parsers.Assertions
         /// </summary>
         private string JsonCheckText { get; set; } = default!;
         public JsonObject? JsonCheck { get; set; }
-        public JsonCheckAssertion SetJsonAssertText(string jsonAssertText)
+        public JsonCheckAssertion ParseSpec(string jsonAssertText)
         {
             if (string.IsNullOrWhiteSpace(jsonAssertText))
                 throw new InvalidOperationException("The JsonCheck is empty.");
@@ -40,7 +40,7 @@ namespace skUnit.Scenarios.Parsers.Assertions
         /// <param name="answer"></param>
         /// <returns></returns>
         /// <exception cref="SemanticAssertException"></exception>
-        public async Task Assert(SemanticAgent semantic, ChatResponse response, IList<ChatMessage>? history = null)
+        public async Task Assert(SemanticEvaluator semanticEvaluator, ChatResponse response, IReadOnlyList<ChatMessage>? history = null, CancellationToken cancellationToken = default)
         {
             var answerJson = SemanticUtils.PowerParseJson<JsonObject>(response.Text)
                              ?? throw new InvalidOperationException($"""
@@ -67,14 +67,14 @@ namespace skUnit.Scenarios.Parsers.Assertions
                 if (string.IsNullOrWhiteSpace(check))
                     throw new InvalidOperationException($"JsonCheck check field is empty: {checkArray?.ToJsonString()}");
 
-                var assertion = KernelAssertionParser.Parse(body, check);
+                var assertion = ChatAssertionParser.Parse(body, check);
 
                 if (answerJson.ContainsKey(prop.Key))
                 {
                     var answerValue = answerJson[prop.Key]?.GetValue<string>() ?? "";
                     try
                     {
-                        await assertion.Assert(semantic, new ChatResponse(new ChatMessage(ChatRole.Assistant, answerValue)), history);
+                        await assertion.Assert(semanticEvaluator, new ChatResponse(new ChatMessage(ChatRole.Assistant, answerValue)), history, cancellationToken);
                     }
                     catch (SemanticAssertException semanticAssertException)
                     {
@@ -105,9 +105,9 @@ namespace skUnit.Scenarios.Parsers.Assertions
             }
         }
 
-        public async Task Assert(SemanticAgent semantic, string answer, IList<ChatMessage>? history = null)
+        public async Task Assert(SemanticEvaluator semanticEvaluator, string answer, IReadOnlyList<ChatMessage>? history = null, CancellationToken cancellationToken = default)
         {
-            await Assert(semantic, new ChatResponse(new ChatMessage(ChatRole.Assistant, answer)), history);
+            await Assert(semanticEvaluator, new ChatResponse(new ChatMessage(ChatRole.Assistant, answer)), history, cancellationToken);
         }
 
         public string AssertionType => "JsonCheck";

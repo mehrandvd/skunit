@@ -2,12 +2,12 @@
 
 namespace skUnit.Scenarios.Parsers
 {
-    public class KernelAssertionParser
+    public class ChatAssertionParser
     {
         /// <summary>
         /// Parses an assertion text to a related KernelAssertion. For example:
         /// <code>
-        /// HasConditionAssertion, AreSimilarAssertion, ContainsAllAssertion
+        /// SemanticConditionAssertion, SemanticSimilarityAssertion, ContainsAllAssertion
         /// </code>
         /// </summary>
         /// <param name="text"></param>
@@ -19,9 +19,9 @@ namespace skUnit.Scenarios.Parsers
             return type.Trim().ToLower() switch
             {
                 "semanticcondition" or "semantic-condition" or "condition"
-                    => new HasConditionAssertion() { Condition = text },
+                    => new SemanticConditionAssertion() { Condition = text },
                 "semanticsimilar" or "semantic-similar" or "similar"
-                    => new AreSimilarAssertion() { ExpectedAnswer = text },
+                    => new SemanticSimilarityAssertion() { ExpectedAnswer = text },
                 "contains" or "contain" or "containsall" or "containstext"
                     => new ContainsAllAssertion() { Texts = text.Split(',', '،') },
                 "containsany" or "containsanyof"
@@ -29,9 +29,9 @@ namespace skUnit.Scenarios.Parsers
                 "equal" or "equals" or "exactmatch"
                     => new EqualsAssertion() { ExpectedAnswer = text },
                 "jsoncheck" or "jsonstructure" or "json"
-                    => new JsonCheckAssertion().SetJsonAssertText(text),
+                    => new JsonCheckAssertion().ParseSpec(text),
                 "functioncall" or "functioninvocation" or "toolcall"
-                    => new FunctionCallAssertion().SetJsonAssertText(text),
+                    => new FunctionCallAssertion().ParseSpec(text),
                 "empty" or "isempty"
                     => new EmptyAssertion(),
                 "notempty" or "notEmpty" or "hasvalue"

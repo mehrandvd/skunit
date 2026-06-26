@@ -34,7 +34,7 @@ namespace skUnit.Tests.RunnerTests
             var scenarios = await LoadChatScenarioAsync("GetFoodMenuChat");
             await ScenarioRunner.RunAsync(
                 scenarios,
-                async history =>
+                async (history, cancellationToken) =>
             {
                 AIFunction getFoodMenu = AIFunctionFactory.Create(GetFoodMenu);
 

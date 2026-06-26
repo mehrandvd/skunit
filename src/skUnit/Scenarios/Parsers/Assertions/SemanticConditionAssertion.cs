@@ -8,7 +8,7 @@ namespace skUnit.Scenarios.Parsers.Assertions;
 /// <summary>
 /// Checks whether the input has the condition semantically.
 /// </summary>
-public class HasConditionAssertion : IChatAssertion
+public class SemanticConditionAssertion : IChatAssertion
 {
     public required string Condition { get; set; }
 
@@ -19,15 +19,15 @@ public class HasConditionAssertion : IChatAssertion
     /// <param name="response"></param>
     /// <param name="history"></param>
     /// <returns></returns>
-    public async Task Assert(SemanticAgent semantic, ChatResponse response, IList<ChatMessage>? history = null)
+    public async Task Assert(SemanticEvaluator semanticEvaluator, ChatResponse response, IReadOnlyList<ChatMessage>? history = null, CancellationToken cancellationToken = default)
     {
-        var result = await semantic.HasConditionAsync(response.Text, Condition);
+        var result = await semanticEvaluator.HasConditionAsync(response.Text, Condition, cancellationToken);
 
         if (!result.IsValid)
             throw new SemanticAssertException(result.Reason ?? "No reason is provided.");
     }
 
-    public string AssertionType => "Condition";
+    public string AssertionType => "SemanticCondition";
     public string Description => Condition;
 
     public override string ToString() => $"{AssertionType}: {Condition}";

@@ -12,14 +12,14 @@ namespace skUnit.Tests.SemanticAssertTests
         [MemberData(nameof(GetSimilarData))]
         public void Similar_True_MustWork(string first, string second)
         {
-            SemanticAssert.Similar(first, second);
+            SemanticAssertions.Similar(first, second);
         }
 
         [Theory]
         [MemberData(nameof(GetNonSimilarData))]
         public void Similar_False_MustWork(string first, string second)
         {
-            var exception = Assert.Throws<SemanticAssertException>(() => SemanticAssert.Similar(first, second));
+            var exception = Assert.Throws<SemanticAssertException>(() => SemanticAssertions.Similar(first, second));
             Output.WriteLine($"""
                 [Explanation]
                 {exception.Message}
@@ -30,14 +30,14 @@ namespace skUnit.Tests.SemanticAssertTests
         [MemberData(nameof(GetNonSimilarData))]
         public void NotSimilar_True_MustWork(string first, string second)
         {
-            SemanticAssert.NotSimilar(first, second);
+            SemanticAssertions.NotSimilar(first, second);
         }
 
         [Theory]
         [MemberData(nameof(GetSimilarData))]
         public void NotSimilar_False_MustWork(string first, string second)
         {
-            var exception = Assert.Throws<SemanticAssertException>(() => SemanticAssert.NotSimilar(first, second));
+            var exception = Assert.Throws<SemanticAssertException>(() => SemanticAssertions.NotSimilar(first, second));
             Output.WriteLine($"""
                 [Explanation]
                 {exception.Message}

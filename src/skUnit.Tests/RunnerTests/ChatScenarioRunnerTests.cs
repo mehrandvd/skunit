@@ -34,7 +34,7 @@ namespace skUnit.Tests.RunnerTests
             // Run without tool, should fail
             await Assert.ThrowsAsync<SemanticAssertException>(async () =>
             {
-                await ScenarioRunner.RunAsync(scenarios, async history =>
+                await ScenarioRunner.RunAsync(scenarios, async (history, cancellationToken) =>
                 {
                     var result = await BaseChatClient.GetResponseAsync(
                         history,
@@ -49,7 +49,7 @@ namespace skUnit.Tests.RunnerTests
             });
 
             // Run with tool, should pass
-            await ScenarioRunner.RunAsync(scenarios, async history =>
+            await ScenarioRunner.RunAsync(scenarios, async (history, cancellationToken) =>
             {
                 AIFunction getFoodMenu = AIFunctionFactory.Create(GetFoodMenu);
 

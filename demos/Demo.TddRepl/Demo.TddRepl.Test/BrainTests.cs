@@ -22,7 +22,7 @@ namespace Demo.TddRepl.Test
         {
             var brain = new Brain();
 
-            var scenarios = await ChatScenario.LoadFromResourceAsync(@"Demo.TddRepl.Test.Scenarios.01-Greeting.md", GetType().Assembly);
+            var scenarios = await ChatScenario.ParseFromResourceAsync(@"Demo.TddRepl.Test.Scenarios.01-Greeting.md", GetType().Assembly);
             await ScenarioAssert.PassAsync(scenarios,
                 getAnswerFunc: async history =>
                 {
@@ -37,7 +37,7 @@ namespace Demo.TddRepl.Test
         {
             var brain = new Brain();
 
-            var scenarios = await ChatScenario.LoadFromResourceAsync(@"Demo.TddRepl.Test.Scenarios.02-WhoIsMehran-Normal.md", GetType().Assembly);
+            var scenarios = await ChatScenario.ParseFromResourceAsync(@"Demo.TddRepl.Test.Scenarios.02-WhoIsMehran-Normal.md", GetType().Assembly);
             await ScenarioAssert.PassAsync(scenarios, 
                 getAnswerFunc: async history =>
                 {
@@ -52,7 +52,7 @@ namespace Demo.TddRepl.Test
         {
             var brain = new Brain();
             
-            var scenarios = await ChatScenario.LoadFromResourceAsync(@"Demo.TddRepl.Test.Scenarios.03-WhoIsMehran-Angry.md", GetType().Assembly);
+            var scenarios = await ChatScenario.ParseFromResourceAsync(@"Demo.TddRepl.Test.Scenarios.03-WhoIsMehran-Angry.md", GetType().Assembly);
             await ScenarioAssert.PassAsync(scenarios, 
                 getAnswerFunc: async history =>
                 {
@@ -67,7 +67,7 @@ namespace Demo.TddRepl.Test
         {
             var brain = new Brain();
             
-            var scenarios = await ChatScenario.LoadFromResourceAsync(@"Demo.TddRepl.Test.Scenarios.04-WhoIsMehran-AngryNormal.md", GetType().Assembly);
+            var scenarios = await ChatScenario.ParseFromResourceAsync(@"Demo.TddRepl.Test.Scenarios.04-WhoIsMehran-AngryNormal.md", GetType().Assembly);
             await ScenarioAssert.PassAsync(scenarios, 
                 getAnswerFunc: async history =>
                 {

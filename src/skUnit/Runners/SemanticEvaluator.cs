@@ -8,9 +8,9 @@ using System.Threading.Tasks;
 
 namespace skUnit.Runners
 {
-    public class SemanticAgent
+    public class SemanticEvaluator
     {
-        public SemanticAgent(IChatClient chatClient)
+        public SemanticEvaluator(IChatClient chatClient)
         {
             Agent = chatClient.AsAIAgent(
                 instructions:
@@ -21,7 +21,7 @@ namespace skUnit.Runners
 
         private AIAgent Agent { get; set; }
 
-        public async Task<SemanticValidationResult> AreSimilarAsync(string first, string second)
+        public async Task<SemanticValidationResult> AreSimilarAsync(string first, string second, CancellationToken cancellationToken = default)
         {
             var prompt = $$"""
             Are the following two texts semantically similar?
@@ -48,12 +48,12 @@ namespace skUnit.Runners
             }
             """;
 
-            var response = await Agent.RunAsync<SemanticValidationResult>(prompt);
+            var response = await Agent.RunAsync<SemanticValidationResult>(prompt, cancellationToken: cancellationToken);
 
             return response.Result;
         }
 
-        public async Task<SemanticValidationResult> HasConditionAsync(string input, string condition)
+        public async Task<SemanticValidationResult> HasConditionAsync(string input, string condition, CancellationToken cancellationToken = default)
         {
             var prompt = $$"""
             Does the following text meet the condition semantically?
@@ -79,7 +79,7 @@ namespace skUnit.Runners
                 "message": "explain the reason that the input does or does not meet the condition"
             }
             """;
-            var response = await Agent.RunAsync<SemanticValidationResult>(prompt);
+            var response = await Agent.RunAsync<SemanticValidationResult>(prompt, cancellationToken: cancellationToken);
             return response.Result;
         }
     }
