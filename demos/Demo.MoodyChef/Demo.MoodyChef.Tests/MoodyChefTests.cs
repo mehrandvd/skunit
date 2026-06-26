@@ -8,6 +8,7 @@ using Microsoft.VisualStudio.TestPlatform.TestHost;
 using OpenAI.Chat;
 using skUnit;
 using skUnit.Scenarios;
+using Xunit.Runner.Common;
 using Xunit.Sdk;
 using Xunit.v3;
 
@@ -16,11 +17,8 @@ namespace Demo.MoodyChef.Tests
     
     public class MoodyChefTests
     {
-        public MoodyChefTests(ITestOutputHelper output)
-        {
-            // no global runner initialization in GA API
-        }
-
+        IChatClient _chatClient;
+        ILogger _logger;
         public MoodyChefTests(ITestOutputHelper output)
         {
             var builder = new ConfigurationBuilder()
@@ -37,11 +35,11 @@ namespace Demo.MoodyChef.Tests
                                  throw new Exception("No Deployment is provided.");
 
 
-            chatClient = new AzureOpenAIClient(new Uri(endpoint), new AzureKeyCredential(apiKey))
-                         .GetChatClient(deploymentName)
-                         .AsIChatClient();
+            _chatClient = new AzureOpenAIClient(new Uri(endpoint), new AzureKeyCredential(apiKey))
+                          .GetChatClient(deploymentName)
+                          .AsIChatClient();
 
-            ChatScenarioRunner.Initialize(onLog: output.WriteLine, chatClient: chatClient);
+            _logger = new DelegateLoggerAdapter(output.WriteLine);
         }
 
         [Fact]
@@ -55,14 +53,16 @@ namespace Demo.MoodyChef.Tests
 
             var scenario = ChatScenario.Parse(scenarioScript);
 
-            var agent = AgentGallery.CreateSloppyAgent(chatClient);
+            var agent = AgentGallery.CreateSloppyAgent(_chatClient);
 
-            await agent.ExecuteScenarioAsync(scenario, client, options: new ScenarioRunOptions()
+            await agent.ExecuteScenarioAsync(scenario, assertionClient: _chatClient, options: new ScenarioRunOptions()
             {
                 TotalRuns = 3,
                 RequiredSuccessRuns = 3,
 
-            });
+            },
+            logger: _logger,
+            cancellationToken: TestContext.Current.CancellationToken);
             
             //await runner.RunAsync(scenario, agent, options: new ScenarioRunOptions(){
             //    TotalRuns = 3,
@@ -82,14 +82,16 @@ namespace Demo.MoodyChef.Tests
 
             var scenario = ChatScenario.Parse(scenarioScript);
 
-            var agent = AgentGallery.CreateToolBasedAgent(chatClient);
+            var agent = AgentGallery.CreateToolBasedAgent(_chatClient);
 
-            await agent.ExecuteScenarioAsync(scenario, client, options: new ScenarioRunOptions()
+            await agent.ExecuteScenarioAsync(scenario, assertionClient: _chatClient, options: new ScenarioRunOptions()
             {
                 TotalRuns = 3,
                 RequiredSuccessRuns = 3,
 
-            });
+            }, 
+            logger: _logger,
+            cancellationToken: TestContext.Current.CancellationToken);
 
             //await runner.RunAsync(scenario, agent, options: new ScenarioRunOptions()
             //{
