@@ -43,9 +43,9 @@ namespace skUnit.Tests.AssertionTests
             Assert.Equal(3, assistantItem.Assertions.Count);
 
             // Verify different assertion types work
-            Assert.Equal("Condition", assistantItem.Assertions[0].AssertionType);
+            Assert.Equal("SemanticCondition", assistantItem.Assertions[0].AssertionType);
             Assert.Equal("ContainsAll", assistantItem.Assertions[1].AssertionType);
-            Assert.Equal("Condition", assistantItem.Assertions[2].AssertionType);
+            Assert.Equal("SemanticCondition", assistantItem.Assertions[2].AssertionType);
         }
 
         [Fact]
