@@ -10,22 +10,22 @@ namespace skUnit.Scenarios
 {
     public class Scenario<TScenario, TScenarioParser> where TScenarioParser : IScenarioParser<TScenario>, new()
     {
-        public static List<TScenario> LoadFromText(string text)
+        public static IReadOnlyList<TScenario> Parse(string markdown)
         {
             var parser = new TScenarioParser();
-            var scenario = parser.Parse(text);
+            var scenario = parser.Parse(markdown);
             return scenario;
         }
 
-        public static async Task<List<TScenario>> LoadFromResourceAsync(string resource, Assembly assembly)
+        public static async Task<IReadOnlyList<TScenario>> ParseFromResourceAsync(string resourceName, Assembly assembly, CancellationToken cancellationToken = default)
         {
-            await using Stream? stream = assembly.GetManifestResourceStream(resource);
+            await using Stream? stream = assembly.GetManifestResourceStream(resourceName);
 
             if (stream is null)
-                throw new InvalidOperationException($"Resource not found '{resource}'");
+                throw new InvalidOperationException($"Resource not found '{resourceName}'");
 
             using StreamReader reader = new StreamReader(stream);
-            var result = await reader.ReadToEndAsync();
+            var result = await reader.ReadToEndAsync(cancellationToken);
             var parser = new TScenarioParser();
             var scenario = parser.Parse(result);
             return scenario;

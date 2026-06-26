@@ -40,7 +40,7 @@ public async Task TestMcpServer()
 
     // 4. Run your test scenario
     var markdown = File.ReadAllText("mcp-test.md");
-    var scenarios = await ChatScenario.LoadFromText(markdown);
+    var scenarios = ChatScenario.Parse(markdown);
     
     await ScenarioAssert.PassAsync(scenarios, chatClient);
 }
@@ -138,7 +138,7 @@ public async Task TestMultipleMcpServers()
         .Build();
 
     // Test complex scenario
-    var scenarios = await ChatScenario.LoadFromText(complexScenario);
+    var scenarios = ChatScenario.Parse(complexScenario);
     await ScenarioAssert.PassAsync(scenarios, chatClient);
 }
 ```

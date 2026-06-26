@@ -12,18 +12,18 @@ namespace skUnit
 	/// Contains various methods that are used to semantically verify that conditions are met during the
 	/// process of running tests. This class uses SemanticKernel and OpenAI to validate these assertions semantically.
 	/// </summary>
-    public class SemanticAssert
+    public class SemanticAssertions
     {
-        private SemanticAgent Semantic { get; set; }
+        private SemanticEvaluator Semantic { get; set; }
 
         /// <summary>
         /// This class needs a SemanticKernel chatClient to work.
         /// Pass your pre-configured chatClient to this constructor.
         /// </summary>
         /// <param name="chatClient"></param>
-        public SemanticAssert(IChatClient chatClient)
+        public SemanticAssertions(IChatClient chatClient)
         {
-            Semantic = new SemanticAgent(chatClient);
+            Semantic = new SemanticEvaluator(chatClient);
         }
 
         /// <summary>
@@ -31,8 +31,8 @@ namespace skUnit
         /// It uses the kernel and OpenAI to check this semantically.
         /// <example>
         /// <code>
-        /// SemanticAssert.SimilarAsync("This automobile is red", "The car is red") // returns true
-        /// SemanticAssert.SimilarAsync("This tree is red", "The car is red") // returns false
+        /// SemanticAssertions.SimilarAsync("This automobile is red", "The car is red") // returns true
+        /// SemanticAssertions.SimilarAsync("This tree is red", "The car is red") // returns false
         /// </code>
         /// </example>
         /// </summary>
@@ -60,8 +60,8 @@ namespace skUnit
         /// It uses the kernel and OpenAI to check this semantically.
         /// <example>
         /// <code>
-        /// SemanticAssert.Similar("This automobile is red", "The car is red") // returns true
-        /// SemanticAssert.Similar("This tree is red", "The car is red") // returns false
+        /// SemanticAssertions.Similar("This automobile is red", "The car is red") // returns true
+        /// SemanticAssertions.Similar("This tree is red", "The car is red") // returns false
         /// </code>
         /// </example>
         /// </summary>
@@ -79,7 +79,7 @@ namespace skUnit
         /// It uses the kernel and OpenAI to check this semantically. It also describes the reason that they are not similar.
         /// <example>
         /// <code>
-        /// SemanticAssert.NotSimilarAsync("This bicycle is red", "The car is red")
+        /// SemanticAssertions.NotSimilarAsync("This bicycle is red", "The car is red")
         /// // returns:
         /// {
         ///   IsValid: false,
@@ -116,7 +116,7 @@ namespace skUnit
         /// It uses the kernel and OpenAI to check this semantically. It also describes the reason that they are not similar.
         /// <example>
         /// <code>
-        /// SemanticAssert.NotSimilar("This bicycle is red", "The car is red")
+        /// SemanticAssertions.NotSimilar("This bicycle is red", "The car is red")
         /// // returns:
         /// {
         ///   IsValid: false,

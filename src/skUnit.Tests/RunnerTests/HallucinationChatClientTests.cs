@@ -23,7 +23,8 @@ namespace skUnit.Tests.RunnerTests
                 {
                     TotalRuns = 3,
                     RequiredSuccessRuns = 2
-                }
+                },
+                cancellationToken: TestContext.Current.CancellationToken
                 );
         }
 
@@ -34,7 +35,7 @@ namespace skUnit.Tests.RunnerTests
             var scenarios = await LoadChatScenarioAsync("GetFoodMenuChat");
             await ScenarioRunner.RunAsync(
                 scenarios,
-                async history =>
+                async (history, cancellationToken) =>
             {
                 AIFunction getFoodMenu = AIFunctionFactory.Create(GetFoodMenu);
 
@@ -52,7 +53,7 @@ namespace skUnit.Tests.RunnerTests
                 {
                     TotalRuns = 3,
                     RequiredSuccessRuns = 2
-                });
+                }, cancellationToken: TestContext.Current.CancellationToken);
         }
 
         [Fact]
@@ -76,7 +77,7 @@ namespace skUnit.Tests.RunnerTests
                 {
                     TotalRuns = 3,
                     RequiredSuccessRuns = 2
-                });
+                }, cancellationToken: TestContext.Current.CancellationToken);
         }
 
 

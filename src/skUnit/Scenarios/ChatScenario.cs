@@ -21,15 +21,28 @@ public class ChatScenario : Scenario<ChatScenario, ChatScenarioParser>
     /// </summary>
     public List<ChatItem> ChatItems { get; set; } = new();
 
+    public ScenarioDocument ToDocument()
+    {
+        return new ScenarioDocument
+        {
+            RawText = RawText,
+            Description = Description,
+            Steps = ChatItems.Select(chatItem => new ScenarioStep
+            {
+                Role = chatItem.Role,
+                Contents = chatItem.Contents.ToList(),
+                Assertions = chatItem.Assertions.ToList(),
+            }).ToList(),
+        };
+    }
 }
 
 public class ChatItem
 {
-    public ChatItem(ChatRole role, string content)
+    public ChatItem(ChatRole role, string text)
     {
         Role = role;
-        // Maintain backward compatibility: convert string content to TextContent
-        Contents = new List<AIContent> { new TextContent(content) };
+        Contents = new List<AIContent> { new TextContent(text) };
     }
 
     public ChatItem(ChatRole role, List<AIContent> contents)
@@ -46,9 +59,9 @@ public class ChatItem
     public List<AIContent> Contents { get; set; } = new();
 
     /// <summary>
-    /// Backward compatibility property that returns combined text content
+    /// Combined text content from all text parts in this item.
     /// </summary>
-    public string Content
+    public string Text
     {
         get => string.Join("\n", Contents.OfType<TextContent>().Select(t => t.Text));
         set => Contents = new List<AIContent> { new TextContent(value) };
@@ -71,7 +84,6 @@ public class ChatItem
 
     public override string ToString()
     {
-        return $"{Role}: {Content}";
+        return $"{Role}: {Text}";
     }
 }
-

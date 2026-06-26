@@ -10,45 +10,43 @@ namespace skUnit.Tests.AssertionTests
 {
     public class ChatScenarioRunnerExtensionMethodTests
     {
-        public ChatScenarioRunnerExtensionMethodTests()
-        {
-            ChatScenarioRunner.Initialize(chatClient: CreateMockChatClient());
-        }
-
         [Fact]
-        public async Task IChatClient_RunChatScenarioAsync_UsesClientAsAssertionClientByDefault()
+        public async Task IChatClient_ExecuteScenarioAsync_UsesClientAsAssertionClientByDefault()
         {
             var chatClient = CreateMockChatClient("Hello there");
             var scenario = CreateScenario("IChatClient extension", "Hello there");
 
-            await chatClient.RunChatScenarioAsync(scenario);
+            await chatClient.ExecuteScenarioAsync(scenario, chatClient, cancellationToken: TestContext.Current.CancellationToken);
         }
 
         [Fact]
-        public async Task AIAgent_RunChatScenarioAsync_UsesAgentAsAssertionAgentByDefault()
+        public async Task AIAgent_ExecuteScenarioAsync_RequiresAssertionClient()
         {
+            var assertionClient = CreateMockChatClient("Hello there");
             var agent = new TestAIAgent("Hello there");
             var scenario = CreateScenario("AIAgent extension", "Hello there");
 
-            await agent.RunChatScenarioAsync(scenario);
+            await agent.ExecuteScenarioAsync(scenario, assertionClient, cancellationToken: TestContext.Current.CancellationToken);
         }
 
         [Fact]
-        public async Task ChatScenario_RunAsync_WithChatClient_Works()
+        public async Task IEnumerableChatScenario_ExecuteScenarioAsync_WithAgent_Works()
         {
-            var chatClient = CreateMockChatClient("Hello there");
-            var scenario = CreateScenario("ChatScenario extension", "Hello there");
-
-            await scenario.RunAsync(chatClient);
-        }
-
-        [Fact]
-        public async Task IEnumerableChatScenario_RunAsync_WithAgent_Works()
-        {
+            var assertionClient = CreateMockChatClient("Hello there");
             var agent = new TestAIAgent("Hello there");
             var scenario = CreateScenario("IEnumerable extension", "Hello there");
 
-            await new[] { scenario }.RunAsync(agent);
+            await agent.ExecuteScenarioAsync(new[] { scenario }, assertionClient, cancellationToken: TestContext.Current.CancellationToken);
+        }
+
+        [Fact]
+        public async Task ChatScenarioRunner_RunAsync_WithChatClient_Works()
+        {
+            var chatClient = CreateMockChatClient("Hello there");
+            var scenario = CreateScenario("ChatScenario extension", "Hello there");
+            var runner = new ChatScenarioRunner(chatClient);
+
+            await runner.RunAsync(scenario, chatClient, cancellationToken: TestContext.Current.CancellationToken);
         }
 
         private static ChatScenario CreateScenario(string description, string expectedResponse)

@@ -17,7 +17,7 @@ namespace skUnit.Tests.AssertionTests
         {
             var assertion = new JsonCheckAssertion();
 
-            assertion.SetJsonAssertText("""
+            assertion.ParseSpec("""
                 {
                     "name": ["EQUAL", "Mehran"],
                     "address": ["Contain", "Tehran, Vanak"]
@@ -27,13 +27,13 @@ namespace skUnit.Tests.AssertionTests
             Assert.NotNull(assertion.JsonCheck);
 
             await assertion.Assert(
-                A.Fake<SemanticAgent>(),
+                A.Fake<SemanticEvaluator>(),
                 """
                 {
                     "name": "Mehran",
                     "address": "The address is in Vanak area of Tehran"
                 }
-                """);
+                """, cancellationToken: TestContext.Current.CancellationToken);
         }
 
         [Fact]
@@ -41,7 +41,7 @@ namespace skUnit.Tests.AssertionTests
         {
             var assertion = new JsonCheckAssertion();
 
-            assertion.SetJsonAssertText("""
+            assertion.ParseSpec("""
                 ```json
                 {
                     "name": ["EQUAL", "Mehran"],
@@ -53,13 +53,13 @@ namespace skUnit.Tests.AssertionTests
             Assert.NotNull(assertion.JsonCheck);
 
             await assertion.Assert(
-                A.Fake<SemanticAgent>(),
+                A.Fake<SemanticEvaluator>(),
                 """
                 {
                     "name": "Mehran",
                     "address": "The address is in Vanak area of Tehran"
                 }
-                """);
+                """, cancellationToken: TestContext.Current.CancellationToken);
         }
 
         [Fact]
@@ -67,7 +67,7 @@ namespace skUnit.Tests.AssertionTests
         {
             var assertion = new JsonCheckAssertion();
 
-            assertion.SetJsonAssertText("""
+            assertion.ParseSpec("""
                 {
                     "name": ["EQUAL", "Mehran"],
                     "address": ["Contain", "Tehran, Gisha"]
@@ -77,13 +77,13 @@ namespace skUnit.Tests.AssertionTests
             Assert.NotNull(assertion.JsonCheck);
 
             await Assert.ThrowsAsync<SemanticAssertException>(() => assertion.Assert(
-                A.Fake<SemanticAgent>(),
+                A.Fake<SemanticEvaluator>(),
                 """
                 {
                     "name": "Mehran",
                     "address": "The address is in Vanak area of Tehran"
                 }
-                """));
+                """, cancellationToken: TestContext.Current.CancellationToken));
         }
 
         [Fact]
@@ -91,7 +91,7 @@ namespace skUnit.Tests.AssertionTests
         {
             var assertion = new JsonCheckAssertion();
 
-            assertion.SetJsonAssertText("""
+            assertion.ParseSpec("""
                 {
                     "name": ["EQUAL", "Mehran"],
                     "address": ["Contain", "Tehran, Gisha"]
@@ -101,12 +101,12 @@ namespace skUnit.Tests.AssertionTests
             Assert.NotNull(assertion.JsonCheck);
 
             await Assert.ThrowsAsync<SemanticAssertException>(() => assertion.Assert(
-                A.Fake<SemanticAgent>(),
+                A.Fake<SemanticEvaluator>(),
                 """
                 {
                     "name": "Mehran",
                 }
-                """));
+                """, cancellationToken: TestContext.Current.CancellationToken));
         }
 
         [Fact]
@@ -114,7 +114,7 @@ namespace skUnit.Tests.AssertionTests
         {
             var assertion = new JsonCheckAssertion();
 
-            assertion.SetJsonAssertText("""
+            assertion.ParseSpec("""
                 {
                     "name": ["EQUAL", "Mehran", "Haha"],
                     "address": ["Contain", "Tehran, Gisha"]
@@ -124,12 +124,12 @@ namespace skUnit.Tests.AssertionTests
             Assert.NotNull(assertion.JsonCheck);
 
             await Assert.ThrowsAsync<InvalidOperationException>(() => assertion.Assert(
-                A.Fake<SemanticAgent>(),
+                A.Fake<SemanticEvaluator>(),
                 """
                 {
                     "name": "Mehran",
                 }
-                """));
+                """, cancellationToken: TestContext.Current.CancellationToken));
         }
     }
 }

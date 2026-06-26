@@ -34,7 +34,7 @@ namespace Demo.TddShop.Test.BrainTests.ShopBrain
         public async Task AskMenu_MustWork(string scenario)
         {
             var scenarioText = await File.ReadAllTextAsync(@$"BrainTests/ShopBrain/Scenarios/{scenario}.md");
-            var scenarios = ChatScenario.LoadFromText(scenarioText);
+            var scenarios = ChatScenario.Parse(scenarioText);
 
             await ScenarioRunner.RunAsync(scenarios, systemUnderTestClient);
         }

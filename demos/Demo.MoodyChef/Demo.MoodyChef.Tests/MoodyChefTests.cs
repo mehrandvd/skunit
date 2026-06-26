@@ -16,7 +16,10 @@ namespace Demo.MoodyChef.Tests
     
     public class MoodyChefTests
     {
-        IChatClient chatClient;
+        public MoodyChefTests(ITestOutputHelper output)
+        {
+            // no global runner initialization in GA API
+        }
 
         public MoodyChefTests(ITestOutputHelper output)
         {
@@ -50,11 +53,11 @@ namespace Demo.MoodyChef.Tests
 
             var scenarioScript = GetScenarioScript();
 
-            var scenario = ChatScenario.LoadFromText(scenarioScript);
+            var scenario = ChatScenario.Parse(scenarioScript);
 
             var agent = AgentGallery.CreateSloppyAgent(chatClient);
 
-            await agent.RunChatScenarioAsync(scenario, options: new ScenarioRunOptions()
+            await agent.ExecuteScenarioAsync(scenario, client, options: new ScenarioRunOptions()
             {
                 TotalRuns = 3,
                 RequiredSuccessRuns = 3,
@@ -77,11 +80,11 @@ namespace Demo.MoodyChef.Tests
 
             var scenarioScript = GetScenarioScript();
 
-            var scenario = ChatScenario.LoadFromText(scenarioScript);
+            var scenario = ChatScenario.Parse(scenarioScript);
 
             var agent = AgentGallery.CreateToolBasedAgent(chatClient);
 
-            await agent.RunChatScenarioAsync(scenario, options: new ScenarioRunOptions()
+            await agent.ExecuteScenarioAsync(scenario, client, options: new ScenarioRunOptions()
             {
                 TotalRuns = 3,
                 RequiredSuccessRuns = 3,

@@ -28,7 +28,7 @@ namespace skUnit.Scenarios.Parsers.Assertions
         /// <param name="historytory"></param>
         /// <returns></returns>
         /// <exception cref="SemanticAssertException"></exception>
-        public Task Assert(SemanticAgent semantic, ChatResponse response, IList<ChatMessage>? history)
+        public Task Assert(SemanticEvaluator semanticEvaluator, ChatResponse response, IReadOnlyList<ChatMessage>? history = null, CancellationToken cancellationToken = default)
         {
             if (response.Text.Trim() != ExpectedAnswer.Trim())
                 throw new SemanticAssertException($"Expected input is: '{ExpectedAnswer}' while actual is : '{response.Text}'");

@@ -41,7 +41,7 @@ public class ParseChatScenarioTests
                 
                 """;
 
-        var scenarios = ChatScenario.LoadFromText(scenarioText);
+        var scenarios = ChatScenario.Parse(scenarioText);
 
         Assert.NotEmpty(scenarios);
 
@@ -85,7 +85,7 @@ public class ParseChatScenarioTests
                 
                 """;
 
-        var scenarios = ChatScenario.LoadFromText(scenarioText);
+        var scenarios = ChatScenario.Parse(scenarioText);
 
         Assert.NotEmpty(scenarios);
 
@@ -114,7 +114,7 @@ public class ParseChatScenarioTests
                 
                 """;
 
-        var scenarios = ChatScenario.LoadFromText(scenarioText);
+        var scenarios = ChatScenario.Parse(scenarioText);
 
         Assert.NotEmpty(scenarios);
 
@@ -146,7 +146,7 @@ public class ParseChatScenarioTests
                            ```
                            """;
 
-        var scenarios = ChatScenario.LoadFromText(scenarioText);
+        var scenarios = ChatScenario.Parse(scenarioText);
 
         Assert.NotEmpty(scenarios);
 
@@ -160,6 +160,7 @@ public class ParseChatScenarioTests
             lastChatItem.Assertions
                     .OfType<FunctionCallAssertion>()
                     .FirstOrDefault()?
+                    .Spec?
                     .FunctionName
         );
 
@@ -186,7 +187,7 @@ public class ParseChatScenarioTests
                            There are 2 scenarios in the picture
                            """;
 
-        var scenarios = ChatScenario.LoadFromText(scenarioText);
+        var scenarios = ChatScenario.Parse(scenarioText);
 
         Assert.NotEmpty(scenarios);
 
@@ -233,7 +234,7 @@ public class ParseChatScenarioTests
                            I can see the image.
                            """;
 
-        var scenarios = ChatScenario.LoadFromText(scenarioText);
+        var scenarios = ChatScenario.Parse(scenarioText);
 
         Assert.NotEmpty(scenarios);
 
@@ -261,7 +262,7 @@ public class ParseChatScenarioTests
                            Plain text response
                            """;
 
-        var scenarios = ChatScenario.LoadFromText(scenarioText);
+        var scenarios = ChatScenario.Parse(scenarioText);
 
         Assert.NotEmpty(scenarios);
 
@@ -276,7 +277,7 @@ public class ParseChatScenarioTests
         Assert.Equal("Just plain text without subsections", textContent.Text);
 
         // Test backward compatibility property
-        Assert.Equal("Just plain text without subsections", userChatItem.Content);
+        Assert.Equal("Just plain text without subsections", userChatItem.Text);
     }
 
     [Fact]
@@ -294,7 +295,7 @@ public class ParseChatScenarioTests
                            What do you see?
                            """;
 
-        var scenarios = ChatScenario.LoadFromText(scenarioText);
+        var scenarios = ChatScenario.Parse(scenarioText);
         var first = scenarios.First();
         var userChatItem = first.ChatItems.First();
 
@@ -333,7 +334,7 @@ public class ParseChatScenarioTests
                            It mentions Paris as the capital.
                            """;
 
-        var scenarios = ChatScenario.LoadFromText(scenarioText);
+        var scenarios = ChatScenario.Parse(scenarioText);
 
         Assert.Single(scenarios);
         var scenario = scenarios[0];
@@ -342,12 +343,12 @@ public class ParseChatScenarioTests
         // Check USER item
         var userChatItem = scenario.ChatItems[0];
         Assert.Equal(ChatRole.User, userChatItem.Role);
-        Assert.Equal("What is the capital of France?", userChatItem.Content);
+        Assert.Equal("What is the capital of France?", userChatItem.Text);
 
         // Check ASSISTANT item (should be treated same as AGENT)
         var assistantChatItem = scenario.ChatItems[1];
         Assert.Equal(ChatRole.Assistant, assistantChatItem.Role);
-        Assert.Equal("The capital of France is Paris.", assistantChatItem.Content);
+        Assert.Equal("The capital of France is Paris.", assistantChatItem.Text);
         Assert.Single(assistantChatItem.Assertions);
     }
 
@@ -370,7 +371,7 @@ public class ParseChatScenarioTests
                            I'm doing well, thank you!
                            """;
 
-        var scenarios = ChatScenario.LoadFromText(scenarioText);
+        var scenarios = ChatScenario.Parse(scenarioText);
 
         Assert.Single(scenarios);
         var scenario = scenarios[0];
@@ -382,8 +383,8 @@ public class ParseChatScenarioTests
         Assert.Equal(ChatRole.User, scenario.ChatItems[2].Role);
         Assert.Equal(ChatRole.Assistant, scenario.ChatItems[3].Role);
 
-        Assert.Equal("Hi there!", scenario.ChatItems[1].Content);
-        Assert.Equal("I'm doing well, thank you!", scenario.ChatItems[3].Content);
+        Assert.Equal("Hi there!", scenario.ChatItems[1].Text);
+        Assert.Equal("I'm doing well, thank you!", scenario.ChatItems[3].Text);
     }
 
     [Fact]
@@ -409,7 +410,7 @@ public class ParseChatScenarioTests
                            It's sunny and warm today!
                            """;
 
-        var scenarios = ChatScenario.LoadFromText(scenarioText);
+        var scenarios = ChatScenario.Parse(scenarioText);
 
         Assert.Equal(2, scenarios.Count);
 
@@ -418,13 +419,13 @@ public class ParseChatScenarioTests
         Assert.Equal(2, agentScenario.ChatItems.Count);
         Assert.Equal(ChatRole.User, agentScenario.ChatItems[0].Role);
         Assert.Equal(ChatRole.Assistant, agentScenario.ChatItems[1].Role);
-        Assert.Equal("Hi, how can I help you?", agentScenario.ChatItems[1].Content);
+        Assert.Equal("Hi, how can I help you?", agentScenario.ChatItems[1].Text);
 
         // Second scenario with [ASSISTANT]
         var assistantScenario = scenarios[1];
         Assert.Equal(2, assistantScenario.ChatItems.Count);
         Assert.Equal(ChatRole.User, assistantScenario.ChatItems[0].Role);
         Assert.Equal(ChatRole.Assistant, assistantScenario.ChatItems[1].Role);
-        Assert.Equal("It's sunny and warm today!", assistantScenario.ChatItems[1].Content);
+        Assert.Equal("It's sunny and warm today!", assistantScenario.ChatItems[1].Text);
     }
 }

@@ -14,7 +14,7 @@ namespace skUnit.Scenarios.Parsers
         /// </summary>
         /// <param name="text"></param>
         /// <returns></returns>
-        public List<ChatScenario> Parse(string text)
+        public IReadOnlyList<ChatScenario> Parse(string text)
         {
             var scenarioTexts = Regex.Split(text, Environment.NewLine + @"-{5,}" + Environment.NewLine, RegexOptions.Multiline);
             var scenarios = new List<ChatScenario>();
@@ -58,6 +58,20 @@ namespace skUnit.Scenarios.Parsers
                             var blockType = agentMatch.Groups[1].Value; // Gets "AGENT" or "ASSISTANT"
                             PackBlock(testCase, blockType, ref currentBlock, key, contentBuilder);
                             //key = promptMatch.Groups["name"].Value;
+                            continue;
+                        }
+
+                        var systemMatch = Regex.Match(blockContent, @$"#{{1,}}\s*{specialId}\s*\[SYSTEM\]\s*(?<name>.*)");
+                        if (systemMatch.Success)
+                        {
+                            PackBlock(testCase, "SYSTEM", ref currentBlock, key, contentBuilder);
+                            continue;
+                        }
+
+                        var toolMatch = Regex.Match(blockContent, @$"#{{1,}}\s*{specialId}\s*\[TOOL\]\s*(?<name>.*)");
+                        if (toolMatch.Success)
+                        {
+                            PackBlock(testCase, "TOOL", ref currentBlock, key, contentBuilder);
                             continue;
                         }
 
@@ -149,10 +163,10 @@ namespace skUnit.Scenarios.Parsers
 
                 if (string.IsNullOrWhiteSpace(checkText) && checkType == "SemanticSimilar")
                 {
-                    checkText = chatItem.Content;
+                    checkText = chatItem.Text;
                 }
 
-                var assertion = KernelAssertionParser.Parse(checkText, checkType);
+                var assertion = ChatAssertionParser.Parse(checkText, checkType);
 
                 chatItem.Assertions.Add(assertion);
             }

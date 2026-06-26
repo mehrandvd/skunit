@@ -39,7 +39,7 @@ public class ChatTests
     [Fact]
     public async Task SimpleTest()
     {
-        var scenarios = await ChatScenario.LoadFromResourceAsync(
+        var scenarios = await ChatScenario.ParseFromResourceAsync(
             "MyProject.Scenarios.test.md", 
             typeof(ChatTests).Assembly);
         
@@ -55,7 +55,7 @@ public class ChatTests
 [InlineData("Scenario2")]
 public async Task TestScenarios(string scenarioName)
 {
-    var scenarios = await ChatScenario.LoadFromResourceAsync(
+    var scenarios = await ChatScenario.ParseFromResourceAsync(
         $"MyProject.Scenarios.{scenarioName}.md",
         typeof(ChatTests).Assembly);
     
@@ -91,7 +91,7 @@ public class ChatTests
     [TestMethod]
     public async Task SimpleTest()
     {
-        var scenarios = await ChatScenario.LoadFromResourceAsync(
+        var scenarios = await ChatScenario.ParseFromResourceAsync(
             "MyProject.Scenarios.test.md", 
             typeof(ChatTests).Assembly);
         
@@ -107,7 +107,7 @@ public class ChatTests
 [DataRow("Scenario2")]
 public async Task TestScenarios(string scenarioName)
 {
-    var scenarios = await ChatScenario.LoadFromResourceAsync(
+    var scenarios = await ChatScenario.ParseFromResourceAsync(
         $"MyProject.Scenarios.{scenarioName}.md",
         typeof(ChatTests).Assembly);
     
@@ -141,7 +141,7 @@ public class ChatTests
     [Test]
     public async Task SimpleTest()
     {
-        var scenarios = await ChatScenario.LoadFromResourceAsync(
+        var scenarios = await ChatScenario.ParseFromResourceAsync(
             "MyProject.Scenarios.test.md", 
             typeof(ChatTests).Assembly);
         
@@ -156,7 +156,7 @@ public class ChatTests
 [TestCase("Scenario2")]
 public async Task TestScenarios(string scenarioName)
 {
-    var scenarios = await ChatScenario.LoadFromResourceAsync(
+    var scenarios = await ChatScenario.ParseFromResourceAsync(
         $"MyProject.Scenarios.{scenarioName}.md",
         typeof(ChatTests).Assembly);
     
@@ -254,7 +254,7 @@ public class MyTests : SemanticTestBase
     [Fact]
     public async Task MyTest()
     {
-        var scenarios = await ChatScenario.LoadFromResourceAsync(/* ... */);
+        var scenarios = await ChatScenario.ParseFromResourceAsync(/* ... */);
         await ScenarioAssert.PassAsync(scenarios);
     }
 }
@@ -289,7 +289,7 @@ public class MyTests : SemanticTestBase
     public async Task MyTest()
     {
         var scenarioAssert = CreateScenarioAssert();
-        var scenarios = await ChatScenario.LoadFromResourceAsync(/* ... */);
+        var scenarios = await ChatScenario.ParseFromResourceAsync(/* ... */);
         await scenarioAssert.PassAsync(scenarios);
     }
 }

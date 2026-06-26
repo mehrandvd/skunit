@@ -18,7 +18,7 @@ public class SemanticTestBase
     protected readonly string DeploymentName;
     protected IChatClient BaseChatClient { get; set; }
     protected ChatScenarioRunner ScenarioRunner { get; set; }
-    protected SemanticAssert SemanticAssert { get; set; }
+    protected SemanticAssertions SemanticAssertions { get; set; }
 
     protected ITestOutputHelper Output { get; set; }
     protected IConfiguration Configuration { get; set; }
@@ -53,7 +53,7 @@ public class SemanticTestBase
 
         ScenarioRunner = new ChatScenarioRunner(assertionClient, logger);
 
-        SemanticAssert = new SemanticAssert(assertionClient);
+        SemanticAssertions = new SemanticAssertions(assertionClient);
 
         // Create system under test client
         var openAI = new AzureOpenAIClient(
@@ -65,9 +65,9 @@ public class SemanticTestBase
             .Build();
     }
 
-    protected async Task<List<ChatScenario>> LoadChatScenarioAsync(string scenario)
+    protected async Task<IReadOnlyList<ChatScenario>> LoadChatScenarioAsync(string scenario)
     {
-        return await ChatScenario.LoadFromResourceAsync($"skUnit.Tests.RunnerTests.Samples.{scenario}.md", Assembly.GetExecutingAssembly());
+        return await ChatScenario.ParseFromResourceAsync($"skUnit.Tests.RunnerTests.Samples.{scenario}.md", Assembly.GetExecutingAssembly());
     }
 
     private sealed class TestOutputLoggerProvider(ITestOutputHelper output) : ILoggerProvider

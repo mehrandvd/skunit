@@ -41,7 +41,7 @@ public class ChatScenarioTests
     {
         // Create per-test instance with TestContext logging
 
-        var scenarios = await ChatScenario.LoadFromResourceAsync(
+        var scenarios = await ChatScenario.ParseFromResourceAsync(
             "Demo.MSTest.Scenarios.SimpleGreeting.md",
             typeof(ChatScenarioTests).Assembly);
 
@@ -51,7 +51,7 @@ public class ChatScenarioTests
     [TestMethod]
     public async Task GetCurrentTimeChat_ShouldPass()
     {
-        var scenarios = await ChatScenario.LoadFromResourceAsync(
+        var scenarios = await ChatScenario.ParseFromResourceAsync(
             "Demo.MSTest.Scenarios.GetCurrentTimeChat.md",
             typeof(ChatScenarioTests).Assembly);
 
@@ -61,7 +61,7 @@ public class ChatScenarioTests
     [TestMethod]
     public async Task JsonUserInfo_ShouldPass()
     {
-        var scenarios = await ChatScenario.LoadFromResourceAsync(
+        var scenarios = await ChatScenario.ParseFromResourceAsync(
             "Demo.MSTest.Scenarios.JsonUserInfo.md",
             typeof(ChatScenarioTests).Assembly);
 
@@ -74,7 +74,7 @@ public class ChatScenarioTests
     [DataRow("JsonUserInfo")]
     public async Task ScenarioMatrix_ShouldPass(string scenarioName)
     {
-        var scenarios = await ChatScenario.LoadFromResourceAsync(
+        var scenarios = await ChatScenario.ParseFromResourceAsync(
             $"Demo.MSTest.Scenarios.{scenarioName}.md",
             typeof(ChatScenarioTests).Assembly);
 
