@@ -14,11 +14,11 @@ public class ChatScenarioRunner
     private readonly ILogger _logger;
     private readonly SemanticEvaluator _semanticEvaluator;
 
-    public ChatScenarioRunner(IChatClient assertionClient, ILogger<ChatScenarioRunner>? logger = null)
+    public ChatScenarioRunner(IChatClient assertionClient, ILogger? logger = null)
     {
         ArgumentNullException.ThrowIfNull(assertionClient);
         _semanticEvaluator = new SemanticEvaluator(assertionClient);
-        _logger = logger ?? NullLogger<ChatScenarioRunner>.Instance;
+        _logger = logger ?? NullLogger.Instance;
     }
 
     public ChatScenarioRunner(IChatClient assertionClient, Action<string> onLog)
