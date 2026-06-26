@@ -5,6 +5,7 @@ using Microsoft.Extensions.AI;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.Logging;
 using Microsoft.VisualStudio.TestPlatform.TestHost;
+using OpenAI.Chat;
 using skUnit;
 using skUnit.Scenarios;
 using Xunit.Sdk;
@@ -12,6 +13,7 @@ using Xunit.v3;
 
 namespace Demo.MoodyChef.Tests
 {
+    
     public class MoodyChefTests
     {
         public MoodyChefTests(ITestOutputHelper output)
@@ -19,8 +21,7 @@ namespace Demo.MoodyChef.Tests
             // no global runner initialization in GA API
         }
 
-        [Fact]
-        public async Task MoodyChef_Sloppy_MustWork()
+        public MoodyChefTests(ITestOutputHelper output)
         {
             var builder = new ConfigurationBuilder()
                           .AddUserSecrets<MoodyChefTests>()
@@ -36,9 +37,17 @@ namespace Demo.MoodyChef.Tests
                                  throw new Exception("No Deployment is provided.");
 
 
-            var client = new AzureOpenAIClient(new Uri(endpoint), new AzureKeyCredential(apiKey))
+            chatClient = new AzureOpenAIClient(new Uri(endpoint), new AzureKeyCredential(apiKey))
                          .GetChatClient(deploymentName)
                          .AsIChatClient();
+
+            ChatScenarioRunner.Initialize(onLog: output.WriteLine, chatClient: chatClient);
+        }
+
+        [Fact]
+        public async Task MoodyChef_Sloppy_MustWork()
+        {
+            
 
             //var runner = new ChatScenarioRunner(client);
 
@@ -46,7 +55,7 @@ namespace Demo.MoodyChef.Tests
 
             var scenario = ChatScenario.Parse(scenarioScript);
 
-            var agent = AgentGallery.CreateSloppyAgent(client);
+            var agent = AgentGallery.CreateSloppyAgent(chatClient);
 
             await agent.ExecuteScenarioAsync(scenario, client, options: new ScenarioRunOptions()
             {
@@ -65,23 +74,7 @@ namespace Demo.MoodyChef.Tests
         [Fact]
         public async Task MoodyChef_ToolBased_MustWork()
         {
-            var builder = new ConfigurationBuilder()
-                          .AddUserSecrets<MoodyChefTests>()
-                          .AddEnvironmentVariables();
-
-            var configuration = builder.Build();
-
-            var apiKey = configuration["AzureOpenAI_ApiKey"] ??
-                         throw new Exception("No ApiKey is provided.");
-            var endpoint = configuration["AzureOpenAI_Endpoint"] ??
-                           throw new Exception("No Endpoint is provided.");
-            var deploymentName = configuration["AzureOpenAI_Deployment"] ??
-                                 throw new Exception("No Deployment is provided.");
-
-
-            var client = new AzureOpenAIClient(new Uri(endpoint), new AzureKeyCredential(apiKey))
-                         .GetChatClient(deploymentName)
-                         .AsIChatClient();
+            
 
             //var runner = new ChatScenarioRunner(client, _output.WriteLine);
 
@@ -89,7 +82,7 @@ namespace Demo.MoodyChef.Tests
 
             var scenario = ChatScenario.Parse(scenarioScript);
 
-            var agent = AgentGallery.CreateToolBasedAgent(client);
+            var agent = AgentGallery.CreateToolBasedAgent(chatClient);
 
             await agent.ExecuteScenarioAsync(scenario, client, options: new ScenarioRunOptions()
             {
