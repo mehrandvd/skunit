@@ -27,68 +27,59 @@ namespace skUnit
         /// <summary>
         /// Gets or sets the default logger for all instances of ChatScenarioRunner that do not have a specific logger provided.
         /// </summary>
-        private static ILogger? DefaultLogger { get; set; }
+        private static AsyncLocal<ILogger?> DefaultLogger { get; } = new AsyncLocal<ILogger?>();
+        
+        private static AsyncLocal<IChatClient?> DefaultChatClient { get; } = new AsyncLocal<IChatClient?>();
         
         /// <summary>
         /// Creates a new ChatScenarioRunner with an assertion client and logger.
         /// </summary>
         /// <param name="assertionClient">The chat client used for semantic evaluations and assertions (not the system under test)</param>
         /// <param name="logger">Optional logger for test execution output</param>
-        public ChatScenarioRunner(IChatClient assertionClient, ILogger<ChatScenarioRunner>? logger = null)
+        public ChatScenarioRunner(IChatClient? assertionClient = null, ILogger<ChatScenarioRunner>? logger = null)
         {
-            Semantic = new SemanticAgent(assertionClient);
-            _logger = logger ?? DefaultLogger ?? NullLogger<ChatScenarioRunner>.Instance;
-        }
-
-        /// <summary>
-        /// Creates a new ChatScenarioRunner with an assertion agent and logger.
-        /// </summary>
-        /// <param name="assertionAgent">The AI agent used for semantic evaluations and assertions (not the system under test)</param>
-        /// <param name="logger">Optional logger for test execution output</param>
-        public ChatScenarioRunner(AIAgent assertionAgent, ILogger<ChatScenarioRunner>? logger = null)
-        {
-            Semantic = new SemanticAgent(assertionAgent);
-            _logger = logger ?? NullLogger<ChatScenarioRunner>.Instance;
+            var client = ResolveAssertionClient(assertionClient);
+            
+            Semantic = new SemanticAgent(client);
+            _logger = logger ?? DefaultLogger.Value ?? NullLogger<ChatScenarioRunner>.Instance;
         }
 
         /// <summary>
         /// Creates a new ChatScenarioRunner with an assertion client and action-based logging.
         /// </summary>
         /// <param name="assertionClient">The chat client used for semantic evaluations and assertions (not the system under test)</param>
-        /// <param name="onLog">Optional action for logging test execution output</param>
-        public ChatScenarioRunner(IChatClient assertionClient, Action<string>? onLog)
+        /// <param name="onLog">The action for logging test execution output</param>
+        public ChatScenarioRunner(IChatClient? assertionClient, Action<string> onLog)
         {
-            Semantic = new SemanticAgent(assertionClient);
-            _logger = onLog != null ? new DelegateLoggerAdapter<ChatScenarioRunner>(onLog) : NullLogger<ChatScenarioRunner>.Instance;
+            var client = ResolveAssertionClient(assertionClient);
+
+            Semantic = new SemanticAgent(client);
+            _logger = new DelegateLoggerAdapter<ChatScenarioRunner>(onLog);
         }
 
-        /// <summary>
-        /// Creates a new ChatScenarioRunner with an assertion agent and action-based logging.
-        /// </summary>
-        /// <param name="assertionAgent">The AI agent used for semantic evaluations and assertions (not the system under test)</param>
-        /// <param name="onLog">Optional action for logging test execution output</param>
-        public ChatScenarioRunner(AIAgent assertionAgent, Action<string>? onLog)
-        {
-            Semantic = new SemanticAgent(assertionAgent);
-            _logger = onLog != null ? new DelegateLoggerAdapter<ChatScenarioRunner>(onLog) : NullLogger<ChatScenarioRunner>.Instance;
-        }
 
         /// <summary>
         /// Sets the default logger for all instances of ChatScenarioRunner that do not have a specific logger provided.
         /// </summary>
+        /// <param name="chatClient">The chat client to use for semantic evaluations and assertions</param>
         /// <param name="logger">The logger to set as the default</param>
-        public static void SetDefaultLogger(ILogger logger)
+        public static void Initialize(IChatClient chatClient, ILogger? logger = null)
         {
-            DefaultLogger = logger;
+            ArgumentNullException.ThrowIfNull(chatClient);
+
+            DefaultLogger.Value = logger;
+            DefaultChatClient.Value = chatClient;
         }
 
         /// <summary>
         /// Sets the default logger for all instances of ChatScenarioRunner that do not have a specific logger provided.
         /// </summary>
+        /// <param name="chatClient">The chat client to use for semantic evaluations and assertions</param>
         /// <param name="onLog">The action to set as the default logger</param>
-        public void SetDefaultLogger(Action<string> onLog)
+        public static void Initialize(IChatClient chatClient, Action<string> onLog)
         {
-            DefaultLogger = new DelegateLoggerAdapter<ChatScenarioRunner>(onLog);
+            DefaultLogger.Value = new DelegateLoggerAdapter<ChatScenarioRunner>(onLog);
+            DefaultChatClient.Value = chatClient;
         }
 
         private void Log(string? message = "")
@@ -378,6 +369,16 @@ namespace skUnit
                 Log("----------------------------------");
                 Log();
             }
+        }
+
+        private static IChatClient ResolveAssertionClient(IChatClient? assertionClient)
+        {
+            return assertionClient ?? DefaultChatClient.Value ?? throw new ArgumentNullException(
+                nameof(assertionClient),
+                """
+                No chat client provided for semantic evaluations and assertions.
+                Use `ChatScenarioRunner.Initialize` to set a default chat client, or provide one in the constructor.
+                """);
         }
     }
 }

@@ -19,12 +19,7 @@ namespace skUnit.Runners
                 """);
         }
 
-        public SemanticAgent(AIAgent agent)
-        {
-            Agent = agent;
-        }
-
-        public AIAgent Agent { get; set; }
+        private AIAgent Agent { get; set; }
 
         public async Task<SemanticValidationResult> AreSimilarAsync(string first, string second)
         {

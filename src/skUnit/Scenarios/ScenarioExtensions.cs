@@ -26,7 +26,7 @@ public static class ScenarioExtensions
         ArgumentNullException.ThrowIfNull(chatClient);
         ArgumentNullException.ThrowIfNull(scenario);
 
-        var runner = new ChatScenarioRunner(assertionClient ?? chatClient);
+        var runner = new ChatScenarioRunner(assertionClient: assertionClient ?? chatClient);
         return runner.RunAsync(scenario, chatClient, initialMessages, options);
     }
 
@@ -58,21 +58,21 @@ public static class ScenarioExtensions
     /// </summary>
     /// <param name="agent">The agent that should process the scenario.</param>
     /// <param name="scenario">The scenario to execute.</param>
-    /// <param name="assertionAgent">Optional agent used for semantic assertions. Defaults to <paramref name="agent"/>.</param>
+    /// <param name="assertionClient">Optional agent used for semantic assertions. Defaults to <paramref name="agent"/>.</param>
     /// <param name="initialMessages">Optional chat history to prepend before the scenario starts.</param>
     /// <param name="options">Optional configuration for scenario execution.</param>
     /// <returns>A task that completes when the scenario has finished running.</returns>
     public static Task RunChatScenarioAsync(
         this AIAgent agent,
         ChatScenario scenario,
-        AIAgent? assertionAgent = null,
+        IChatClient? assertionClient = null,
         IList<ChatMessage>? initialMessages = null,
         ScenarioRunOptions? options = null)
     {
         ArgumentNullException.ThrowIfNull(agent);
         ArgumentNullException.ThrowIfNull(scenario);
 
-        var runner = new ChatScenarioRunner(assertionAgent ?? agent);
+        var runner = new ChatScenarioRunner(assertionClient);
         return runner.RunAsync(scenario, agent, initialMessages, options);
     }
 
@@ -81,21 +81,21 @@ public static class ScenarioExtensions
     /// </summary>
     /// <param name="agent">The agent that should process the scenarios.</param>
     /// <param name="scenarios">The scenarios to execute.</param>
-    /// <param name="assertionAgent">Optional agent used for semantic assertions. Defaults to <paramref name="agent"/>.</param>
+    /// <param name="assertionClient">Optional agent used for semantic assertions. Defaults to <paramref name="agent"/>.</param>
     /// <param name="initialMessages">Optional chat history to prepend before each scenario starts.</param>
     /// <param name="options">Optional configuration for scenario execution.</param>
     /// <returns>A task that completes when all scenarios have finished running.</returns>
     public static Task RunChatScenarioAsync(
         this AIAgent agent,
         IEnumerable<ChatScenario> scenarios,
-        AIAgent? assertionAgent = null,
+        IChatClient? assertionClient = null,
         IList<ChatMessage>? initialMessages = null,
         ScenarioRunOptions? options = null)
     {
         ArgumentNullException.ThrowIfNull(agent);
         ArgumentNullException.ThrowIfNull(scenarios);
 
-        var runner = new ChatScenarioRunner(assertionAgent ?? agent);
+        var runner = new ChatScenarioRunner(assertionClient);
         return runner.RunAsync(scenarios, agent, initialMessages, options);
     }
 
@@ -150,21 +150,21 @@ public static class ScenarioExtensions
     /// </summary>
     /// <param name="scenario">The scenario to execute.</param>
     /// <param name="agent">The agent that should process the scenario.</param>
-    /// <param name="assertionAgent">Optional agent used for semantic assertions. Defaults to <paramref name="agent"/>.</param>
+    /// <param name="assertionClient">Optional ChatClient used for semantic assertions. Defaults to <paramref name="agent"/>.</param>
     /// <param name="initialMessages">Optional chat history to prepend before the scenario starts.</param>
     /// <param name="options">Optional configuration for scenario execution.</param>
     /// <returns>A task that completes when the scenario has finished running.</returns>
     public static Task RunAsync(
         this ChatScenario scenario,
         AIAgent agent,
-        AIAgent? assertionAgent = null,
+        IChatClient? assertionClient = null,
         IList<ChatMessage>? initialMessages = null,
         ScenarioRunOptions? options = null)
     {
         ArgumentNullException.ThrowIfNull(scenario);
         ArgumentNullException.ThrowIfNull(agent);
 
-        var runner = new ChatScenarioRunner(assertionAgent ?? agent);
+        var runner = new ChatScenarioRunner(assertionClient);
         return runner.RunAsync(scenario, agent, initialMessages, options);
     }
 
@@ -173,21 +173,21 @@ public static class ScenarioExtensions
     /// </summary>
     /// <param name="scenarios">The scenarios to execute.</param>
     /// <param name="agent">The agent that should process the scenarios.</param>
-    /// <param name="assertionAgent">Optional agent used for semantic assertions. Defaults to <paramref name="agent"/>.</param>
+    /// <param name="assertionClient">Optional ChatClient used for semantic assertions. Defaults to <paramref name="agent"/>.</param>
     /// <param name="initialMessages">Optional chat history to prepend before each scenario starts.</param>
     /// <param name="options">Optional configuration for scenario execution.</param>
     /// <returns>A task that completes when all scenarios have finished running.</returns>
     public static Task RunAsync(
         this IEnumerable<ChatScenario> scenarios,
         AIAgent agent,
-        AIAgent? assertionAgent = null,
+        IChatClient? assertionClient = null,
         IList<ChatMessage>? initialMessages = null,
         ScenarioRunOptions? options = null)
     {
         ArgumentNullException.ThrowIfNull(scenarios);
         ArgumentNullException.ThrowIfNull(agent);
 
-        var runner = new ChatScenarioRunner(assertionAgent ?? agent);
+        var runner = new ChatScenarioRunner(assertionClient);
         return runner.RunAsync(scenarios, agent, initialMessages, options);
     }
 }

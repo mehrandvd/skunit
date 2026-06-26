@@ -27,16 +27,6 @@ namespace skUnit
         }
 
         /// <summary>
-        /// This class needs a Microsoft Agent Framework AI agent to work.
-        /// Pass your pre-configured agent to this constructor.
-        /// </summary>
-        /// <param name="agent">The AI agent used for semantic evaluations and assertions.</param>
-        public SemanticAssert(AIAgent agent)
-        {
-            Semantic = new SemanticAgent(agent);
-        }
-
-        /// <summary>
         /// Checks whether <paramref name="first"/> and <paramref name="second"/> string are semantically similar.
         /// It uses the kernel and OpenAI to check this semantically.
         /// <example>

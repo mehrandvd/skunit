@@ -9,6 +9,11 @@ namespace skUnit.Tests.AssertionTests
 {
     public class ChatScenarioRunnerExtensionMethodTests
     {
+        public ChatScenarioRunnerExtensionMethodTests()
+        {
+            ChatScenarioRunner.Initialize(CreateMockChatClient());
+        }
+
         [Fact]
         public async Task IChatClient_RunChatScenarioAsync_UsesClientAsAssertionClientByDefault()
         {

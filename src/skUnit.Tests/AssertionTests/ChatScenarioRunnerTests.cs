@@ -81,14 +81,6 @@ namespace skUnit.Tests.AssertionTests
         }
 
         [Fact]
-        public void ChatScenarioRunner_Constructor_WithAIAgentAssertionAgent_Works()
-        {
-            var runner = new ChatScenarioRunner(new TestAIAgent());
-
-            Assert.NotNull(runner);
-        }
-
-        [Fact]
         public async Task ChatScenarioRunner_RunAsync_WithAIAgentSystemUnderTest_Works()
         {
             var runner = new ChatScenarioRunner(CreateMockChatClient());
@@ -104,14 +96,6 @@ namespace skUnit.Tests.AssertionTests
             };
 
             await runner.RunAsync(scenario, new TestAIAgent("Hello there"));
-        }
-
-        [Fact]
-        public void SemanticAssert_Constructor_WithAIAgent_Works()
-        {
-            var semanticAssert = new SemanticAssert(new TestAIAgent());
-
-            Assert.NotNull(semanticAssert);
         }
 
         private static ChatScenario CreateScenario(string description, string expectedResponse)
