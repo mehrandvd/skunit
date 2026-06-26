@@ -77,7 +77,7 @@ namespace skUnit
         /// Sets the default logger for all instances of ChatScenarioRunner that do not have a specific logger provided.
         /// </summary>
         /// <param name="logger">The logger to set as the default</param>
-        public void SetDefaultLogger(ILogger logger)
+        public static void SetDefaultLogger(ILogger logger)
         {
             DefaultLogger = logger;
         }
