@@ -12,8 +12,13 @@ using Xunit.v3;
 
 namespace Demo.MoodyChef.Tests
 {
-    public class MoodyChefTests(ITestOutputHelper output)
+    public class MoodyChefTests
     {
+        public MoodyChefTests(ITestOutputHelper output)
+        {
+            ChatScenarioRunner.SetDefaultLogger(output.WriteLine);
+        }
+
         [Fact]
         public async Task MoodyChef_Sloppy_MustWork()
         {
@@ -35,19 +40,26 @@ namespace Demo.MoodyChef.Tests
                          .GetChatClient(deploymentName)
                          .AsIChatClient();
 
-            var runner = new ChatScenarioRunner(client, output.WriteLine);
+            //var runner = new ChatScenarioRunner(client);
 
             var scenarioScript = GetScenarioScript();
 
             var scenario = ChatScenario.LoadFromText(scenarioScript);
 
             var agent = AgentGallery.CreateSloppyAgent(client);
-            
-            await runner.RunAsync(scenario, agent, options: new ScenarioRunOptions(){
+
+            await agent.RunChatScenarioAsync(scenario, options: new ScenarioRunOptions()
+            {
                 TotalRuns = 3,
-                MinSuccessRate = 1,
-                
+                RequiredSuccessRuns = 3,
+
             });
+            
+            //await runner.RunAsync(scenario, agent, options: new ScenarioRunOptions(){
+            //    TotalRuns = 3,
+            //    RequiredSuccessRuns = 3,
+
+            //});
         }
 
         [Fact]
@@ -71,7 +83,7 @@ namespace Demo.MoodyChef.Tests
                          .GetChatClient(deploymentName)
                          .AsIChatClient();
 
-            var runner = new ChatScenarioRunner(client, output.WriteLine);
+            //var runner = new ChatScenarioRunner(client, _output.WriteLine);
 
             var scenarioScript = GetScenarioScript();
 
@@ -79,12 +91,19 @@ namespace Demo.MoodyChef.Tests
 
             var agent = AgentGallery.CreateToolBasedAgent(client);
 
-            await runner.RunAsync(scenario, agent, options: new ScenarioRunOptions()
+            await agent.RunChatScenarioAsync(scenario, options: new ScenarioRunOptions()
             {
                 TotalRuns = 3,
-                MinSuccessRate = 1,
+                RequiredSuccessRuns = 3,
 
             });
+
+            //await runner.RunAsync(scenario, agent, options: new ScenarioRunOptions()
+            //{
+            //    TotalRuns = 3,
+            //    RequiredSuccessRuns = 3,
+
+            //});
         }
 
 

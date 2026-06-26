@@ -3,14 +3,14 @@
 Large language models are **stochastic** – the same prompt may produce slightly different outputs on different runs. A single failing run (a "hallucination") can cause otherwise good tests to intermittently fail. `ScenarioRunOptions` lets you make your semantic tests **resilient** by:
 
 1. Executing a scenario multiple times
-2. Requiring that only a configurable percentage of runs succeed
+2. Requiring that a configurable number of runs succeed
 
 ## Properties
 
 | Property | Default | Meaning |
 |----------|---------|---------|
 | `TotalRuns` | `1` | How many complete executions of the scenario to perform |
-| `MinSuccessRate` | `1.0` | Minimum fraction of runs that must pass (e.g. `0.8` = 80%) |
+| `RequiredSuccessRuns` | `null` | How many successful runs are required for the scenario to pass; `null` means all runs must pass |
 
 > A run "passes" when all CHECK assertions succeed for that execution.
 
@@ -20,7 +20,7 @@ Large language models are **stochastic** – the same prompt may produce slightly 
 var options = new ScenarioRunOptions
 {
     TotalRuns = 3,
-    MinSuccessRate = 0.67 // At least 2 of 3 must pass
+    RequiredSuccessRuns = 2 // At least 2 of 3 must pass
 };
 
 await ScenarioAssert.PassAsync(scenarios, chatClient, options: options);
@@ -38,31 +38,31 @@ await ScenarioAssert.PassAsync(scenarios, chatClient, options: options);
 
 | Scenario Type | Suggested Settings | Rationale |
 |---------------|--------------------|-----------|
-| Deterministic (low temperature) | `TotalRuns = 1` | Fast feedback |
-| Creative copy / marketing text | `TotalRuns = 5`, `MinSuccessRate = 0.6` | Allow variation, catch systemic issues |
-| Tool / Function invocation | `TotalRuns = 3`, `MinSuccessRate = 0.67` | Ensure reliability of structured calls |
-| Regression CI (critical path) | `TotalRuns = 5`, `MinSuccessRate = 0.8+` | High confidence before shipping |
+| Deterministic (low temperature) | `TotalRuns = 1`, `RequiredSuccessRuns = 1` | Fast feedback |
+| Creative copy / marketing text | `TotalRuns = 5`, `RequiredSuccessRuns = 3` | Allow variation, catch systemic issues |
+| Tool / Function invocation | `TotalRuns = 3`, `RequiredSuccessRuns = 2` | Ensure reliability of structured calls |
+| Regression CI (critical path) | `TotalRuns = 5`, `RequiredSuccessRuns = 4` | High confidence before shipping |
 
 ## Pattern: Progressive Hardening
 
-Start strict (require 100%) while iterating. If you observe rare, benign variations, *lower* only `MinSuccessRate` slightly instead of removing assertions.
+Start strict (require 100%) while iterating. If you observe rare, benign variations, *lower* only `RequiredSuccessRuns` slightly instead of removing assertions.
 
 ```csharp
 // Phase 1 (authoring): require perfection
-new ScenarioRunOptions { TotalRuns = 1, MinSuccessRate = 1.0 };
+new ScenarioRunOptions { TotalRuns = 1, RequiredSuccessRuns = 1 };
 
 // Phase 2 (stabilizing): allow one-off drift
-new ScenarioRunOptions { TotalRuns = 3, MinSuccessRate = 0.67 };
+new ScenarioRunOptions { TotalRuns = 3, RequiredSuccessRuns = 2 };
 
 // Phase 3 (mature): statistically strong signal
-new ScenarioRunOptions { TotalRuns = 5, MinSuccessRate = 0.8 };
+new ScenarioRunOptions { TotalRuns = 5, RequiredSuccessRuns = 4 };
 ```
 
 ## Interpreting Failures
 
 Failure message example:
 ```
-Only 40% of rounds passed, which is below the required success rate of 80%
+Only 2 of 5 runs passed, which is below the required success runs of 4.
 ```
 Indicates the model produced unacceptable answers in a *repeatable pattern* (not just noise) – investigate prompt, model, or assertions.
 

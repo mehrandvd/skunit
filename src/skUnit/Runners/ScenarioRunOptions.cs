@@ -17,8 +17,7 @@ public class ScenarioRunOptions
     public int TotalRuns { get; set; } = 1;
 
     /// <summary>
-    /// Minimum fraction (0–1] of runs that must pass. Default 1.0 (all runs must pass).
-    /// Passes when (PassedRuns / TotalRuns) >= MinSuccessRate.
+    /// Number of successful runs required for the scenario to pass. When null, all runs must pass.
     /// </summary>
-    public double MinSuccessRate { get; set; } = 1.0;
+    public int? RequiredSuccessRuns { get; set; }
 }

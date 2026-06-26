@@ -28,9 +28,9 @@ namespace skUnit
         /// Gets or sets the default logger for all instances of ChatScenarioRunner that do not have a specific logger provided.
         /// </summary>
         private static AsyncLocal<ILogger?> DefaultLogger { get; } = new AsyncLocal<ILogger?>();
-        
+
         private static AsyncLocal<IChatClient?> DefaultChatClient { get; } = new AsyncLocal<IChatClient?>();
-        
+
         /// <summary>
         /// Creates a new ChatScenarioRunner with an assertion client and logger.
         /// </summary>
@@ -39,7 +39,7 @@ namespace skUnit
         public ChatScenarioRunner(IChatClient? assertionClient = null, ILogger<ChatScenarioRunner>? logger = null)
         {
             var client = ResolveAssertionClient(assertionClient);
-            
+
             Semantic = new SemanticAgent(client);
             _logger = logger ?? DefaultLogger.Value ?? NullLogger<ChatScenarioRunner>.Instance;
         }
@@ -210,11 +210,18 @@ namespace skUnit
                 }
             }
 
-            var successRate = 1 - (exceptions.Count * 1f / options.TotalRuns);
+            var requiredSuccessRuns = options.RequiredSuccessRuns ?? options.TotalRuns;
 
-            if (successRate < options.MinSuccessRate)
+            if (options.RequiredSuccessRuns is not null && (options.RequiredSuccessRuns < 1 || options.RequiredSuccessRuns > options.TotalRuns))
             {
-                var message = $"Only {(successRate * 100):F2}% of rounds passed, which is below the required success rate of {(options.MinSuccessRate * 100):F2}%";
+                throw new ArgumentOutOfRangeException(nameof(options.RequiredSuccessRuns), options.RequiredSuccessRuns, $"Must be between 1 and {options.TotalRuns} when specified.");
+            }
+
+            var successfulRuns = options.TotalRuns - exceptions.Count;
+
+            if (successfulRuns < requiredSuccessRuns)
+            {
+                var message = $"Only {successfulRuns} of {options.TotalRuns} runs passed, which is below the required success runs of {requiredSuccessRuns}.";
                 Log(message);
                 throw new SemanticAssertException(message);
             }

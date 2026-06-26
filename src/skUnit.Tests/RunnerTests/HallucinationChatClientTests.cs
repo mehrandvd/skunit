@@ -22,7 +22,7 @@ namespace skUnit.Tests.RunnerTests
                 options: new ScenarioRunOptions
                 {
                     TotalRuns = 3,
-                    MinSuccessRate = .6
+                    RequiredSuccessRuns = 2
                 }
                 );
         }
@@ -51,7 +51,7 @@ namespace skUnit.Tests.RunnerTests
                 options: new ScenarioRunOptions
                 {
                     TotalRuns = 3,
-                    MinSuccessRate = .6
+                    RequiredSuccessRuns = 2
                 });
         }
 
@@ -75,7 +75,7 @@ namespace skUnit.Tests.RunnerTests
                 options: new ScenarioRunOptions
                 {
                     TotalRuns = 3,
-                    MinSuccessRate = .6
+                    RequiredSuccessRuns = 2
                 });
         }
 

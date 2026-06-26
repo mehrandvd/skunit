@@ -77,7 +77,7 @@ namespace skUnit.Tests.AssertionTests
             Assert.NotNull(assertion.JsonCheck);
 
             await Assert.ThrowsAsync<SemanticAssertException>(() => assertion.Assert(
-                A.Fake<SemanticAgent>(), 
+                A.Fake<SemanticAgent>(),
                 """
                 {
                     "name": "Mehran",
@@ -101,7 +101,7 @@ namespace skUnit.Tests.AssertionTests
             Assert.NotNull(assertion.JsonCheck);
 
             await Assert.ThrowsAsync<SemanticAssertException>(() => assertion.Assert(
-                A.Fake<SemanticAgent>(), 
+                A.Fake<SemanticAgent>(),
                 """
                 {
                     "name": "Mehran",

@@ -223,13 +223,13 @@ await ScenarioRunner.RunAsync(scenarios, chatClient);
 
 LLM outputs can vary between runs. A single spurious response shouldn't fail your build if the model normally behaves correctly.
 
-Use `ScenarioRunOptions` to execute each scenario multiple times and require only a percentage to pass. This adds statistical robustness without eliminating genuine regressions.
+Use `ScenarioRunOptions` to execute each scenario multiple times and require a specific number of successful runs to pass. If `RequiredSuccessRuns` is not set, all runs must pass. This adds statistical robustness without eliminating genuine regressions.
 
 ```csharp
 var options = new ScenarioRunOptions
 {
-    TotalRuns = 3,        // Run the whole scenario three times
-    MinSuccessRate = 0.67 // At least 2 of 3 runs must pass
+    TotalRuns = 3,              // Run the whole scenario three times
+    RequiredSuccessRuns = 2    // At least 2 of 3 runs must pass
 };
 
 // In your test class constructor:
@@ -241,14 +241,14 @@ await ScenarioRunner.RunAsync(scenarios, systemUnderTestClient, options: options
 ```
 
 Recommended starting points:
-- Deterministic / low-temp prompts: `TotalRuns = 1`, `MinSuccessRate = 1.0`
-- Function / tool invocation: `TotalRuns = 3`, `MinSuccessRate = 0.67`
-- Creative generation: `TotalRuns = 5`, `MinSuccessRate = 0.6`
-- Critical CI gating: `TotalRuns = 5`, `MinSuccessRate = 0.8`
+- Deterministic / low-temp prompts: `TotalRuns = 1`, `RequiredSuccessRuns = 1`
+- Function / tool invocation: `TotalRuns = 3`, `RequiredSuccessRuns = 2`
+- Creative generation: `TotalRuns = 5`, `RequiredSuccessRuns = 3`
+- Critical CI gating: `TotalRuns = 5`, `RequiredSuccessRuns = 4`
 
 Failure message example:
 ```
-Only 40% of rounds passed, which is below the required success rate of 80%
+Only 2 of 5 runs passed, which is below the required success runs of 4.
 ```
 Indicates a systematic issue (not just randomness) – investigate prompt, model settings, or assertions.
 
