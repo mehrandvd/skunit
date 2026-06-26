@@ -16,7 +16,7 @@ namespace skUnit.Tests.AssertionTests
             var chatClient = CreateMockChatClient("Hello there");
             var scenario = CreateScenario("IChatClient extension", "Hello there");
 
-            await chatClient.ExecuteScenarioAsync(scenario);
+            await chatClient.ExecuteScenarioAsync(scenario, chatClient, cancellationToken: TestContext.Current.CancellationToken);
         }
 
         [Fact]
@@ -26,7 +26,7 @@ namespace skUnit.Tests.AssertionTests
             var agent = new TestAIAgent("Hello there");
             var scenario = CreateScenario("AIAgent extension", "Hello there");
 
-            await agent.ExecuteScenarioAsync(scenario, assertionClient);
+            await agent.ExecuteScenarioAsync(scenario, assertionClient, cancellationToken: TestContext.Current.CancellationToken);
         }
 
         [Fact]
@@ -36,7 +36,7 @@ namespace skUnit.Tests.AssertionTests
             var agent = new TestAIAgent("Hello there");
             var scenario = CreateScenario("IEnumerable extension", "Hello there");
 
-            await agent.ExecuteScenarioAsync(new[] { scenario }, assertionClient);
+            await agent.ExecuteScenarioAsync(new[] { scenario }, assertionClient, cancellationToken: TestContext.Current.CancellationToken);
         }
 
         [Fact]
@@ -46,7 +46,7 @@ namespace skUnit.Tests.AssertionTests
             var scenario = CreateScenario("ChatScenario extension", "Hello there");
             var runner = new ChatScenarioRunner(chatClient);
 
-            await runner.RunAsync(scenario, chatClient);
+            await runner.RunAsync(scenario, chatClient, cancellationToken: TestContext.Current.CancellationToken);
         }
 
         private static ChatScenario CreateScenario(string description, string expectedResponse)

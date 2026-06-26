@@ -9,7 +9,7 @@ public static class ChatScenarioExecutionExtensions
     public static Task ExecuteScenarioAsync(
         this IChatClient chatClient,
         ChatScenario scenario,
-        IChatClient? assertionClient = null,
+        IChatClient assertionClient,
         IReadOnlyList<ChatMessage>? initialMessages = null,
         ScenarioRunOptions? options = null,
         CancellationToken cancellationToken = default)
@@ -17,14 +17,14 @@ public static class ChatScenarioExecutionExtensions
         ArgumentNullException.ThrowIfNull(chatClient);
         ArgumentNullException.ThrowIfNull(scenario);
 
-        var runner = new ChatScenarioRunner(assertionClient ?? chatClient);
+        var runner = new ChatScenarioRunner(assertionClient);
         return runner.RunAsync(scenario, chatClient, initialMessages, options, cancellationToken);
     }
 
     public static Task ExecuteScenarioAsync(
         this IChatClient chatClient,
         IEnumerable<ChatScenario> scenarios,
-        IChatClient? assertionClient = null,
+        IChatClient assertionClient,
         IReadOnlyList<ChatMessage>? initialMessages = null,
         ScenarioRunOptions? options = null,
         CancellationToken cancellationToken = default)
@@ -32,7 +32,7 @@ public static class ChatScenarioExecutionExtensions
         ArgumentNullException.ThrowIfNull(chatClient);
         ArgumentNullException.ThrowIfNull(scenarios);
 
-        var runner = new ChatScenarioRunner(assertionClient ?? chatClient);
+        var runner = new ChatScenarioRunner(assertionClient);
         return runner.RunAsync(scenarios, chatClient, initialMessages, options, cancellationToken);
     }
 

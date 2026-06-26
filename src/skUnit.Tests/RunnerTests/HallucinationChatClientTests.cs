@@ -23,7 +23,8 @@ namespace skUnit.Tests.RunnerTests
                 {
                     TotalRuns = 3,
                     RequiredSuccessRuns = 2
-                }
+                },
+                cancellationToken: TestContext.Current.CancellationToken
                 );
         }
 
@@ -52,7 +53,7 @@ namespace skUnit.Tests.RunnerTests
                 {
                     TotalRuns = 3,
                     RequiredSuccessRuns = 2
-                });
+                }, cancellationToken: TestContext.Current.CancellationToken);
         }
 
         [Fact]
@@ -76,7 +77,7 @@ namespace skUnit.Tests.RunnerTests
                 {
                     TotalRuns = 3,
                     RequiredSuccessRuns = 2
-                });
+                }, cancellationToken: TestContext.Current.CancellationToken);
         }
 
 

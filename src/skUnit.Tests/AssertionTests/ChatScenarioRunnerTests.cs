@@ -75,7 +75,7 @@ namespace skUnit.Tests.AssertionTests
                 {
                     sawUserMessage = history.Count == 1 && history[0].Role == ChatRole.User && history[0].Text == "Hello";
                     return ValueTask.FromResult(new ChatResponse(new ChatMessage(ChatRole.Assistant, "Hello there")));
-                });
+                }, cancellationToken: TestContext.Current.CancellationToken);
 
             Assert.True(sawUserMessage);
         }
@@ -95,7 +95,7 @@ namespace skUnit.Tests.AssertionTests
                 ]
             };
 
-            await runner.RunAsync(scenario, new TestAIAgent("Hello there"));
+            await runner.RunAsync(scenario, new TestAIAgent("Hello there"), cancellationToken: TestContext.Current.CancellationToken);
         }
 
         private static ChatScenario CreateScenario(string description, string expectedResponse)

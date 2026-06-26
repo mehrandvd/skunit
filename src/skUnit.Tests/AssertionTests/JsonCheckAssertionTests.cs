@@ -33,7 +33,7 @@ namespace skUnit.Tests.AssertionTests
                     "name": "Mehran",
                     "address": "The address is in Vanak area of Tehran"
                 }
-                """);
+                """, cancellationToken: TestContext.Current.CancellationToken);
         }
 
         [Fact]
@@ -59,7 +59,7 @@ namespace skUnit.Tests.AssertionTests
                     "name": "Mehran",
                     "address": "The address is in Vanak area of Tehran"
                 }
-                """);
+                """, cancellationToken: TestContext.Current.CancellationToken);
         }
 
         [Fact]
@@ -83,7 +83,7 @@ namespace skUnit.Tests.AssertionTests
                     "name": "Mehran",
                     "address": "The address is in Vanak area of Tehran"
                 }
-                """));
+                """, cancellationToken: TestContext.Current.CancellationToken));
         }
 
         [Fact]
@@ -106,7 +106,7 @@ namespace skUnit.Tests.AssertionTests
                 {
                     "name": "Mehran",
                 }
-                """));
+                """, cancellationToken: TestContext.Current.CancellationToken));
         }
 
         [Fact]
@@ -129,7 +129,7 @@ namespace skUnit.Tests.AssertionTests
                 {
                     "name": "Mehran",
                 }
-                """));
+                """, cancellationToken: TestContext.Current.CancellationToken));
         }
     }
 }

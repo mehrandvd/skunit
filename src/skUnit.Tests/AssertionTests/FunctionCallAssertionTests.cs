@@ -73,7 +73,7 @@ namespace skUnit.Tests.AssertionTests
                                         ```
                                         """);
 
-            await assertion.Assert(A.Fake<SemanticEvaluator>(), new ChatResponse(history), history);
+            await assertion.Assert(A.Fake<SemanticEvaluator>(), new ChatResponse(history), history, cancellationToken: TestContext.Current.CancellationToken);
 
             Assert.Single(assertion.FunctionArguments);
             Assert.Equal(typeof(EqualsAssertion), assertion.FunctionArguments["arg1"].GetType());
@@ -110,7 +110,7 @@ namespace skUnit.Tests.AssertionTests
                 ```
                 """);
 
-            await assertion.Assert(A.Fake<SemanticEvaluator>(), new ChatResponse(history), history);
+            await assertion.Assert(A.Fake<SemanticEvaluator>(), new ChatResponse(history), history, cancellationToken: TestContext.Current.CancellationToken);
 
             Assert.Single(assertion.FunctionArguments);
             Assert.Equal(typeof(IsAnyOfAssertion), assertion.FunctionArguments["arg1"].GetType());
@@ -151,7 +151,7 @@ namespace skUnit.Tests.AssertionTests
                 ```
                 """);
 
-            await assertion.Assert(A.Fake<SemanticEvaluator>(), new ChatResponse(history), history);
+            await assertion.Assert(A.Fake<SemanticEvaluator>(), new ChatResponse(history), history, cancellationToken: TestContext.Current.CancellationToken);
 
             Assert.Equal(expected: 3, assertion.FunctionArguments.Count);
             Assert.Equal(typeof(IsAnyOfAssertion), assertion.FunctionArguments["arg1"].GetType());
@@ -192,7 +192,7 @@ namespace skUnit.Tests.AssertionTests
 
             var exception = await Assert.ThrowsAsync<SemanticAssertException>(() =>
             {
-                return assertion.Assert(A.Fake<SemanticEvaluator>(), new ChatResponse(history), history);
+                return assertion.Assert(A.Fake<SemanticEvaluator>(), new ChatResponse(history), history, cancellationToken: TestContext.Current.CancellationToken);
             });
 
             Assert.Equal("Text is not equal to any of these: 'value1, value2, value3'", exception.Message);
