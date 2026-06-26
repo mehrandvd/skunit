@@ -1,6 +1,5 @@
 using Microsoft.Agents.AI;
 using Microsoft.Extensions.AI;
-using Microsoft.Extensions.Logging;
 using Xunit;
 using skUnit.Scenarios;
 using skUnit.Scenarios.Parsers.Assertions;
@@ -8,110 +7,42 @@ using System.Text.Json;
 
 namespace skUnit.Tests.AssertionTests
 {
-    public class ChatScenarioRunnerTests
+    public class ChatScenarioRunnerExtensionMethodTests
     {
         [Fact]
-        public void ChatScenarioRunner_Constructor_WithLogger_Works()
+        public async Task IChatClient_RunChatScenarioAsync_UsesClientAsAssertionClientByDefault()
         {
-            // Arrange
-            var mockChatClient = CreateMockChatClient();
-            var logger = new TestLogger<ChatScenarioRunner>();
+            var chatClient = CreateMockChatClient("Hello there");
+            var scenario = CreateScenario("IChatClient extension", "Hello there");
 
-            // Act
-            var runner = new ChatScenarioRunner(mockChatClient, logger);
-
-            // Assert
-            Assert.NotNull(runner);
+            await chatClient.RunChatScenarioAsync(scenario);
         }
 
         [Fact]
-        public void ChatScenarioRunner_Constructor_WithObsoleteActionLog_Works()
+        public async Task AIAgent_RunChatScenarioAsync_UsesAgentAsAssertionAgentByDefault()
         {
-            // Arrange
-            var mockChatClient = CreateMockChatClient();
-            var logs = new List<string>();
-            Action<string> onLog = message => logs.Add(message);
+            var agent = new TestAIAgent("Hello there");
+            var scenario = CreateScenario("AIAgent extension", "Hello there");
 
-            // Act
-            var runner = new ChatScenarioRunner(mockChatClient, onLog);
-
-            // Assert
-            Assert.NotNull(runner);
+            await agent.RunChatScenarioAsync(scenario);
         }
 
         [Fact]
-        public void ChatScenarioRunner_Constructor_WithNullLogger_Works()
+        public async Task ChatScenario_RunAsync_WithChatClient_Works()
         {
-            // Arrange
-            var mockChatClient = CreateMockChatClient();
+            var chatClient = CreateMockChatClient("Hello there");
+            var scenario = CreateScenario("ChatScenario extension", "Hello there");
 
-            // Act
-            var runner = new ChatScenarioRunner(mockChatClient, (ILogger<ChatScenarioRunner>?)null);
-
-            // Assert
-            Assert.NotNull(runner);
+            await scenario.RunAsync(chatClient);
         }
 
         [Fact]
-        public async Task ChatScenarioRunner_RunAsync_WithGetAnswerFunc_Works()
+        public async Task IEnumerableChatScenario_RunAsync_WithAgent_Works()
         {
-            var runner = new ChatScenarioRunner(CreateMockChatClient());
-            var scenario = new ChatScenario
-            {
-                Description = "GetAnswerFunc scenario",
-                RawText = "GetAnswerFunc scenario",
-                ChatItems =
-                [
-                    new ChatItem(ChatRole.User, "Hello"),
-                    new ChatItem(ChatRole.Assistant, "Hello there")
-                ]
-            };
+            var agent = new TestAIAgent("Hello there");
+            var scenario = CreateScenario("IEnumerable extension", "Hello there");
 
-            var sawUserMessage = false;
-
-            await runner.RunAsync(
-                scenario,
-                async history =>
-                {
-                    sawUserMessage = history.Count == 1 && history[0].Role == ChatRole.User && history[0].Text == "Hello";
-                    return new ChatResponse(new ChatMessage(ChatRole.Assistant, "Hello there"));
-                });
-
-            Assert.True(sawUserMessage);
-        }
-
-        [Fact]
-        public void ChatScenarioRunner_Constructor_WithAIAgentAssertionAgent_Works()
-        {
-            var runner = new ChatScenarioRunner(new TestAIAgent());
-
-            Assert.NotNull(runner);
-        }
-
-        [Fact]
-        public async Task ChatScenarioRunner_RunAsync_WithAIAgentSystemUnderTest_Works()
-        {
-            var runner = new ChatScenarioRunner(CreateMockChatClient());
-            var scenario = new ChatScenario
-            {
-                Description = "AIAgent scenario",
-                RawText = "AIAgent scenario",
-                ChatItems =
-                [
-                    new ChatItem(ChatRole.User, "Hello"),
-                    new ChatItem(ChatRole.Assistant, "Hello there")
-                ]
-            };
-
-            await runner.RunAsync(scenario, new TestAIAgent("Hello there"));
-        }
-
-        [Fact]
-        public void SemanticAssert_Constructor_WithAIAgent_Works()
-        {
-            var semanticAssert = new SemanticAssert(new TestAIAgent());
-
-            Assert.NotNull(semanticAssert);
+            await new[] { scenario }.RunAsync(agent);
         }
 
         private static ChatScenario CreateScenario(string description, string expectedResponse)
@@ -202,13 +133,6 @@ namespace skUnit.Tests.AssertionTests
                 : base(new AgentSessionStateBag())
             {
             }
-        }
-
-        private class TestLogger<T> : ILogger<T>
-        {
-            public IDisposable? BeginScope<TState>(TState state) where TState : notnull => null;
-            public bool IsEnabled(LogLevel logLevel) => true;
-            public void Log<TState>(LogLevel logLevel, EventId eventId, TState state, Exception? exception, Func<TState, Exception?, string> formatter) { }
         }
     }
 }
