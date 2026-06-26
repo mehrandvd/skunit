@@ -4,6 +4,7 @@ using Xunit;
 using skUnit.Scenarios;
 using skUnit.Scenarios.Parsers.Assertions;
 using System.Text.Json;
+using skUnit.Runners;
 
 namespace skUnit.Tests.AssertionTests
 {
@@ -11,7 +12,7 @@ namespace skUnit.Tests.AssertionTests
     {
         public ChatScenarioRunnerExtensionMethodTests()
         {
-            ChatScenarioRunner.Initialize(CreateMockChatClient());
+            ChatScenarioRunner.Initialize(chatClient: CreateMockChatClient());
         }
 
         [Fact]

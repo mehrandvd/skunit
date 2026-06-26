@@ -6,7 +6,7 @@ namespace skUnit
     /// Internal adapter that wraps an Action&lt;string&gt; delegate to provide ILogger functionality
     /// for backward compatibility with the legacy onLog parameter.
     /// </summary>
-    public class DelegateLoggerAdapter<T> : ILogger<T>
+    public class DelegateLoggerAdapter : ILogger
     {
         private readonly Action<string> _logAction;
 

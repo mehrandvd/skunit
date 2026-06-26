@@ -1,11 +1,12 @@
 using Microsoft.Agents.AI;
 using Microsoft.Extensions.AI;
+using skUnit.Scenarios;
 using System.Collections.Generic;
 using ChatMessage = Microsoft.Extensions.AI.ChatMessage;
 
-namespace skUnit.Scenarios;
+namespace skUnit;
 
-public static class ScenarioExtensions
+public static class ChatScenarioRunnerExtensions
 {
     /// <summary>
     /// Runs a single chat scenario against the supplied chat client.

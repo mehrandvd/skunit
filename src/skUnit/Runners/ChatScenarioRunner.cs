@@ -54,16 +54,16 @@ namespace skUnit
             var client = ResolveAssertionClient(assertionClient);
 
             Semantic = new SemanticAgent(client);
-            _logger = new DelegateLoggerAdapter<ChatScenarioRunner>(onLog);
+            _logger = new DelegateLoggerAdapter(onLog);
         }
 
 
         /// <summary>
         /// Sets the default logger for all instances of ChatScenarioRunner that do not have a specific logger provided.
         /// </summary>
-        /// <param name="chatClient">The chat client to use for semantic evaluations and assertions</param>
         /// <param name="logger">The logger to set as the default</param>
-        public static void Initialize(IChatClient? chatClient, ILogger? logger = null)
+        /// <param name="chatClient">The chat client to use for semantic evaluations and assertions</param>
+        public static void Initialize(ILogger? logger = null, IChatClient? chatClient = null)
         {
             DefaultLogger.Value = logger;
             DefaultChatClient.Value = chatClient;
@@ -72,11 +72,11 @@ namespace skUnit
         /// <summary>
         /// Sets the default logger for all instances of ChatScenarioRunner that do not have a specific logger provided.
         /// </summary>
-        /// <param name="chatClient">The chat client to use for semantic evaluations and assertions</param>
         /// <param name="onLog">The action to set as the default logger</param>
-        public static void Initialize(IChatClient? chatClient, Action<string> onLog)
+        /// <param name="chatClient">The chat client to use for semantic evaluations and assertions</param>
+        public static void Initialize(Action<string> onLog, IChatClient? chatClient = null)
         {
-            DefaultLogger.Value = new DelegateLoggerAdapter<ChatScenarioRunner>(onLog);
+            DefaultLogger.Value = new DelegateLoggerAdapter(onLog);
             DefaultChatClient.Value = chatClient;
         }
 
@@ -113,9 +113,6 @@ namespace skUnit
 
         /// <summary>
         /// Runs the <paramref name="scenario"/> against the given <paramref name="chatClient"/>
-        /// using its ChatCompletionService.
-        /// If you want to test using something other than ChatCompletionService (for example using your own function),
-        /// pass <paramref name="getAnswerFunc"/> and specify how do you want the answer be created from chat history like:
         /// <code>
         /// getAnswerFunc = async history =>
         ///     await AnswerChatFunction.InvokeAsync(kernel, new KernelArguments()
