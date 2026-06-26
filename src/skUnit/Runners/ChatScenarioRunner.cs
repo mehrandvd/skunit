@@ -63,10 +63,8 @@ namespace skUnit
         /// </summary>
         /// <param name="chatClient">The chat client to use for semantic evaluations and assertions</param>
         /// <param name="logger">The logger to set as the default</param>
-        public static void Initialize(IChatClient chatClient, ILogger? logger = null)
+        public static void Initialize(IChatClient? chatClient, ILogger? logger = null)
         {
-            ArgumentNullException.ThrowIfNull(chatClient);
-
             DefaultLogger.Value = logger;
             DefaultChatClient.Value = chatClient;
         }
@@ -76,7 +74,7 @@ namespace skUnit
         /// </summary>
         /// <param name="chatClient">The chat client to use for semantic evaluations and assertions</param>
         /// <param name="onLog">The action to set as the default logger</param>
-        public static void Initialize(IChatClient chatClient, Action<string> onLog)
+        public static void Initialize(IChatClient? chatClient, Action<string> onLog)
         {
             DefaultLogger.Value = new DelegateLoggerAdapter<ChatScenarioRunner>(onLog);
             DefaultChatClient.Value = chatClient;
