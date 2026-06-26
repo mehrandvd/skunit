@@ -7,8 +7,8 @@
 **skUnit** is a semantic testing framework for .NET that makes it easy to test AI-powered applications using simple, readable Markdown scenarios.
 
 Test anything that talks to AI:
-- **IChatClient** implementations (Azure OpenAI, OpenAI, Anthropic, etc.)
-- **SemanticKernel** applications and plugins  
+- **AIAgents** (Microsoft Agent Framework, A2A)
+- **IChatClient** (Microsoft Extensions AI)
 - **MCP (Model Context Protocol) servers**
 - **Custom AI integrations**
 
@@ -16,19 +16,22 @@ Write your tests in **Markdown**, run them with **any test framework** (xUnit, N
 
 ## Quick Start
 
-Here's a simple test scenario in Markdown:
+Imagine you have an `AIAgent` which is configured to answer questions about a bank account. You want to test that it correctly reports the account balance for a user named John Doe.
 
-```md
-# SCENARIO Mountain Chat
+
+Here's a simple test scenario in Markdown, `balance-test.md`:
+
+```markdown
+
+# SCENARIO Balance Test
 
 ## [USER]
-What is the tallest mountain?
+What is the account balance for John Doe?
 
 ## [ASSISTANT]
-The tallest mountain is Everest! (OPTIONAL)
 
 ### ASSERT SemanticCondition
-It mentions Mount Everest.
+The answer mentions that the account balance is $1,234.56.
 ```
 
 And here's how to test it with just a few lines of C#:
@@ -37,138 +40,104 @@ And here's how to test it with just a few lines of C#:
 [Fact]
 public async Task SimpleTest()
 {
-    var markdown = File.ReadAllText("mountain-chat.md");
-    var scenarios = ChatScenario.Parse(markdown);
+    var markdown = File.ReadAllText("balance-test.md");
+    var scenario = ChatScenario.Parse(markdown);
 
-    await ScenarioRunner.RunAsync(scenarios, systemUnderTestClient);
+    await agent.RunAsync(scenario);
 }
-```
-
-Note that in this example, the **agent message** is just for clarity and is not being used and is optional. So the following test scenario is equivalent:
-
-```md
-## [USER]
-What is the tallest mountain?
-
-## [ASSISTANT]
-
-### ASSERT SemanticCondition
-It mentions Mount Everest.
 ```
 
 That's it! skUnit handles the conversation, calls your AI, and verifies the response makes sense.
 
-### Ergonomic scenario execution
+It worths to mention that you can write parameterized scenarios like:
 
-You can run scenarios directly from the client or agent that you want to test, without constructing a `ChatScenarioRunner` manually:
+```markdown
+# SCENARIO Balance Test
 
-```csharp
-using skUnit.Scenarios;
+## [USER]
+What is the account balance for {CustomerName}?
 
-await systemUnderTestClient.ExecuteScenarioAsync(scenario);
-await agent.ExecuteScenarioAsync(scenario, assertionClient);
-await systemUnderTestClient.ExecuteScenarioAsync(scenarios);
-await agent.ExecuteScenarioAsync(scenarios, assertionClient);
+## [ASSISTANT]
+
+### ASSERT SemanticCondition
+The answer mentions that the account balance is {CustomerBalance}.
 ```
 
-If you want to use a different assertion model for `IChatClient`, pass `assertionClient`; for `AIAgent`, `assertionClient` is required.
+and use the power of C# to replace the placeholders with different values to test multiple cases.
+
+
+But skUnit is much more than just a simple assertion framework. It supports **multi-turn conversations**, **JSON validation**, **function call testing**, and even **MCP server testing**. Let's explore some of the key features.
 
 ## Key Features
 
-### 1. Basic Chat Scenarios
+### 1. Function Call Assertion
+You can assert that your AI calls the right functions (MCP maybe):
 
-Test single interactions with basic checks:
+```markdown
 
-```md
+# SCENARIO Balance Test
+
 ## [USER]
-Is Everest a mountain or a Tree?
+What is the account balance for John Doe?
 
 ## [ASSISTANT]
-
-### ASSERT ContainsAny
-mountain
 
 ### ASSERT SemanticCondition
-It mentions the mountain
-```
-
-### 2. JSON Validation
-
-Test structured responses with powerful JSON assertions:
-
-```md
-# SCENARIO User Info
-
-## [USER]
-Give me the most expensive product info as a JSON like this:
-{"id": 12, "title": "The product", "price": 0, "description": "the description of the product"}
-
-## [ASSISTANT]
-{"id": 12, "title": "Surface Studio 2", "price": 3000, "description: "It is a very high-quality laptop"}
-
-### ASSERT JsonCheck
-{
-  "id": ["NotEmpty"],
-  "title": ["Contains", "Surface"],
-  "price": ["Equal", 3000],
-  "description": ["SemanticCondition", "It mentions the quality of the laptop."]
-}
-```
-
-### 3. Function Call Testing
-
-Verify your AI calls the right functions (MCP maybe) with the right parameters:
-
-```md
-# SCENARIO Time Query
-
-## [USER]
-What time is it?
-
-## [ASSISTANT]
-It's currently 2:30 PM
+The answer mentions that the account balance is $1,234.56.
 
 ### ASSERT FunctionCall
 {
-  "function_name": "get_current_time"
+  "function_name": "get-account-balance"
 }
 ```
 
-Even you can **assert the passed parameters**:
+You can even assert the parameters passed to the function:
 
-```md
-### ASSERT FunctionCall
+```json
 {
-  "function_name": "GetFoodMenu",
+  "function_name": "get-account-balance",
   "arguments": {
-    "mood": ["Equals", "Happy"]
+    "accountHolder": ["Equals", "John Doe"]
   }
 }
 ```
 
-### 4. Multi-Turn Conversations
+or even,
+
+```json
+{
+  "function_name": "get-account-balance",
+  "arguments": {
+    "accountHolder": ["SemanticSimilar", "John Doe"]
+  }
+}
+```
+
+For full Json schema validation, see the [ASSERT JsonCheck](docs/check-statements-spec.md#assert-jsoncheck) documentation.
+
+### 2. Multi-Turn Conversations
 
 Test complex conversations with multiple exchanges:
 ```md
-# SCENARIO Height Discussion
+# SCENARIO Multi-Turn Balance Test
 
 ## [USER]
-Is Eiffel tall?
+What is the account balance for John Doe?
 
 ## [ASSISTANT]
-Yes it is
+The account balance for John Doe is $1,234.56.
 
 ### ASSERT SemanticCondition
-It agrees that the Eiffel Tower is tall or expresses a positive sentiment.
+The answer mentions that the account balance is $1,234.56.
 
 ## [USER]
-What about Everest?
+What about his credit score?
 
 ## [ASSISTANT]
-Yes it is tall too
+His credit score is 750.
 
 ### ASSERT SemanticCondition
-It agrees that Everest is tall or expresses a positive sentiment.
+It mentions that the credit score is 750.
 ```
 
 ![skUnit Chat Scenario Structure](https://github.com/mehrandvd/skunit/assets/5070766/156b0831-e4f3-4e4b-b1b0-e2ec868efb5f)
@@ -202,17 +171,15 @@ It mentions a specific time
 var mcp = await McpClientFactory.CreateAsync(clientTransport);
 var tools = await mcp.ListToolsAsync();
 
-var chatClient = new ChatClientBuilder(baseChatClient)
-    .ConfigureOptions(options => options.Tools = tools.ToArray())
-    .UseFunctionInvocation()
-    .Build();
+var baseChatClient = // your base IChatClient (Azure OpenAI, OpenAI, etc.)
+
+var agent = baseChatClient.AsAgent(
+    instructions: "You are a helpful assistant that can answer questions and call tools.",
+    tools: tools.ToArray());
 
 // In your test class constructor:
-var assertionClient = /* assertion/evaluation model */;
-ScenarioRunner = new ChatScenarioRunner(assertionClient);
-
-// In your test:
-await ScenarioRunner.RunAsync(scenarios, chatClient);
+await agent.ExecuteScenarioAsync(scenario, assertionClient: baseChatClient);
+// assertionClient is the AI used to evaluate the agent's responses semantically, while the agent uses the tools to respond.
 ```
 
 ### 6. Mitigating Hallucinations with ScenarioRunOptions
@@ -228,12 +195,10 @@ var options = new ScenarioRunOptions
     RequiredSuccessRuns = 2    // At least 2 of 3 runs must pass
 };
 
-// In your test class constructor:
-var assertionClient = /* assertion/evaluation model */;
-ScenarioRunner = new ChatScenarioRunner(assertionClient);
-
-// In your test:
-await ScenarioRunner.RunAsync(scenarios, systemUnderTestClient, options: options);
+await agent.ExecuteScenarioAsync(
+    scenario,
+    assertionClient: baseChatClient, 
+    options: options);
 ```
 
 Recommended starting points:
