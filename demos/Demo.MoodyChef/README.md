@@ -6,7 +6,7 @@ A step-by-step tutorial project that shows how to build and **test** an AI agent
 
 ## The Story
 
-You are building **MoodyChef** — a virtual chef that reads the mood of its customers and suggests food accordingly.
+You are building **MoodyChef**, a virtual chef that reads the mood of its customers and suggests food accordingly.
 
 | Customer's mood | Suggestion |
 |---|---|
@@ -14,7 +14,7 @@ You are building **MoodyChef** — a virtual chef that reads the mood of its cus
 | Sad | Ice Cream, Chocolate, Cake |
 | Angry | Nothing — they're on a diet |
 
-The catch: an angry customer might send a rude message like *"Fuck you bastard! What food do you have?"* — and MoodyChef must correctly detect the anger and refuse to suggest any food. This is not a trivial requirement for an LLM, and it is exactly the kind of behavior you need to **test reliably**.
+The catch: an angry customer might send a rude message like *"Fuck you bastard! What food do you have?"*, and MoodyChef must correctly detect the anger and refuse to suggest any food. This is not a trivial requirement for an LLM, and it is exactly the kind of behavior you need to **test reliably**.
 
 This demo walks you through two iterations of building MoodyChef, explains why the first iteration is fragile, and shows how to verify both versions with skUnit scenario tests.
 
@@ -56,7 +56,7 @@ dotnet user-secrets set "AzureOpenAI_Deployment" "your-deployment-name"         
 
 ---
 
-## Step 1 — Build the Sloppy Agent
+## Step 1: Build the Sloppy Agent
 
 The first version is the most straightforward approach: put all the logic inside the system prompt.
 
@@ -82,11 +82,11 @@ public static AIAgent CreateSloppyAgent(IChatClient chatClient)
 
 ### Why it is "sloppy"
 
-The instructions embed the decision logic as free-form English text inside the prompt. The model must **interpret** that text every time and decide which branch applies. For politely-worded inputs this works fine, but edge cases — like a profanity-laced angry message — can confuse the model, causing it to guess the wrong mood or ignore the rule entirely.
+The instructions embed the decision logic as free-form English text inside the prompt. The model must **interpret** that text every time and decide which branch applies. For politely-worded inputs this works fine, but edge cases, like a profanity-laced angry message, can confuse the model, causing it to guess the wrong mood or ignore the rule entirely.
 
 ---
 
-## Step 2 — Build the Tool-Based Agent
+## Step 2: Build the Tool-Based Agent
 
 The second version moves the mood-to-menu mapping out of the prompt and into a strongly-typed C# method exposed as a tool.
 
@@ -139,7 +139,7 @@ The `AIFunctionFactory.Create` call uses reflection and the `[Description]` attr
 
 ---
 
-## Step 3 — Write a Scenario Test
+## Step 3: Write a Scenario Test
 
 Now comes the most important part: **verifying** that MoodyChef actually behaves correctly. We use skUnit to write a scenario that captures the expected conversation.
 
@@ -187,7 +187,7 @@ The `[ASSISTANT]` text is a **guideline**, not a strict expected value. skUnit u
 
 ---
 
-## Step 4 — Run the Scenario in a Test
+## Step 4: Run the Scenario in a Test
 
 ```csharp
 // MoodyChefTests.cs
@@ -226,14 +226,14 @@ The `IChatClient` used to evaluate semantic assertions (e.g., `ASSERT SemanticCo
 
 **`ScenarioRunOptions`**  
 Controls reliability by running the scenario multiple times:
-- `TotalRuns = 3` — run the whole scenario 3 times
-- `RequiredSuccessRuns = 3` — all 3 runs must pass for the test to succeed
+- `TotalRuns = 3` → run the whole scenario 3 times
+- `RequiredSuccessRuns = 3` → all 3 runs must pass for the test to succeed
 
 This guards against the inherent non-determinism of LLMs. An LLM might get lucky once; requiring 3/3 successes gives you confidence in the behavior.
 
 ---
 
-## Step 5 — Compare the Two Agents
+## Step 5: Compare the Two Agents
 
 Both agents have their own test method:
 
@@ -253,7 +253,7 @@ dotnet test Demo.MoodyChef.slnx
 
 ---
 
-## Step 6 — Try It Interactively
+## Step 6: Try It Interactively
 
 The console project lets you chat with the agent in real time:
 
@@ -293,7 +293,7 @@ The interactive loop is a good way to explore the agent's behavior manually befo
 
 ## Further Reading
 
-- [Chat Scenario Spec](../../docs/chat-scenario-spec.md) — full format reference for scenario files
-- [CHECK / ASSERT Statements](../../docs/check-statements-spec.md) — all available assertion types
-- [Scenario Run Options](../../docs/scenario-run-options.md) — controlling retries and thresholds
-- [skUnit NuGet package](https://www.nuget.org/packages/skUnit) — `skUnit` v1.1.1-beta is used in this demo
+- [Chat Scenario Spec](../../docs/chat-scenario-spec.md) → full format reference for scenario files
+- [CHECK / ASSERT Statements](../../docs/check-statements-spec.md) → all available assertion types
+- [Scenario Run Options](../../docs/scenario-run-options.md) → controlling retries and thresholds
+- [skUnit NuGet package](https://www.nuget.org/packages/skUnit) → `skUnit` v1.1.1-beta is used in this demo
