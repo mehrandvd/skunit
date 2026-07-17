@@ -16,7 +16,7 @@ What about everest mountain?
 Yes it is tall too
 
 ### ASSERT SemanticCondition
-The sentence is positive.
+The sentence implies that everest mountain is tall, or it's positive.
 
 ## [USER]
 What about a mouse?
