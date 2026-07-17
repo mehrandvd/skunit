@@ -264,10 +264,7 @@ Two clients, two roles:
 ## Examples
 
 See the `/demos` folder for complete, runnable projects:
-- **[Demo.MoodyChef](demos/Demo.MoodyChef)**: Multi-turn chat testing with semantic assertions
-- **[Demo.TddRepl](demos/Demo.TddRepl)**: Interactive chat application testing
-- **[Demo.TddMcp](demos/Demo.TddMcp)**: MCP server integration testing
-- **[Demo.TddShop](demos/Demo.TddShop)**: Complex multi-scenario chat testing
+- **[Moody Chef AI](demos/Demo.MoodyChef)**: A step-by-step tutorial project that shows how to build and test an AI agent using skUnit.
 
 ## Requirements
 
