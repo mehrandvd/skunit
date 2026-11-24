@@ -9,7 +9,7 @@
 Test anything that talks to AI:
 - **AI Agents** (Microsoft Agent Framework, A2A)
 - **IChatClient** (Microsoft Extensions AI)
-- **MCP servers** (Model Context Protocol)
+- **Tools**: MCP (Model Context Protocol), AG-UI, ...
 - **Custom AI integrations**
 
 ```bash
